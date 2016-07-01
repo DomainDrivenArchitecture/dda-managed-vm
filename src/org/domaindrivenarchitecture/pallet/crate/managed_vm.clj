@@ -70,7 +70,7 @@
 
 (defn install-user
   "install the user space peaces in vm"
-  [os-user-name git-user-name bookmarks-download-url install-desktop-wiki]
+  [os-user-name git-user-name bookmarks-download-url]
   (when (some? bookmarks-download-url)
     (convenience/install-user-bookmarks os-user-name bookmarks-download-url))
   (basics/workaround-user-ownership os-user-name))
@@ -83,12 +83,10 @@
         app-name (name (:facility dda-crate))
         global-config (config/get-global-config)
         git-user-name (:git-user-name config)
-        bookmarks-download-url (:bookmarks-download-url config)
-        gitbook-download-url (:gitbook-download-url config)
-        install-desktop-wiki (:install-desktop-wiki config)]
+        bookmarks-download-url (:bookmarks-download-url config)]
     (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
     (install-system app-name config)
-    (install-user user-name git-user-name bookmarks-download-url install-desktop-wiki)
+    (install-user user-name git-user-name bookmarks-download-url)
     (backup/install app-name (get-in config [:backup]))))
 
 (s/defmethod dda-crate/dda-configure facility 

@@ -35,7 +35,7 @@
 
 (def node-list
   (compute/instantiate-provider
-    "node-list" :node-list [remote-node]))
+    "node-list" :node-list [localhost-node]))
 
 (defn -main
   "CLI main"
