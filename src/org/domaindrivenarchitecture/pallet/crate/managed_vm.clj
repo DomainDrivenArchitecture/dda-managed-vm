@@ -12,7 +12,7 @@
     [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]
     [org.domaindrivenarchitecture.pallet.crate.user :as user]
     [org.domaindrivenarchitecture.pallet.crate.user.os-user :as os-user]
-    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
+    [org.domaindrivenarchitecture.pallet.crate.backup-0-3 :as backup]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.basics :as basics]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.office :as office]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience :as convenience]
@@ -76,9 +76,10 @@
   (basics/workaround-user-ownership os-user-name))
 
 (s/defmethod dda-crate/dda-install facility 
-  [dda-crate config]
+  [dda-crate partial-effective-config]
   "dda managed vm: install routine"
-  (let [user-key (:ide-user config)
+  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
+        user-key (:ide-user config)
         user-name (name user-key)
         app-name (name (:facility dda-crate))
         global-config (config/get-global-config)
@@ -90,9 +91,10 @@
     (backup/install app-name (get-in config [:backup]))))
 
 (s/defmethod dda-crate/dda-configure facility 
-  [dda-crate config]
+  [dda-crate partial-effective-config]
   "dda managed vm: configure routine"
-  (let [user-key (:ide-user config)
+  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
+        user-key (:ide-user config)
         user-name (name user-key)
         app-name (name (:facility dda-crate))]
     (backup/configure app-name (get-in config [:backup]))
