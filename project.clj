@@ -1,4 +1,4 @@
-(defproject org.domaindrivenarchitecture/dda-managed-vm "0.1.1"
+(defproject org.domaindrivenarchitecture/dda-managed-vm "0.1.2-SNAPSHOT"
   :description "The managed vm desktop crate"
   :url "https://meissa-gmbh.de"
   :license {:name "meissa commercial license"
