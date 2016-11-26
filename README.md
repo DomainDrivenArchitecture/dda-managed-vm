@@ -7,7 +7,7 @@ Requirements can be found at https://dda.gitbooks.io/domaindrivenarchitecture/co
 This crate is working with:
  * pallet 0.8
  * clojure 1.7
- * xubuntu 14.04.03
+ * ubuntu 16.04
 
 ## Features
  * VirtualBox Tools

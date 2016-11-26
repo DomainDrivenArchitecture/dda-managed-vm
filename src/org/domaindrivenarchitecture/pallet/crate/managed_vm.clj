@@ -66,7 +66,7 @@
     (actions/package-manager :update)
     (basics/install-virtualbox-guest-additions)
     (office/install-libreoffice)
-    (java/install-open-jdk-9)
+    (java/install-open-jdk-8)
     ))
 
 (defn install-user
