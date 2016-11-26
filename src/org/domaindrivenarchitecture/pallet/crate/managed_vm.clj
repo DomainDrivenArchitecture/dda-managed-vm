@@ -6,6 +6,7 @@
     [pallet.api :as api]
     [schema.core :as s]
     [clojure.tools.logging :as logging]
+    [pallet.actions :as actions]
     [org.domaindrivenarchitecture.config.commons.map-utils :as map-utils]
     [org.domaindrivenarchitecture.pallet.core.dda-crate :as dda-crate]
     [org.domaindrivenarchitecture.pallet.core.dda-crate.config :as config]
@@ -62,10 +63,10 @@
     {:sudo-user "root"
      :script-dir "/root/"
      :script-env {:HOME (str "/root")}}
-    (dda-package/update-and-upgrade)
+    (actions/package-manager :update)
     (basics/install-virtualbox-guest-additions)
     (office/install-libreoffice)
-    (java/install-open-jdk-7)
+    (java/install-open-jdk-9)
     ))
 
 (defn install-user
