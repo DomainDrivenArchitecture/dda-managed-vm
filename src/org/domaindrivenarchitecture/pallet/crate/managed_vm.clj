@@ -55,6 +55,12 @@
         (default-vm-config (name user-key))
         partial-config))))
 
+(s/defn init
+  "init package management"
+  [app-name :- s/Str
+   config :- DdaVmConfig]
+  (actions/package-manager :update))
+
 (s/defn install-system
   "install common used packages for vm"
   [app-name :- s/Str
@@ -63,7 +69,6 @@
     {:sudo-user "root"
      :script-dir "/root/"
      :script-env {:HOME (str "/root")}}
-    (actions/package-manager :update)
     (basics/install-virtualbox-guest-additions)
     (office/install-libreoffice)
     (java/install-open-jdk-8)
@@ -75,6 +80,13 @@
   (when (some? bookmarks-download-url)
     (convenience/install-user-bookmarks os-user-name bookmarks-download-url))
   (basics/workaround-user-ownership os-user-name))
+
+(s/defmethod dda-crate/dda-init facility 
+  [dda-crate partial-effective-config]
+  "dda managed vm: init routine"
+  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
+        app-name (name (:facility dda-crate))]
+    (init app-name config)))
 
 (s/defmethod dda-crate/dda-install facility 
   [dda-crate partial-effective-config]

@@ -12,13 +12,9 @@
 (defn install-virtualbox-guest-additions
   "make virtual machine run properly sized on virtualbox"
   []
-  (let [xserver (actions/package "xserver-xorg-core")]
-    (dda-package/update-and-upgrade)
-    xserver
-    (pallet.action/with-action-options 
-      {:precedence {:allways-after xserver}}
-      (actions/package "virtualbox-guest-dkms")
-      (actions/package "virtualbox-guest-x11"))))
+  (actions/package "xserver-xorg-core")
+  (actions/package "virtualbox-guest-dkms")
+  (actions/package "virtualbox-guest-x11"))
 
 (defn workaround-user-ownership
   "files in /home/user are created by root but should be owned by user"
