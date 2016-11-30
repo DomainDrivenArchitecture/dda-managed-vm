@@ -13,7 +13,7 @@
     [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]
     [org.domaindrivenarchitecture.pallet.crate.user :as user]
     [org.domaindrivenarchitecture.pallet.crate.user.os-user :as os-user]
-    [org.domaindrivenarchitecture.pallet.crate.backup-0-3 :as backup]
+    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.basics :as basics]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.office :as office]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience :as convenience]
@@ -101,7 +101,7 @@
     (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
     (install-system app-name config)
     (install-user user-name git-user-name bookmarks-download-url)
-    (backup/install app-name (get-in config [:backup]))))
+    (backup/install (get-in config [:backup]))))
 
 (s/defmethod dda-crate/dda-configure facility 
   [dda-crate partial-effective-config]
@@ -110,7 +110,7 @@
         user-key (:ide-user config)
         user-name (name user-key)
         app-name (name (:facility dda-crate))]
-    (backup/configure app-name (get-in config [:backup]))
+    (backup/configure (get-in config [:backup]))
     ))
 
 (def dda-vm-crate
