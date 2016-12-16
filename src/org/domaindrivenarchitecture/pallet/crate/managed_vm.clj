@@ -27,8 +27,10 @@
   {:ide-user s/Keyword
    (s/optional-key :backup) backup/BackupConfig
    (s/optional-key :bookmarks-download-url) s/Str
-   (s/optional-key :settings) 
-   #{(s/optional-key :install-virtualbox-guest)}})
+   (s/optional-key :settings) s/Str
+   (s/optional-key :install-virtualbox-guest) (hash-set 
+                                                (s/enum :install-virtualbox-guest :install-libreoffice :install-open-jdk-8))
+   })
 
 (defn default-vm-config
   "Managed vm crate default configuration"

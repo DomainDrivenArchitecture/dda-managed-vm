@@ -24,10 +24,24 @@
 (def example-configuration 
   {:ide-user :test})
 
+(def example-hashset-configuration
+  {:ide-user :test
+   :install-virtualbox-guest (hash-set :install-virtualbox-guest :failure)
+   })
+
+(def example-hashset-configuration2
+  {:ide-user :test
+   :install-virtualbox-guest (hash-set :install-virtualbox-guest :install-libreoffice :install-open-jdk-8)
+   })
+
+
+ 
 (deftest test-schema
   (testing 
     "test the config schema" 
     (is (s/validate sut/DdaVmConfig example-configuration ))
+    (is (thrown? Exception (s/validate sut/DdaVmConfig example-hashset-configuration)))
+    (is (s/validate sut/DdaVmConfig example-hashset-configuration2))
     ))
 
 (deftest plan-def
@@ -35,3 +49,4 @@
     "test plan-def" 
     (is sut/with-dda-vm)
     ))
+
