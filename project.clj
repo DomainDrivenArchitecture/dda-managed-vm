@@ -6,6 +6,7 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [com.palletops/pallet "0.8.12" :exclusions [org.clojure/tools.cli]]
                  [com.palletops/stevedore "0.8.0-beta.7"]
+                 [prismatic/schema "1.1.3"]
                  [com.palletops/git-crate "0.8.0-alpha.2" :exclusions [org.clojure/clojure]]
                  [org.domaindrivenarchitecture/dda-pallet "0.2.1-SNAPSHOT"]
                  [org.domaindrivenarchitecture/dda-pallet-commons "0.2.2-SNAPSHOT"]

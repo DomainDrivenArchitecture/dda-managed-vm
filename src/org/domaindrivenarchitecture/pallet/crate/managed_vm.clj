@@ -25,8 +25,10 @@
 (def DdaVmConfig
   "The configuration for managed vms crate." 
   {:ide-user s/Keyword
-   :backup backup/BackupConfig
-   (s/optional-key :bookmarks-download-url) s/Str})
+   (s/optional-key :backup) backup/BackupConfig
+   (s/optional-key :bookmarks-download-url) s/Str
+   (s/optional-key :settings) 
+   #{(s/optional-key :install-virtualbox-guest)}})
 
 (defn default-vm-config
   "Managed vm crate default configuration"

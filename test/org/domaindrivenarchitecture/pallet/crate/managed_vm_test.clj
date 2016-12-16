@@ -18,7 +18,17 @@
 (ns org.domaindrivenarchitecture.pallet.crate.managed-vm-test
   (:require
     [clojure.test :refer :all]
+    [schema.core :as s]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm :as sut]))
+
+(def example-configuration 
+  {:ide-user :test})
+
+(deftest test-schema
+  (testing 
+    "test the config schema" 
+    (is (s/validate sut/DdaVmConfig example-configuration ))
+    ))
 
 (deftest plan-def
   (testing 
