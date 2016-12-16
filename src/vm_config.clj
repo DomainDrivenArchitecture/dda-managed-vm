@@ -39,7 +39,7 @@
     :pallet-cm-user-password "test1234"
     :additional-config 
     {:dda-managed-vm {:ide-user :vmuser}
-     :dda-backup managed-vm/backup-default-config})
+     :dda-backup managed-vm/default-vm-backup-config})
   )
 
 (def config

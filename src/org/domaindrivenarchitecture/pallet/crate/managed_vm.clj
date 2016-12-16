@@ -13,7 +13,6 @@
     [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]
     [org.domaindrivenarchitecture.pallet.crate.user :as user]
     [org.domaindrivenarchitecture.pallet.crate.user.os-user :as os-user]
-    [org.domaindrivenarchitecture.pallet.crate.backup-0-3 :as backup]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.basics :as basics]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.office :as office]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience :as convenience]
@@ -25,24 +24,28 @@
 (def DdaVmConfig
   "The configuration for managed vms crate." 
   {:ide-user s/Keyword
-   (s/optional-key :backup) backup/BackupConfig
    (s/optional-key :bookmarks-download-url) s/Str
    :settings 
    #{(s/optional-key :install-virtualbox-guest) (s/optional-key :install-libreoffice) :install-open-jdk-8}})
+
+(defn default-vm-backup-config
+  "Managed vm crate default configuration"
+  [user-name]
+  {:backup-name "managed-vm"
+   :script-path "/usr/lib/dda-backup/"
+   :gens-stored-on-source-system 1
+   :elements [{:type :file-compressed
+               :name "user-home"
+               :root-dir (str "/home/" user-name)
+               :subdir-to-save ".ssh .mozilla"}]
+   :backup-user {:name "dataBackupSource"
+                 :encrypted-passwd "WIwn6jIUt2Rbc"}})
 
 (defn default-vm-config
   "Managed vm crate default configuration"
   [user-name]
   {:ide-user user-name
-   :backup {:backup-name "managed-vm"
-          :script-path "/usr/lib/dda-backup/"
-          :gens-stored-on-source-system 1
-          :elements [{:type :file-compressed
-                      :name "user-home"
-                      :root-dir (str "/home/" user-name)
-                      :subdir-to-save ".ssh .mozilla"}]
-          :backup-user {:name "dataBackupSource"
-                        :encrypted-passwd "WIwn6jIUt2Rbc"}}})
+   :settings #{}})
 
 (s/defmethod dda-crate/merge-config facility
   [dda-crate 
@@ -110,17 +113,12 @@
         bookmarks-download-url (:bookmarks-download-url config)]
     (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
     (install-system config)
-    (install-user config)
-    (backup/install app-name (get-in config [:backup]))))
+    (install-user config)))
 
 (s/defmethod dda-crate/dda-configure facility 
   [dda-crate partial-effective-config]
   "dda managed vm: configure routine"
-  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
-        user-key (:ide-user config)
-        user-name (name user-key)
-        app-name (name (:facility dda-crate))]
-    (backup/configure app-name (get-in config [:backup]))
+  (let [config (dda-crate/merge-config dda-crate partial-effective-config)]
     ))
 
 (def dda-vm-crate
