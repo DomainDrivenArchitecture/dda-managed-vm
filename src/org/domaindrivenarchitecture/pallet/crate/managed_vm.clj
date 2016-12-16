@@ -27,8 +27,8 @@
   {:ide-user s/Keyword
    (s/optional-key :backup) backup/BackupConfig
    (s/optional-key :bookmarks-download-url) s/Str
-   (s/optional-key :settings) 
-   #{(s/optional-key :install-virtualbox-guest)}})
+   :settings 
+   #{(s/optional-key :install-virtualbox-guest) (s/optional-key :install-libreoffice) :install-open-jdk-8}})
 
 (defn default-vm-config
   "Managed vm crate default configuration"
@@ -65,23 +65,31 @@
 
 (s/defn install-system
   "install common used packages for vm"
-  [app-name :- s/Str
-   config :- DdaVmConfig]
-  (pallet.action/with-action-options 
-    {:sudo-user "root"
-     :script-dir "/root/"
-     :script-env {:HOME (str "/root")}}
-    (basics/install-virtualbox-guest-additions)
-    (office/install-libreoffice)
-    (java/install-open-jdk-8)
-    ))
+  [config :- DdaVmConfig]
+  (let [settings (-> config :settings)]
+    (pallet.action/with-action-options 
+      {:sudo-user "root"
+       :script-dir "/root/"
+       :script-env {:HOME (str "/root")}}
+      (when (contains? settings :install-virtualbox-guest)
+        (basics/install-virtualbox-guest-additions))
+      (when (contains? settings :install-libreoffice)
+        (office/install-libreoffice))
+      (when (contains? settings :install-open-jdk-8)
+        (java/install-open-jdk-8))
+      )))
 
 (defn install-user
   "install the user space peaces in vm"
-  [os-user-name git-user-name bookmarks-download-url]
-  (when (some? bookmarks-download-url)
-    (convenience/install-user-bookmarks os-user-name bookmarks-download-url))
-  (basics/workaround-user-ownership os-user-name))
+  [config :- DdaVmConfig]
+  (let [os-user-name (name (-> config :ide-user))]
+    (pallet.action/with-action-options 
+      {:sudo-user os-user-name
+       :script-dir (str "/home/" os-user-name "/")
+       :script-env {:HOME (str "/home/" os-user-name "/")}}
+      (when (contains? config :bookmarks-download-url)
+        (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url))))))
+    
 
 (s/defmethod dda-crate/dda-init facility 
   [dda-crate partial-effective-config]
@@ -101,8 +109,8 @@
         git-user-name (:git-user-name config)
         bookmarks-download-url (:bookmarks-download-url config)]
     (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
-    (install-system app-name config)
-    (install-user user-name git-user-name bookmarks-download-url)
+    (install-system config)
+    (install-user config)
     (backup/install app-name (get-in config [:backup]))))
 
 (s/defmethod dda-crate/dda-configure facility 
