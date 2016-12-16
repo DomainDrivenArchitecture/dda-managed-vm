@@ -25,8 +25,9 @@
   "The configuration for managed vms crate." 
   {:ide-user s/Keyword
    (s/optional-key :bookmarks-download-url) s/Str
-   (s/optional-key :settings) (hash-set 
-                                        (s/enum :install-virtualbox-guest :install-libreoffice :install-open-jdk-8))
+   (s/optional-key :settings) 
+   (hash-set 
+             (s/enum :install-virtualbox-guest :install-libreoffice :install-open-jdk-8))
    })
 
 (defn default-vm-backup-config
@@ -46,7 +47,8 @@
   "Managed vm crate default configuration"
   [user-name]
   {:ide-user user-name
-   :settings #{}})
+   :settings #{:install-virtualbox-guest :install-libreoffice 
+               :install-open-jdk-8}})
 
 (s/defmethod dda-crate/merge-config facility
   [dda-crate 

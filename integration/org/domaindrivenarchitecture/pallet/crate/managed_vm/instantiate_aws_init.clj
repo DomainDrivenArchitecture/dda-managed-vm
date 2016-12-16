@@ -62,8 +62,13 @@
     :host-name "my-vm" 
     :domain-name "meissa-gmbh.de"
     :additional-config 
-    {:dda-managed-vm {:ide-user :vmuser}
-     :dda-backup managed-vm/default-vm-backup-config})
+    {:dda-managed-vm 
+     (convention/meissa-convention {:ide-user :vmuser})
+     {:ide-user :vmuser
+      :settings #{:install-virtualbox-guest 
+                  :install-libreoffice :install-open-jdk-8}}
+     ;:dda-backup managed-vm/default-vm-backup-config
+     })
   )
 
 (def config
@@ -125,9 +130,10 @@
     :extends [(config/with-config config) 
               init/with-init 
               managed-vm/with-dda-vm
-              backup/with-backup]
+              ;backup/with-backup
+              ]
     :node-spec (aws-node-spec)
-    :count 0))
+    :count 1))
 
 (defn inspect-phase-plan []
   (session-tools/inspect-mock-server-spec
