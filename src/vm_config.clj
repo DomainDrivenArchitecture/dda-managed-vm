@@ -6,6 +6,7 @@
     [clojure.java.io :as io]
     [org.domaindrivenarchitecture.pallet.crate.config.node :as node-record]
     [org.domaindrivenarchitecture.pallet.crate.user.ssh-key :as ssh-key-record]
+    [org.domaindrivenarchitecture.pallet.crate.managed-vm :as managed-vm]
     ))
 
 (defn dda-read-file 
@@ -37,8 +38,8 @@
     :pallet-cm-user-name "initial"
     :pallet-cm-user-password "test1234"
     :additional-config 
-    {:dda-managed-vm
-     {:ide-user :vmuser}})
+    {:dda-managed-vm {:ide-user :vmuser}
+     :dda-backup managed-vm/default-vm-backup-config})
   )
 
 (def config

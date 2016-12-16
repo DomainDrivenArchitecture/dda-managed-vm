@@ -26,12 +26,12 @@
 
 (def example-hashset-configuration
   {:ide-user :test
-   :install-virtualbox-guest (hash-set :install-virtualbox-guest :failure)
+   :settings (hash-set :install-virtualbox-guest :failure)
    })
 
 (def example-hashset-configuration2
   {:ide-user :test
-   :install-virtualbox-guest (hash-set :install-virtualbox-guest :install-libreoffice :install-open-jdk-8)
+   :settings (hash-set :install-virtualbox-guest :install-libreoffice :install-open-jdk-8)
    })
 
 
