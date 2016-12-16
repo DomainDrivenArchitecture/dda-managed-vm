@@ -25,8 +25,9 @@
   "The configuration for managed vms crate." 
   {:ide-user s/Keyword
    (s/optional-key :bookmarks-download-url) s/Str
-   :settings 
-   #{(s/optional-key :install-virtualbox-guest) (s/optional-key :install-libreoffice) :install-open-jdk-8}})
+   (s/optional-key :settings) (hash-set 
+                                        (s/enum :install-virtualbox-guest :install-libreoffice :install-open-jdk-8))
+   })
 
 (defn default-vm-backup-config
   "Managed vm crate default configuration"
@@ -93,7 +94,6 @@
       (when (contains? config :bookmarks-download-url)
         (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url))))))
     
-
 (s/defmethod dda-crate/dda-init facility 
   [dda-crate partial-effective-config]
   "dda managed vm: init routine"
