@@ -82,7 +82,7 @@
         (java/install-open-jdk-8))
       )))
 
-(defn install-user
+(s/defn install-user
   "install the user space peaces in vm"
   [config :- DdaVmConfig]
   (let [os-user-name (name (-> config :ide-user))]
