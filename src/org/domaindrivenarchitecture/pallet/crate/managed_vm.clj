@@ -19,49 +19,15 @@
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.java :as java]))
   
 (def facility :dda-managed-vm)
-(def version  [0 3 3])
     
 (def DdaVmConfig
   "The configuration for managed vms crate." 
   {:ide-user s/Keyword
    (s/optional-key :bookmarks-download-url) s/Str
    (s/optional-key :settings) 
-   (hash-set 
-             (s/enum :install-virtualbox-guest :install-libreoffice :install-open-jdk-8))
+   (hash-set (s/enum :install-virtualbox-guest :install-libreoffice 
+                     :install-open-jdk-8 :install-xfce :install-tight-vnc ))
    })
-
-(defn default-vm-backup-config
-  "Managed vm crate default configuration"
-  [user-name]
-  {:backup-name "managed-vm"
-   :script-path "/usr/lib/dda-backup/"
-   :gens-stored-on-source-system 1
-   :elements [{:type :file-compressed
-               :name "user-home"
-               :root-dir (str "/home/" user-name)
-               :subdir-to-save ".ssh .mozilla"}]
-   :backup-user {:name "dataBackupSource"
-                 :encrypted-passwd "WIwn6jIUt2Rbc"}})
-
-(defn default-vm-config
-  "Managed vm crate default configuration"
-  [user-name]
-  {:ide-user user-name
-   :settings #{:install-virtualbox-guest :install-libreoffice 
-               :install-open-jdk-8}})
-
-(s/defmethod dda-crate/merge-config facility
-  [dda-crate 
-   partial-config]
-  "merges the partial config with default config and
-   ensures that resulting config is valid"  
-  (let [user-key (:ide-user partial-config)
-        user-name (name user-key)]
-    (s/validate 
-      DdaVmConfig
-      (map-utils/deep-merge 
-        (default-vm-config (name user-key))
-        partial-config))))
 
 (s/defn init
   "init package management"
@@ -97,17 +63,15 @@
         (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url))))))
     
 (s/defmethod dda-crate/dda-init facility 
-  [dda-crate partial-effective-config]
+  [dda-crate config]
   "dda managed vm: init routine"
-  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
-        app-name (name (:facility dda-crate))]
+  (let [app-name (name (:facility dda-crate))]
     (init app-name config)))
 
 (s/defmethod dda-crate/dda-install facility 
-  [dda-crate partial-effective-config]
+  [dda-crate config]
   "dda managed vm: install routine"
-  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
-        user-key (:ide-user config)
+  (let [user-key (:ide-user config)
         user-name (name user-key)
         app-name (name (:facility dda-crate))
         global-config (config/get-global-config)
@@ -118,15 +82,14 @@
     (install-user config)))
 
 (s/defmethod dda-crate/dda-configure facility 
-  [dda-crate partial-effective-config]
+  [dda-crate config]
   "dda managed vm: configure routine"
-  (let [config (dda-crate/merge-config dda-crate partial-effective-config)]
-    ))
+ )
 
 (def dda-vm-crate
   (dda-crate/make-dda-crate
       :facility facility
-      :version version))
+      :version [0 0 0]))
 
 (def with-dda-vm
   (dda-crate/create-server-spec dda-vm-crate))

@@ -30,6 +30,7 @@
     [org.domaindrivenarchitecture.pallet.crate.config :as config]
     [org.domaindrivenarchitecture.pallet.crate.init :as init]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm :as managed-vm]
+    [org.domaindrivenarchitecture.pallet.convention.managed-vm :as convention]
     [org.domaindrivenarchitecture.pallet.core.cli-helper :as cli-helper]
     [org.domaindrivenarchitecture.pallet.crate.backup :as backup])
   (:gen-class :main true))
@@ -63,12 +64,11 @@
     :domain-name "meissa-gmbh.de"
     :additional-config 
     {:dda-managed-vm 
-     (convention/meissa-convention {:ide-user :vmuser})
-     {:ide-user :vmuser
-      :settings #{:install-virtualbox-guest 
-                  :install-libreoffice :install-open-jdk-8}}
-     ;:dda-backup managed-vm/default-vm-backup-config
-     })
+     (convention/meissa-convention {:ide-user :vmuser
+                                    :platform :aws})
+     :dda-backup 
+     (convention/default-vm-backup-config :vmuser)}
+    )
   )
 
 (def config
