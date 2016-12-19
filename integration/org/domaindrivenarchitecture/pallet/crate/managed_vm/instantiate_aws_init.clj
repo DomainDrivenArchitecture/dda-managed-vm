@@ -124,7 +124,7 @@
      :endpoint "eu-central-1"
      :subnet-ids ["subnet-f929df91"]))))
 
-(defn managed-vm-group []
+(defn managed-vm-group [count]
   (api/group-spec
     "managed-vm-group"
     :extends [(config/with-config config) 
@@ -133,39 +133,48 @@
               ;backup/with-backup
               ]
     :node-spec (aws-node-spec)
-    :count 1))
+    :count count))
 
 (defn inspect-phase-plan []
   (session-tools/inspect-mock-server-spec
      managed-vm-group '(:settings :install)))
  
-(defn do-sth 
-  ([] 
+(defn install-and-configure
+  ([count] 
     (api/converge
-      (managed-vm-group)
+      (managed-vm-group count)
       :compute (aws-provider)
-      :phase '(:settings :init)
+      :phase '(:settings :init :install :configure)
       :user (api/make-user "ubuntu")))
-  ([key-id key-passphrase]
+  ([key-id key-passphrase count]
     (let [session
           (api/converge
-            (managed-vm-group)
+            (managed-vm-group count)
             :compute (aws-provider key-id key-passphrase)
-            :phase '(:settings 
-                     :init :install :configure 
-                     :test)
+            :phase '(:settings :init :install :configure)
             :user (api/make-user "ubuntu"))
           ]
       session
       )))
 
+(defn test
+  ([count] 
+    (api/lift
+      (managed-vm-group count)
+      :compute (aws-provider)
+      :phase '(:settings :test)
+      :user (api/make-user "ubuntu")))
+  ([key-id key-passphrase count]
+    (let [session
+          (api/lift
+            (managed-vm-group count)
+            :compute (aws-provider key-id key-passphrase)
+            :phase '(:settings :test)
+            :user (api/make-user "ubuntu"))
+          ]
+      session
+      )))
 
-(defn spit-session
-  [session]
-  (session-tools/emit-xml-to-file 
-          "./session.xml"
-          (session-tools/explain-session-xml session))
-  (spit "session.edn" (prn-str session)))
 
 (def SessionResultsSpec
   {:results [{:target {:hardware s/Any

@@ -41,7 +41,7 @@
       (cond 
         (= platform :virtualbox) {:settings #{:install-virtualbox-guest 
                                           :install-libreoffice :install-open-jdk-8}}
-        (= platform :aws) {:settings #{:install-xfce :install-tight-vnc 
+        (= platform :aws) {:settings #{:install-xfce-desktop :install-tightvnc-server 
                             :install-libreoffice :install-open-jdk-8}}
         (= platform :other) {:settings #{:install-libreoffice :install-open-jdk-8}})        
       ))

@@ -14,6 +14,7 @@
     [org.domaindrivenarchitecture.pallet.crate.user :as user]
     [org.domaindrivenarchitecture.pallet.crate.user.os-user :as os-user]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.basics :as basics]
+    [org.domaindrivenarchitecture.pallet.crate.managed-vm.tightvnc :as tightvnc]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.office :as office]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience :as convenience]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.java :as java]))
@@ -26,7 +27,7 @@
    (s/optional-key :bookmarks-download-url) s/Str
    (s/optional-key :settings) 
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice 
-                     :install-open-jdk-8 :install-xfce :install-tight-vnc ))
+                     :install-open-jdk-8 :install-xfce-desktop :install-tightvnc-server))
    })
 
 (s/defn init
@@ -43,8 +44,12 @@
       {:sudo-user "root"
        :script-dir "/root/"
        :script-env {:HOME (str "/root")}}
+      (when (contains? settings :install-xfce-desktop)
+        (basics/install-xfce-desktop))
       (when (contains? settings :install-virtualbox-guest)
         (basics/install-virtualbox-guest-additions))
+      (when (contains? settings :install-tightvnc-server)
+        (tightvnc/install-system-tightvnc-server))
       (when (contains? settings :install-libreoffice)
         (office/install-libreoffice))
       (when (contains? settings :install-open-jdk-8)
@@ -54,13 +59,44 @@
 (s/defn install-user
   "install the user space peaces in vm"
   [config :- DdaVmConfig]
-  (let [os-user-name (name (-> config :ide-user))]
+  (let [os-user-name (name (-> config :ide-user))
+        settings (-> config :settings)]
     (pallet.action/with-action-options 
       {:sudo-user os-user-name
        :script-dir (str "/home/" os-user-name "/")
        :script-env {:HOME (str "/home/" os-user-name "/")}}
       (when (contains? config :bookmarks-download-url)
-        (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url))))))
+        (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url)))
+      (when (contains? settings :install-tightvnc-server)
+        (tightvnc/install-user-tightvnc-server))
+      ))
+  )
+
+(s/defn configure-system
+  "install the user space peaces in vm"
+  [config :- DdaVmConfig]
+  (let [os-user-name (name (-> config :ide-user))
+        settings (-> config :settings)]
+    (pallet.action/with-action-options 
+      {:sudo-user "root"
+       :script-dir "/root/"
+       :script-env {:HOME (str "/root")}}
+      (when (contains? settings :install-tightvnc-server)
+              (tightvnc/configure-system-tightvnc-server))
+      )))
+
+(s/defn configure-user
+  "install the user space peaces in vm"
+  [config :- DdaVmConfig]
+  (let [os-user-name (name (-> config :ide-user))
+        settings (-> config :settings)]
+    (pallet.action/with-action-options 
+      {:sudo-user os-user-name
+       :script-dir (str "/home/" os-user-name "/")
+       :script-env {:HOME (str "/home/" os-user-name "/")}}
+      (when (contains? settings :install-tightvnc-server)
+              (tightvnc/configure-user-tightvnc-server))
+      )))
     
 (s/defmethod dda-crate/dda-init facility 
   [dda-crate config]
@@ -84,6 +120,8 @@
 (s/defmethod dda-crate/dda-configure facility 
   [dda-crate config]
   "dda managed vm: configure routine"
+  (configure-user config)
+  (configure-system config)
  )
 
 (def dda-vm-crate
