@@ -6,6 +6,7 @@
 			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="src" path="integration"/>
 	<classpathentry kind="src" path="test">
 		<attributes>
 			<attribute name="optional" value="true"/>
@@ -29,11 +30,6 @@
 	<classpathentry exported="true" kind="con" path="ccw.LEININGEN_CONTAINER">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="dda-managed-vm/target/native/linux/x86_64"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry exported="true" kind="lib" path="classes">
-		<attributes>
-			<attribute name="optional" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

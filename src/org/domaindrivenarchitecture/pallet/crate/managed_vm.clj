@@ -13,47 +13,23 @@
     [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]
     [org.domaindrivenarchitecture.pallet.crate.user :as user]
     [org.domaindrivenarchitecture.pallet.crate.user.os-user :as os-user]
-    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.basics :as basics]
+    [org.domaindrivenarchitecture.pallet.crate.managed-vm.tightvnc :as tightvnc]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.office :as office]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience :as convenience]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.java :as java]))
   
 (def facility :dda-managed-vm)
-(def version  [0 3 3])
     
 (def DdaVmConfig
   "The configuration for managed vms crate." 
   {:ide-user s/Keyword
-   :backup backup/BackupConfig
-   (s/optional-key :bookmarks-download-url) s/Str})
-
-(defn default-vm-config
-  "Managed vm crate default configuration"
-  [user-name]
-  {:ide-user user-name
-   :backup {:backup-name "managed-vm"
-          :script-path "/usr/lib/dda-backup/"
-          :gens-stored-on-source-system 1
-          :elements [{:type :file-compressed
-                      :name "user-home"
-                      :root-dir (str "/home/" user-name)
-                      :subdir-to-save ".ssh .mozilla"}]
-          :backup-user {:name "dataBackupSource"
-                        :encrypted-passwd "WIwn6jIUt2Rbc"}}})
-
-(s/defmethod dda-crate/merge-config facility
-  [dda-crate 
-   partial-config]
-  "merges the partial config with default config and
-   ensures that resulting config is valid"  
-  (let [user-key (:ide-user partial-config)
-        user-name (name user-key)]
-    (s/validate 
-      DdaVmConfig
-      (map-utils/deep-merge 
-        (default-vm-config (name user-key))
-        partial-config))))
+   (s/optional-key :bookmarks-download-url) s/Str
+   (s/optional-key :tightvnc-server) {:user-password s/Str}
+   (s/optional-key :settings) 
+   (hash-set (s/enum :install-virtualbox-guest :install-libreoffice 
+                     :install-open-jdk-8 :install-xfce-desktop))
+   })
 
 (s/defn init
   "init package management"
@@ -63,60 +39,96 @@
 
 (s/defn install-system
   "install common used packages for vm"
-  [app-name :- s/Str
-   config :- DdaVmConfig]
-  (pallet.action/with-action-options 
-    {:sudo-user "root"
-     :script-dir "/root/"
-     :script-env {:HOME (str "/root")}}
-    (basics/install-virtualbox-guest-additions)
-    (office/install-libreoffice)
-    (java/install-open-jdk-8)
-    ))
+  [config :- DdaVmConfig]
+  (let [settings (-> config :settings)]
+    (pallet.action/with-action-options 
+      {:sudo-user "root"
+       :script-dir "/root/"
+       :script-env {:HOME (str "/root")}}
+      (when (contains? settings :install-xfce-desktop)
+        (basics/install-xfce-desktop))
+      (when (contains? settings :install-virtualbox-guest)
+        (basics/install-virtualbox-guest-additions))
+      (when (contains? config :tightvnc-server)
+        (tightvnc/install-system-tightvnc-server config))
+      (when (contains? settings :install-libreoffice)
+        (office/install-libreoffice))
+      (when (contains? settings :install-open-jdk-8)
+        (java/install-open-jdk-8))
+      )))
 
-(defn install-user
+(s/defn install-user
   "install the user space peaces in vm"
-  [os-user-name git-user-name bookmarks-download-url]
-  (when (some? bookmarks-download-url)
-    (convenience/install-user-bookmarks os-user-name bookmarks-download-url))
-  (basics/workaround-user-ownership os-user-name))
+  [config :- DdaVmConfig]
+  (let [os-user-name (name (-> config :ide-user))
+        settings (-> config :settings)]
+    (pallet.action/with-action-options 
+      {:sudo-user os-user-name
+       :script-dir (str "/home/" os-user-name "/")
+       :script-env {:HOME (str "/home/" os-user-name "/")}}
+      (when (contains? config :bookmarks-download-url)
+        (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url)))
+      (when (contains? config :tightvnc-server)
+        (tightvnc/install-user-tightvnc-server config))
+      ))
+  )
 
+(s/defn configure-system
+  "install the user space peaces in vm"
+  [config :- DdaVmConfig]
+  (let [os-user-name (name (-> config :ide-user))
+        settings (-> config :settings)]
+    (pallet.action/with-action-options 
+      {:sudo-user "root"
+       :script-dir "/root/"
+       :script-env {:HOME (str "/root")}}
+      (when (contains? config :tightvnc-server)
+              (tightvnc/configure-system-tightvnc-server config))
+      )))
+
+(s/defn configure-user
+  "install the user space peaces in vm"
+  [config :- DdaVmConfig]
+  (let [os-user-name (name (-> config :ide-user))
+        settings (-> config :settings)]
+    (pallet.action/with-action-options 
+      {:sudo-user os-user-name
+       :script-dir (str "/home/" os-user-name "/")
+       :script-env {:HOME (str "/home/" os-user-name "/")}}
+      (when (contains? config :tightvnc-server)
+              (tightvnc/configure-user-tightvnc-server config))
+      )))
+    
 (s/defmethod dda-crate/dda-init facility 
-  [dda-crate partial-effective-config]
+  [dda-crate config]
   "dda managed vm: init routine"
-  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
-        app-name (name (:facility dda-crate))]
+  (let [app-name (name (:facility dda-crate))]
     (init app-name config)))
 
 (s/defmethod dda-crate/dda-install facility 
-  [dda-crate partial-effective-config]
+  [dda-crate config]
   "dda managed vm: install routine"
-  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
-        user-key (:ide-user config)
+  (let [user-key (:ide-user config)
         user-name (name user-key)
         app-name (name (:facility dda-crate))
         global-config (config/get-global-config)
         git-user-name (:git-user-name config)
         bookmarks-download-url (:bookmarks-download-url config)]
     (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
-    (install-system app-name config)
-    (install-user user-name git-user-name bookmarks-download-url)
-    (backup/install (get-in config [:backup]))))
+    (install-system config)
+    (install-user config)))
 
 (s/defmethod dda-crate/dda-configure facility 
-  [dda-crate partial-effective-config]
+  [dda-crate config]
   "dda managed vm: configure routine"
-  (let [config (dda-crate/merge-config dda-crate partial-effective-config)
-        user-key (:ide-user config)
-        user-name (name user-key)
-        app-name (name (:facility dda-crate))]
-    (backup/configure (get-in config [:backup]))
-    ))
+  (configure-user config)
+  (configure-system config)
+ )
 
 (def dda-vm-crate
   (dda-crate/make-dda-crate
       :facility facility
-      :version version))
+      :version [0 0 0]))
 
 (def with-dda-vm
   (dda-crate/create-server-spec dda-vm-crate))
