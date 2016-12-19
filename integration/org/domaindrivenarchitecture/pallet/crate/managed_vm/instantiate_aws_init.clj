@@ -139,7 +139,7 @@
   (session-tools/inspect-mock-server-spec
      managed-vm-group '(:settings :install)))
  
-(defn install-and-configure
+(defn converge
   ([count] 
     (api/converge
       (managed-vm-group count)
@@ -157,7 +157,7 @@
       session
       )))
 
-(defn test
+(defn vm-test
   ([count] 
     (api/lift
       (managed-vm-group count)

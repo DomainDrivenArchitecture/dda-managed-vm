@@ -22,14 +22,14 @@
 
 (defn install-system-tightvnc-server
   "Install remote desktop viewing."
-  []
+  [config]
   (actions/package "tightvncserver"))
 
 (defn install-user-tightvnc-server
   "Install remote desktop viewing."
-  []
-  (let [os-user "vmuser"
-        password "test"
+  [config]
+  (let [os-user (-> config :ide-user)
+        password (-> config :tightvnc-server :user-password)
         vnc-path (str "/home/" os-user "/.vnc")
         vnv-service-name (str "vncserver@" os-user ".service")]
     (actions/directory vnc-path :owner os-user :group os-user)
@@ -48,8 +48,8 @@
 
 (defn configure-system-tightvnc-server
   "Install remote desktop viewing."
-  []
-  (let [os-user "vmuser"
+  [config]
+  (let [os-user (-> config :ide-user)
         vnv-service-name (str "vncserver@1" ".service")]
     (actions/remote-file 
       (str "/etc/systemd/system/" vnv-service-name)
@@ -83,9 +83,9 @@
 
 (defn configure-user-tightvnc-server
   "Install remote desktop viewing."
-  []
-  (let [os-user "vmuser"
-        password "test"
+  [config]
+  (let [os-user (-> config :ide-user)
+        password (-> config :tightvnc-server :user-password)
         vnc-path (str "/home/" os-user "/.vnc")
         vnv-service-name (str "vncserver@" os-user ".service")]
     (set-user-password os-user password)

@@ -25,9 +25,10 @@
   "The configuration for managed vms crate." 
   {:ide-user s/Keyword
    (s/optional-key :bookmarks-download-url) s/Str
+   (s/optional-key :tightvnc-server) {:user-password s/Str}
    (s/optional-key :settings) 
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice 
-                     :install-open-jdk-8 :install-xfce-desktop :install-tightvnc-server))
+                     :install-open-jdk-8 :install-xfce-desktop))
    })
 
 (s/defn init
@@ -48,8 +49,8 @@
         (basics/install-xfce-desktop))
       (when (contains? settings :install-virtualbox-guest)
         (basics/install-virtualbox-guest-additions))
-      (when (contains? settings :install-tightvnc-server)
-        (tightvnc/install-system-tightvnc-server))
+      (when (contains? config :tightvnc-server)
+        (tightvnc/install-system-tightvnc-server config))
       (when (contains? settings :install-libreoffice)
         (office/install-libreoffice))
       (when (contains? settings :install-open-jdk-8)
@@ -67,8 +68,8 @@
        :script-env {:HOME (str "/home/" os-user-name "/")}}
       (when (contains? config :bookmarks-download-url)
         (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url)))
-      (when (contains? settings :install-tightvnc-server)
-        (tightvnc/install-user-tightvnc-server))
+      (when (contains? config :tightvnc-server)
+        (tightvnc/install-user-tightvnc-server config))
       ))
   )
 
@@ -81,8 +82,8 @@
       {:sudo-user "root"
        :script-dir "/root/"
        :script-env {:HOME (str "/root")}}
-      (when (contains? settings :install-tightvnc-server)
-              (tightvnc/configure-system-tightvnc-server))
+      (when (contains? config :tightvnc-server)
+              (tightvnc/configure-system-tightvnc-server config))
       )))
 
 (s/defn configure-user
@@ -94,8 +95,8 @@
       {:sudo-user os-user-name
        :script-dir (str "/home/" os-user-name "/")
        :script-env {:HOME (str "/home/" os-user-name "/")}}
-      (when (contains? settings :install-tightvnc-server)
-              (tightvnc/configure-user-tightvnc-server))
+      (when (contains? config :tightvnc-server)
+              (tightvnc/configure-user-tightvnc-server config))
       )))
     
 (s/defmethod dda-crate/dda-init facility 
