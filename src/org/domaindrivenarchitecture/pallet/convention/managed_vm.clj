@@ -43,7 +43,7 @@
                                           :install-libreoffice :install-open-jdk-8}}
         (= platform :aws) {:tightvnc-server {:user-password "test"}
                            :settings #{:install-xfce-desktop :install-tightvnc-server 
-                            :install-libreoffice :install-open-jdk-8}}
+                            :install-libreoffice :install-open-jdk-8 :install-linus-basics}}
         (= platform :other) {:settings #{:install-libreoffice :install-open-jdk-8}})        
       ))
   )

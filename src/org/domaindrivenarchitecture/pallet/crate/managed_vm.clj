@@ -1,5 +1,18 @@
-; Copyright (c) meissa GmbH. All rights reserved.
-; You must not remove this notice, or any other, from this software.
+; Licensed to the Apache Software Foundation (ASF) under one
+; or more contributor license agreements. See the NOTICE file
+; distributed with this work for additional information
+; regarding copyright ownership. The ASF licenses this file
+; to you under the Apache License, Version 2.0 (the
+; "License"); you may not use this file except in compliance
+; with the License. You may obtain a copy of the License at
+;
+; http://www.apache.org/licenses/LICENSE-2.0
+;
+; Unless required by applicable law or agreed to in writing, software
+; distributed under the License is distributed on an "AS IS" BASIS,
+; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+; See the License for the specific language governing permissions and
+; limitations under the License.
 
 (ns org.domaindrivenarchitecture.pallet.crate.managed-vm
   (:require
@@ -17,7 +30,8 @@
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.tightvnc :as tightvnc]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.office :as office]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience :as convenience]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm.java :as java]))
+    [org.domaindrivenarchitecture.pallet.crate.managed-vm.java :as java]
+    [org.domaindrivenarchitecture.pallet.crate.managed-vm.test-vm :as test-vm]))
   
 (def facility :dda-managed-vm)
     
@@ -28,7 +42,8 @@
    (s/optional-key :tightvnc-server) {:user-password s/Str}
    (s/optional-key :settings) 
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice 
-                     :install-open-jdk-8 :install-xfce-desktop))
+                     :install-open-jdk-8 :install-xfce-desktop
+                     :install-linus-basics))
    })
 
 (s/defn init
@@ -45,6 +60,8 @@
       {:sudo-user "root"
        :script-dir "/root/"
        :script-env {:HOME (str "/root")}}
+      (when (contains? settings :install-linus-basics)
+        (basics/install-linus-basics))
       (when (contains? settings :install-xfce-desktop)
         (basics/install-xfce-desktop))
       (when (contains? settings :install-virtualbox-guest)
@@ -98,7 +115,13 @@
       (when (contains? config :tightvnc-server)
               (tightvnc/configure-user-tightvnc-server config))
       )))
-    
+ 
+(s/defmethod dda-crate/dda-settings facility 
+  [dda-crate config]
+  "dda managed vm: test routine"
+  (test-vm/collect-facts config) 
+ )
+
 (s/defmethod dda-crate/dda-init facility 
   [dda-crate config]
   "dda managed vm: init routine"
@@ -123,6 +146,12 @@
   "dda managed vm: configure routine"
   (configure-user config)
   (configure-system config)
+ )
+
+(s/defmethod dda-crate/dda-test facility 
+  [dda-crate config]
+  "dda managed vm: test routine"
+  (test-vm/test-vm config)
  )
 
 (def dda-vm-crate
