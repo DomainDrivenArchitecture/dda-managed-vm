@@ -15,68 +15,15 @@
 ; limitations under the License.
 (ns org.domaindrivenarchitecture.pallet.crate.managed-vm.instantiate-aws-init
   (:require
-    [clojure.edn :as edn]
-    [clojure.java.io :as io]
     [clojure.inspector :as inspector]
     [schema.core :as s]
     [pallet.api :as api]      
     [pallet.compute :as compute]
-    [pallet.compute.node-list :as node-list]
     [org.domaindrivenarchitecture.pallet.commons.encrypted-credentials :as crypto]
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
-    [org.domaindrivenarchitecture.pallet.crate.config.node :as node-record]
-    [org.domaindrivenarchitecture.pallet.crate.user.ssh-key :as ssh-key-record]
-    [org.domaindrivenarchitecture.pallet.crate.config :as config]
-    [org.domaindrivenarchitecture.pallet.crate.init :as init]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm :as managed-vm]
-    [org.domaindrivenarchitecture.pallet.convention.managed-vm :as convention]
-    [org.domaindrivenarchitecture.pallet.core.cli-helper :as cli-helper]
-    [org.domaindrivenarchitecture.pallet.crate.backup :as backup])
-  (:gen-class :main true))
+    [org.domaindrivenarchitecture.cm.operations :as operations]))
  
-(defn dda-read-file 
-  "reads a file if it exists"
-  [file-name]
-  (if (.exists (io/file file-name))
-    (slurp file-name)
-    nil))
-
-(def ssh-keys
-  {:my-key
-   (ssh-key-record/new-ssh-key
-     (dda-read-file (str (System/getenv "HOME") "/.ssh/id_rsa.pub")))
-   :matts-key 
-   (ssh-key-record/new-ssh-key 
-     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDQ/TFCz2q7cWrPqoWHDRUta0nO4qZin8AzB2Qmqq3jmS8rs7sFGOGcdgbL+/q8adEYOzVUHx6h6moKkwcrNsOj+Z/2LZxhxS/LVF9LICANaGsYK+30uSVCENYNGwG3fC+9imqiHs2+chRM2Nl9Q0qtAoOnUb22PDiKndYWG2tFrHK4bTQIf7zT8Y9DMdST/PohbvCAngc3ig7/YIWp+AeRegFgWq297EJrucEH8LyPWH9bja0zFM9Ywxt3hd0GQmPyuy2CxUoU1lvvX7IVo/3bK4DWrEETt04jA303uqOlqHwy4MGfkERLok21tkBeMJKV8rMrJBdmMmB+x6BlzbYtdz70Wu22M53nsJ9Ubr1ftyddnxceQfnmoEh3iqzt/ML09GDFxZO6ZDNKUqJdHGt+2lR1pSjehkRTtV6VWGdvxAyekg6sVam0LRyo7/SidbH5HjzYwAe3aaIAd/sepIyUOxxP3wd2GJl8jZy0czJUeqCFnxu5Fe6B2cYavYGyRZAq0mEduURbfjGhyQ6BmmOSMPCmLDOQbku0ugYFhxw/INNNaQE8kM/AmYE2ls4ZnpnO0hd9B6nR6J/jl4Xq080A4Sb1Yj6d7PLF5Fmk0/gmTMmQe2mG5QGXuLULUIVAbyTcFYlM1j1hPd1OrMutLIAiGcKsYntPKI0HjBQWRtjAtQ== matthew.r.lindsey@gmail.com")
-   })
-
-(def os-user
-  {:root   {:authorized-keys [:my-key :matts-key]}
-   :pallet {:authorized-keys [:my-key :matts-key]}
-   :vmuser {:encrypted-password "TMctxnmttcODk" ; pw=test
-            :authorized-keys [:my-key :matts-key]}
-   })
-
-(def meissa-vm
-  (node-record/new-node 
-    :host-name "my-vm" 
-    :domain-name "meissa-gmbh.de"
-    :additional-config 
-    {:dda-managed-vm 
-     (convention/meissa-convention {:ide-user :vmuser
-                                    :platform :aws})
-     :dda-backup 
-     (convention/default-vm-backup-config :vmuser)}
-    )
-  )
-
-(def config
-  {:ssh-keys ssh-keys
-   :os-user os-user
-   :group-specific-config {:managed-vm-group meissa-vm}
-   })
-
 (defn aws-node-spec []
   (api/node-spec
     :location {:location-id "eu-central-1a"
@@ -123,70 +70,18 @@
      :credential (get-in aws-decrypted-credentials [:secret])
      :endpoint "eu-central-1"
      :subnet-ids ["subnet-f929df91"]))))
-
-(defn managed-vm-group [count]
-  (api/group-spec
-    "managed-vm-group"
-    :extends [(config/with-config config) 
-              init/with-init 
-              managed-vm/with-dda-vm
-              ;backup/with-backup
-              ]
-    :node-spec (aws-node-spec)
-    :count count))
-
-(defn inspect-phase-plan []
-  (session-tools/inspect-mock-server-spec
-     managed-vm-group '(:settings :install)))
  
 (defn converge
-  ([count] 
-    (api/converge
-      (managed-vm-group count)
-      :compute (aws-provider)
-      :phase '(:settings :init :install :configure)
-      :user (api/make-user "ubuntu")))
+  ([count]
+    (operations/do-converge count (aws-provider) (aws-node-spec)))
   ([key-id key-passphrase count]
-    (let [session
-          (api/converge
-            (managed-vm-group count)
-            :compute (aws-provider key-id key-passphrase)
-            :phase '(:settings :init :install :configure)
-            :user (api/make-user "ubuntu"))
-          ]
-      session
-      )))
+    (operations/do-converge count (aws-provider key-id key-passphrase) (aws-node-spec)))
+  )
 
 (defn vm-test
-  ([count] 
-    (api/lift
-      (managed-vm-group count)
-      :compute (aws-provider)
-      :phase '(:settings :test)
-      :user (api/make-user "ubuntu")))
-  ([key-id key-passphrase count]
-    (let [session
-          (api/lift
-            (managed-vm-group count)
-            :compute (aws-provider key-id key-passphrase)
-            :phase '(:settings :test)
-            :user (api/make-user "ubuntu"))
-          ]
-      session
-      )))
-
-
-(def SessionResultsSpec
-  {:results [{:target {:hardware s/Any
-                       :count s/Num
-                       :image s/Any
-                       :location s/Any
-                       :provider s/Any
-                       :group-name s/Keyword}
-           :result '({:context s/Any
-                      :action-symbol s/Any
-                      :out s/Any
-                      :exit s/Any
-                      :summary s/Any})
-           :phase s/Any
-           }]})
+  ([] 
+    (operations/do-vm-test (aws-provider) (aws-node-spec)))
+  ([key-id key-passphrase]
+    (operations/do-vm-test (aws-provider key-id key-passphrase) (aws-node-spec)))
+  )
+ 

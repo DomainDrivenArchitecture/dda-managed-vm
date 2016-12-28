@@ -13,21 +13,34 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.test-vm
+(ns org.domaindrivenarchitecture.pallet.crate.managed-ide.instantiate-existing
   (:require
-    [schema.core :as s]
-    [org.domaindrivenarchitecture.pallet.servertest.fact.packages :as package-fact]
-    [org.domaindrivenarchitecture.pallet.servertest.test.packages :as package-test]
-    [org.domaindrivenarchitecture.pallet.servertest.fact.netstat :as netstat-fact]
-    [org.domaindrivenarchitecture.pallet.servertest.test.netstat :as netstat-test]))
+      [pallet.api :as api]      
+      [pallet.compute :as compute]
+      [pallet.compute.node-list :as node-list]
+      [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
+      [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
+      [org.domaindrivenarchitecture.cm.operations :as operations]))
 
-(defn collect-facts [config]
-  (netstat-fact/collect-netstat-fact)
-  (package-fact/collect-packages-fact)
+(def remote-node
+  (node-list/make-node 
+    "mmanaged-vm" 
+    "managed-vm-group" 
+    "35.156.245.56"
+    :ubuntu
+    :id :meissa-vm))
+
+(def provider
+  (compute/instantiate-provider
+    "node-list"
+    :node-list [remote-node]))
+
+(defn apply-config
+  ([]
+    (operations/do-apply provider))
   )
 
-(defn test-vm [config]
-  (netstat-test/test-prog-listen "Xtightvnc" 5901)
-  (package-test/test-installed? "xfce4")
+(defn vm-test
+  ([] 
+    (operations/do-vm-test provider))
   )
