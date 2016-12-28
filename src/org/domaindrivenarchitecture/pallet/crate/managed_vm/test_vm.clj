@@ -24,32 +24,16 @@
     [pallet.phase :as phase]
     [org.domaindrivenarchitecture.pallet.core.dda-crate :as dda-crate]
     [org.domaindrivenarchitecture.pallet.servertest.fact.packages :as package-fact]
+    [org.domaindrivenarchitecture.pallet.servertest.test.packages :as package-test]
     [org.domaindrivenarchitecture.pallet.servertest.fact.netstat :as netstat-fact]
     [org.domaindrivenarchitecture.pallet.servertest.test.netstat :as netstat-test]))
 
 (defn collect-facts [config]
-   (org.domaindrivenarchitecture.pallet.servertest.fact.netstat/collect-netstat-fact)
+  (netstat-fact/collect-netstat-fact)
+  (package-fact/collect-packages-fact)
   )
 
 (defn test-vm [config]
-  (let [facts (crate/get-settings :dda-servertest-fact {:instance-id (crate/target-node)})]      
-    (actions/as-action
-      (let [netstats-facts (-> facts netstat-fact/fact-id-netstat)
-            test-result (netstat-test/prog-listen? "Xtightvnc" 5901 (:out @netstats-facts))
-            input (:out @netstats-facts)
-            context (:context @netstats-facts)
-            action-symbol "test-netstat"
-            exit (if (-> test-result :test-passed) 0 -1)
-            summary (if (-> test-result :test-passed) "TEST PASSED" "TEST FAILED")
-            result {:context context
-                    :action-symbol action-symbol
-                    :input input
-                    :out (-> test-result :test-message)
-                    :exit exit 
-                    :summary summary}]
-        (println "--------------6--------------")
-        (println result)
-        result
-        )
-      )
-    ))
+  (netstat-test/test-prog-listen "Xtightvnc" 5901)
+  (package-test/test-installed? "xfce4")
+  )
