@@ -8,7 +8,7 @@
                  [com.palletops/stevedore "0.8.0-beta.7"]
                  [prismatic/schema "1.1.3"]
                  [com.palletops/git-crate "0.8.0-alpha.2" :exclusions [org.clojure/clojure]]
-                 [org.domaindrivenarchitecture/dda-pallet "0.2.1-SNAPSHOT"]
+                 [org.domaindrivenarchitecture/dda-pallet "0.3.0"]
                  [org.domaindrivenarchitecture/dda-pallet-commons "0.3.0"]
                  [org.domaindrivenarchitecture/dda-user-crate "0.3.5-SNAPSHOT"]
                  [org.domaindrivenarchitecture/dda-backup-crate "0.4.1-SNAPSHOT"]]

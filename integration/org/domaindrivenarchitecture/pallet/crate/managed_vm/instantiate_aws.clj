@@ -23,7 +23,7 @@
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
     [org.domaindrivenarchitecture.cm.group :as group]
-    [org.domaindrivenarchitecture.cm.operations :as operations]))
+    [org.domaindrivenarchitecture.cm.operation :as operation]))
  
 (defn aws-node-spec []
   (api/node-spec
@@ -74,15 +74,15 @@
  
 (defn converge-install
   ([count]
-    (operations/do-converge-install (group/managed-vm-group count (aws-node-spec)) (aws-provider)))
+    (operation/do-converge-install (aws-provider) (group/managed-vm-group count (aws-node-spec))))
   ([key-id key-passphrase count]
-    (operations/do-converge-install (group/managed-vm-group count (aws-node-spec)) (aws-provider key-id key-passphrase)))
+    (operation/do-converge-install (aws-provider key-id key-passphrase) (group/managed-vm-group count (aws-node-spec))))
   )
 
 (defn vm-test
   ([] 
-    (operations/do-vm-test (aws-provider) (group/managed-vm-group "ubuntu")))
+    (operation/do-vm-test (aws-provider) (group/managed-vm-group "ubuntu")))
   ([key-id key-passphrase]
-    (operations/do-vm-test (aws-provider key-id key-passphrase) (group/managed-vm-group "ubuntu")))
+    (operation/do-vm-test (aws-provider key-id key-passphrase) (group/managed-vm-group "ubuntu")))
   )
  
