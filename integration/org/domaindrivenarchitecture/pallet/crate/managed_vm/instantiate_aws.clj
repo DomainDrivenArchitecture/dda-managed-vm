@@ -13,7 +13,7 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.instantiate-aws-init
+(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.instantiate-aws
   (:require
     [clojure.inspector :as inspector]
     [schema.core :as s]
@@ -22,6 +22,7 @@
     [org.domaindrivenarchitecture.pallet.commons.encrypted-credentials :as crypto]
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
+    [org.domaindrivenarchitecture.cm.group :as group]
     [org.domaindrivenarchitecture.cm.operations :as operations]))
  
 (defn aws-node-spec []
@@ -71,17 +72,17 @@
      :endpoint "eu-central-1"
      :subnet-ids ["subnet-f929df91"]))))
  
-(defn converge
+(defn converge-install
   ([count]
-    (operations/do-converge count (aws-provider) (aws-node-spec)))
+    (operations/do-converge-install (group/managed-vm-group count (aws-node-spec)) (aws-provider)))
   ([key-id key-passphrase count]
-    (operations/do-converge count (aws-provider key-id key-passphrase) (aws-node-spec)))
+    (operations/do-converge-install (group/managed-vm-group count (aws-node-spec)) (aws-provider key-id key-passphrase)))
   )
 
 (defn vm-test
   ([] 
-    (operations/do-vm-test (aws-provider) (aws-node-spec)))
+    (operations/do-vm-test (aws-provider) (group/managed-vm-group "ubuntu")))
   ([key-id key-passphrase]
-    (operations/do-vm-test (aws-provider key-id key-passphrase) (aws-node-spec)))
+    (operations/do-vm-test (aws-provider key-id key-passphrase) (group/managed-vm-group "ubuntu")))
   )
  

@@ -23,14 +23,16 @@
     [org.domaindrivenarchitecture.cm.config :as vm-config]))
  
 (defn managed-vm-group 
-  ([]
+  ([login-user]
     (api/group-spec
       "managed-vm-group"
       :extends [(config/with-config vm-config/managed-vm-config) 
                 init/with-init 
                 managed-vm/with-dda-vm
                 ;backup/with-backup
-                ]))
+                ]
+      :node-spec {:image {:login-user login-user}}
+      ))
   ([count aws-node-spec]
     (api/group-spec
       "managed-vm-group"

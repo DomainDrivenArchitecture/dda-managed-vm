@@ -15,25 +15,17 @@
 ; limitations under the License.
 (ns main
   (:require 
-    [org.domaindrivenarchitecture.pallet.core.cli-helper :as cli-helper]
-    [org.domaindrivenarchitecture.pallet.crate.config :as config]
-    [org.domaindrivenarchitecture.pallet.crate.init :as init]
-    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm :as managed-vm]
-    [vm-config]
-    [pallet.api :as api]
+    [clojure.inspector :as inspector]
+    [pallet.api :as api]      
     [pallet.compute :as compute]
-    [pallet.compute.node-list :as node-list])
+    [pallet.compute.node-list :as node-list]
+    [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
+    [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
+    [org.domaindrivenarchitecture.cm.operation :as operation]
+    [org.domaindrivenarchitecture.cm.group :as group]
+    [org.domaindrivenarchitecture.cm.cli-helper :as cli-helper])
   (:gen-class :main true))
   
-(def managed-vm-group
-  (api/group-spec
-    "managed-vm-group"
-    :extends [(config/with-config vm-config/config) 
-              init/with-init
-              backup/with-backup
-              managed-vm/with-dda-vm]))
-
 (def localhost-node
   (node-list/make-localhost-node 
     :group-name "managed-vm-group" 
@@ -47,16 +39,22 @@
     :ubuntu
     :id :meissa-vm))
 
-(def node-list
+(def user (System/getenv "LOGNAME"))
+
+(def provider
   (compute/instantiate-provider
     "node-list" :node-list [localhost-node]))
+
+(defn install []
+  (operation/do-apply-install provider (group/managed-vm-group user)))
+  
+(defn configure []
+  (operation/do-apply-configure provider (group/managed-vm-group user)))
+
+(defn vm-test [] 
+  (operation/do-vm-test provider (group/managed-vm-group user)))
 
 (defn -main
   "CLI main"
   [& args]
-  (apply cli-helper/main 
-         :meissa-vm
-         managed-vm-group
-         node-list 
-         vm-config/config
-         args))
+  (apply cli-helper/main install configure vm-test args))

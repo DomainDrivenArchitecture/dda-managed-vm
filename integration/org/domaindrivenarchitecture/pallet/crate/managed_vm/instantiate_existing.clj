@@ -15,12 +15,14 @@
 ; limitations under the License.
 (ns org.domaindrivenarchitecture.pallet.crate.managed-ide.instantiate-existing
   (:require
-      [pallet.api :as api]      
-      [pallet.compute :as compute]
-      [pallet.compute.node-list :as node-list]
-      [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
-      [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
-      [org.domaindrivenarchitecture.cm.operations :as operations]))
+    [clojure.inspector :as inspector]
+    [pallet.api :as api]      
+    [pallet.compute :as compute]
+    [pallet.compute.node-list :as node-list]
+    [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
+    [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
+    [org.domaindrivenarchitecture.cm.group :as group]
+    [org.domaindrivenarchitecture.cm.operation :as operation]))
 
 (def remote-node
   (node-list/make-node 
@@ -35,12 +37,12 @@
     "node-list"
     :node-list [remote-node]))
 
-(defn apply-config
+(defn install
   ([]
-    (operations/do-apply provider))
+    (operation/do-apply-install provider (group/managed-vm-group "ubuntu")))
   )
 
 (defn vm-test
   ([] 
-    (operations/do-vm-test provider))
+    (operation/do-vm-test provider (group/managed-vm-group "ubuntu")))
   )

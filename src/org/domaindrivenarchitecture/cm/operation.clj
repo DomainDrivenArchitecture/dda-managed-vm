@@ -13,41 +13,45 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns org.domaindrivenarchitecture.cm.operations
+(ns org.domaindrivenarchitecture.cm.operation
   (:require
     [schema.core :as s]
-    [pallet.api :as api]      
-    [org.domaindrivenarchitecture.cm.group :as group]))
+    [pallet.api :as api]))
 
-(defn do-apply
-  ([provider]
+(defn do-apply-configure
+  ([provider group]
     (api/lift
-      (group/managed-vm-group)
+      group
       :compute provider
-      :phase '(:settings :init :install :configure)
-      :user (api/make-user "ubuntu")))
+      :phase '(:settings :configure)
+      :user (api/make-user (-> group :node-spec :image :login-user))))
     )
 
-(defn do-converge
-  ([count provider node-spec]
-    (api/converge
-      (group/managed-vm-group count node-spec)
+(defn do-apply-install
+  ([provider group]
+    (api/lift
+      group
       :compute provider
       :phase '(:settings :init :install :configure)
-      :user (api/make-user "ubuntu")))
+      :user (api/make-user (-> group :node-spec :image :login-user))))
     )
+
+(defn do-converge-install
+  ([provider group]
+    (api/converge
+      group
+      :compute provider
+      :phase '(:settings :init :install :configure)
+      :user (api/make-user (-> group :node-spec :image :login-user)))
+    )
+  )
 
 (defn do-vm-test
-  ([provider]
+  ([provider group]
     (api/lift
-      (group/managed-vm-group)
+      group
       :compute provider
       :phase '(:settings :test)
-      :user (api/make-user "ubuntu")))
-  ([provider node-spec]
-    (api/lift
-      (group/managed-vm-group count node-spec)
-      :compute provider
-      :phase '(:settings :test)
-      :user (api/make-user "ubuntu")))
+      :user (api/make-user (-> group :node-spec :image :login-user)))
+    )
   )
