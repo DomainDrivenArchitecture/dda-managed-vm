@@ -51,10 +51,10 @@
 (defn configure []
   (operation/do-apply-configure provider (group/managed-vm-group user)))
 
-(defn vm-test [] 
-  (operation/do-vm-test provider (group/managed-vm-group user)))
+(defn server-test [] 
+  (operation/do-server-test provider (group/managed-vm-group user)))
 
 (defn -main
   "CLI main"
   [& args]
-  (apply cli-helper/main install configure vm-test args))
+  (apply cli-helper/main install configure server-test args))

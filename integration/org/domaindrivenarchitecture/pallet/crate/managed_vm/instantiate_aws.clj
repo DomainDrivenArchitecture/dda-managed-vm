@@ -79,10 +79,10 @@
     (operation/do-converge-install (aws-provider key-id key-passphrase) (group/managed-vm-group count (aws-node-spec))))
   )
 
-(defn vm-test
+(defn server-test
   ([] 
-    (operation/do-vm-test (aws-provider) (group/managed-vm-group "ubuntu")))
+    (operation/do-server-test (aws-provider) (group/managed-vm-group "ubuntu")))
   ([key-id key-passphrase]
-    (operation/do-vm-test (aws-provider key-id key-passphrase) (group/managed-vm-group "ubuntu")))
+    (operation/do-server-test (aws-provider key-id key-passphrase) (group/managed-vm-group "ubuntu")))
   )
  

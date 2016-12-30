@@ -13,7 +13,7 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns org.domaindrivenarchitecture.pallet.crate.managed-ide.instantiate-existing
+(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.instantiate-existing
   (:require
     [clojure.inspector :as inspector]
     [pallet.api :as api]      
@@ -42,7 +42,7 @@
     (operation/do-apply-install provider (group/managed-vm-group "ubuntu")))
   )
 
-(defn vm-test
+(defn server-test
   ([] 
-    (operation/do-vm-test provider (group/managed-vm-group "ubuntu")))
+    (operation/do-server-test provider (group/managed-vm-group "ubuntu")))
   )

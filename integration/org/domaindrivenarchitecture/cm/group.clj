@@ -33,7 +33,7 @@
                 ]
       :node-spec {:image {:login-user login-user}}
       ))
-  ([count aws-node-spec]
+  ([count node-spec]
     (api/group-spec
       "managed-vm-group"
       :extends [(config/with-config vm-config/managed-vm-config) 
@@ -41,7 +41,7 @@
                 managed-vm/with-dda-vm
                 ;backup/with-backup
                 ]
-      :node-spec aws-node-spec
+      :node-spec node-spec
       :count count))
   )
  
