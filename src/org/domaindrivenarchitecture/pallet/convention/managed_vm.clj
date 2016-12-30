@@ -26,25 +26,27 @@
    :backup-user {:name "dataBackupSource"
                  :encrypted-passwd "WIwn6jIUt2Rbc"}})
 
-(defn default-vm-config
+(s/defn default-vm-config :- crate/DdaVmConfig
   "Managed vm crate default configuration"
-  [user-name]
-  {:ide-user user-name
-   :settings #{:install-virtualbox-guest :install-libreoffice 
-               :install-open-jdk-8}})
-
-(s/defn meissa-convention :- crate/DdaVmConfig
-  [convention-config :- DdaVmConventionConfig]
-  (let [platform (:platform convention-config)]
-    (map-utils/deep-merge 
-      {:ide-user (:ide-user convention-config)}
+  [user-name :- s/Str 
+   platform]
+  (map-utils/deep-merge 
+      {:ide-user user-name}
       (cond 
         (= platform :virtualbox) {:settings #{:install-virtualbox-guest 
                                           :install-libreoffice :install-open-jdk-8}}
         (= platform :aws) {:tightvnc-server {:user-password "test"}
                            :settings #{:install-xfce-desktop :install-tightvnc-server 
                             :install-libreoffice :install-open-jdk-8 :install-linus-basics}}
-        (= platform :other) {:settings #{:install-libreoffice :install-open-jdk-8}})        
-      ))
+        (= platform :other) {:settings #{:install-libreoffice :install-open-jdk-8}}
+        )        
+      )
   )
+
+(s/defn meissa-convention :- crate/DdaVmConfig
+  [convention-config :- DdaVmConventionConfig]
+  (let [user (:ide-user convention-config)
+        platform (:platform convention-config)]
+    (default-vm-config user platform)
+  ))
            
