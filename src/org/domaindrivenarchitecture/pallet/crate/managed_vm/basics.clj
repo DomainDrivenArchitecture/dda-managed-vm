@@ -28,6 +28,7 @@
 (defn install-linus-basics 
   "Install tools for linus."
   []
+  (actions/package "bash-completion")
   (actions/package "lsof")
   (actions/package "strace"))
 

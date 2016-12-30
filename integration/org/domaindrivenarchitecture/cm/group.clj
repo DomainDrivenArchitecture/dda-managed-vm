@@ -19,24 +19,23 @@
     [org.domaindrivenarchitecture.pallet.crate.init :as init]
     [org.domaindrivenarchitecture.pallet.crate.config :as config]
     [org.domaindrivenarchitecture.pallet.crate.managed-vm :as managed-vm]
-    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
-    [org.domaindrivenarchitecture.cm.config :as vm-config]))
+    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]))
  
 (defn managed-vm-group 
-  ([login-user]
+  ([login-user config]
     (api/group-spec
       "managed-vm-group"
-      :extends [(config/with-config vm-config/managed-vm-config) 
+      :extends [(config/with-config config) 
                 init/with-init 
                 managed-vm/with-dda-vm
                 ;backup/with-backup
                 ]
       :node-spec {:image {:login-user login-user}}
       ))
-  ([count node-spec]
+  ([count config node-spec]
     (api/group-spec
       "managed-vm-group"
-      :extends [(config/with-config vm-config/managed-vm-config) 
+      :extends [(config/with-config config) 
                 init/with-init 
                 managed-vm/with-dda-vm
                 ;backup/with-backup

@@ -22,6 +22,7 @@
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
     [org.domaindrivenarchitecture.cm.operation :as operation]
+    [org.domaindrivenarchitecture.cm.config :as vm-config]
     [org.domaindrivenarchitecture.cm.group :as group]
     [org.domaindrivenarchitecture.cm.cli-helper :as cli-helper])
   (:gen-class :main true))
@@ -46,13 +47,13 @@
     "node-list" :node-list [localhost-node]))
 
 (defn install []
-  (operation/do-apply-install provider (group/managed-vm-group user)))
+  (operation/do-apply-install provider (group/managed-vm-group vm-config/managed-vm-config user)))
   
 (defn configure []
-  (operation/do-apply-configure provider (group/managed-vm-group user)))
+  (operation/do-apply-configure provider (group/managed-vm-group vm-config/managed-vm-config user)))
 
 (defn server-test [] 
-  (operation/do-server-test provider (group/managed-vm-group user)))
+  (operation/do-server-test provider (group/managed-vm-group vm-config/managed-vm-config user)))
 
 (defn -main
   "CLI main"

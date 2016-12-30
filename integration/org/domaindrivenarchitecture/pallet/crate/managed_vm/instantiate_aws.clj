@@ -22,6 +22,7 @@
     [org.domaindrivenarchitecture.pallet.commons.encrypted-credentials :as crypto]
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
+    [org.domaindrivenarchitecture.cm.config :as vm-config]
     [org.domaindrivenarchitecture.cm.group :as group]
     [org.domaindrivenarchitecture.cm.operation :as operation]))
  
@@ -74,15 +75,15 @@
  
 (defn converge-install
   ([count]
-    (operation/do-converge-install (aws-provider) (group/managed-vm-group count (aws-node-spec))))
+    (operation/do-converge-install (aws-provider) (group/managed-vm-group count vm-config/managed-vm-config (aws-node-spec))))
   ([key-id key-passphrase count]
-    (operation/do-converge-install (aws-provider key-id key-passphrase) (group/managed-vm-group count (aws-node-spec))))
+    (operation/do-converge-install (aws-provider key-id key-passphrase) (group/managed-vm-group count vm-config/managed-vm-config (aws-node-spec))))
   )
 
 (defn server-test
   ([] 
-    (operation/do-server-test (aws-provider) (group/managed-vm-group "ubuntu")))
+    (operation/do-server-test (aws-provider) (group/managed-vm-group vm-config/managed-vm-config "ubuntu")))
   ([key-id key-passphrase]
-    (operation/do-server-test (aws-provider key-id key-passphrase) (group/managed-vm-group "ubuntu")))
+    (operation/do-server-test (aws-provider key-id key-passphrase) (group/managed-vm-group vm-config/managed-vm-config "ubuntu")))
   )
  
