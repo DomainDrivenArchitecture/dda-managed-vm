@@ -11,7 +11,7 @@
 (def DdaVmConventionConfig
   "The convention configuration for managed vms crate." 
   {:ide-user s/Keyword
-   :platform (s/enum :virtualbox :aws :other)})
+   :platform (s/enum :virtualbox :aws)})
 
 (defn default-vm-backup-config
   "Managed vm crate default configuration"
@@ -37,8 +37,7 @@
                                           :install-libreoffice :install-open-jdk-8}}
         (= platform :aws) {:tightvnc-server {:user-password "test"}
                            :settings #{:install-xfce-desktop :install-tightvnc-server 
-                            :install-libreoffice :install-open-jdk-8 :install-linus-basics}}
-        (= platform :other) {:settings #{:install-libreoffice :install-open-jdk-8}}
+                            :install-open-jdk-8 :install-linus-basics}}
         )        
       )
   )
