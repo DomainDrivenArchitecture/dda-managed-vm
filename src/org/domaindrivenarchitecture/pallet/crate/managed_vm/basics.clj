@@ -31,15 +31,3 @@
   (actions/package "bash-completion")
   (actions/package "lsof")
   (actions/package "strace"))
-
-(defn workaround-user-ownership
-  "files in /home/user are created by root but should be owned by user"
-  [os-user-name]
-  (actions/exec
-       {:language :bash}
-       (stevedore/script
-         (str 
-         "chown -R " ~os-user-name ":" ~os-user-name " /home/" ~os-user-name "/.anacron\n"
-         "chown -R " ~os-user-name ":" ~os-user-name " /home/" ~os-user-name "/.config\n"
-         "chown -R " ~os-user-name ":" ~os-user-name " /home/" ~os-user-name "/.ssh\n"))))
-
