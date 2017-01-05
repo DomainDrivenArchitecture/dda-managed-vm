@@ -34,10 +34,10 @@
       {:ide-user user-name}
       (cond 
         (= platform :virtualbox) {:settings #{:install-virtualbox-guest 
-                                          :install-libreoffice :install-open-jdk-8}}
+                                          :install-libreoffice :install-open-jdk-8 :install-linus-basics :install-git}}
         (= platform :aws) {:tightvnc-server {:user-password "test"}
                            :settings #{:install-xfce-desktop :install-tightvnc-server 
-                            :install-open-jdk-8 :install-linus-basics}}
+                            :install-open-jdk-8 :install-linus-basics :install-git}}
         )        
       )
   )

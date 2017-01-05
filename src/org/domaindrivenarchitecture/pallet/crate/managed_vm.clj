@@ -43,7 +43,7 @@
    (s/optional-key :settings) 
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice 
                      :install-open-jdk-8 :install-xfce-desktop
-                     :install-linus-basics))
+                     :install-linus-basics :install-git))
    })
 
 (s/defn init
@@ -60,6 +60,8 @@
       {:sudo-user "root"
        :script-dir "/root/"
        :script-env {:HOME (str "/root")}}
+      (when (contains? settings :install-git)
+        (basics/install-git))
       (when (contains? settings :install-linus-basics)
         (basics/install-linus-basics))
       (when (contains? settings :install-xfce-desktop)
@@ -101,6 +103,8 @@
        :script-env {:HOME (str "/root")}}
       (when (contains? config :tightvnc-server)
               (tightvnc/configure-system-tightvnc-server config))
+      (when (contains? settings :install-virtualbox-guest)
+        (basics/configure-virtualbox-guest-additions config))
       )))
 
 (s/defn configure-user
