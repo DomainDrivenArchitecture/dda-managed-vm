@@ -22,15 +22,15 @@
     [org.domaindrivenarchitecture.pallet.crate.managed-vm :as sut]))
 
 (def example-configuration 
-  {:ide-user :test})
+  {:vm-user :test})
 
 (def example-hashset-configuration
-  {:ide-user :test
+  {:vm-user :test
    :settings (hash-set :install-virtualbox-guest :failure)
    })
 
 (def example-hashset-configuration2
-  {:ide-user :test
+  {:vm-user :test
    :settings (hash-set :install-virtualbox-guest :install-libreoffice :install-open-jdk-8)
    })
 

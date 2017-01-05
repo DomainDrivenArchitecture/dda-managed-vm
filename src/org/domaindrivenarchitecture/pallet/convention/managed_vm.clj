@@ -10,7 +10,7 @@
 
 (def DdaVmConventionConfig
   "The convention configuration for managed vms crate." 
-  {:ide-user s/Keyword
+  {:vm-user s/Keyword
    :platform (s/enum :virtualbox :aws)})
 
 (defn default-vm-backup-config
@@ -31,7 +31,7 @@
   [user-name :- s/Str 
    platform]
   (map-utils/deep-merge 
-      {:ide-user user-name}
+      {:vm-user user-name}
       (cond 
         (= platform :virtualbox) {:settings #{:install-virtualbox-guest 
                                           :install-libreoffice :install-open-jdk-8 :install-linus-basics :install-git}}
@@ -44,7 +44,7 @@
 
 (s/defn meissa-convention :- crate/DdaVmConfig
   [convention-config :- DdaVmConventionConfig]
-  (let [user (:ide-user convention-config)
+  (let [user (:vm-user convention-config)
         platform (:platform convention-config)]
     (default-vm-config user platform)
   ))

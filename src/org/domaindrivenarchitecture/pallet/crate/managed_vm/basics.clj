@@ -23,7 +23,7 @@
 (defn configure-virtualbox-guest-additions
   "configures virtual-box guest additions"
   [config]
-  (let [os-user-name (name (-> config :ide-user))]
+  (let [os-user-name (name (-> config :vm-user))]
     (actions/exec-script ("usermod" "-G vboxsf" (str "-a " ~os-user-name)))
     ))
 

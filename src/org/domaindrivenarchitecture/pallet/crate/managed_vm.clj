@@ -37,7 +37,7 @@
     
 (def DdaVmConfig
   "The configuration for managed vms crate." 
-  {:ide-user s/Keyword
+  {:vm-user s/Keyword
    (s/optional-key :bookmarks-download-url) s/Str
    (s/optional-key :tightvnc-server) {:user-password s/Str}
    (s/optional-key :settings) 
@@ -54,12 +54,15 @@
 
 (s/defn install-system
   "install common used packages for vm"
-  [config :- DdaVmConfig]
-  (let [settings (-> config :settings)]
+  [config :- DdaVmConfig
+   global-config]
+  (let [settings (-> config :settings)
+        user-key (:vm-user config)]
     (pallet.action/with-action-options 
       {:sudo-user "root"
        :script-dir "/root/"
        :script-env {:HOME (str "/root")}}
+      (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
       (when (contains? settings :install-git)
         (basics/install-git))
       (when (contains? settings :install-linus-basics)
@@ -79,7 +82,7 @@
 (s/defn install-user
   "install the user space peaces in vm"
   [config :- DdaVmConfig]
-  (let [os-user-name (name (-> config :ide-user))
+  (let [os-user-name (name (-> config :vm-user))
         settings (-> config :settings)]
     (pallet.action/with-action-options 
       {:sudo-user os-user-name
@@ -95,7 +98,7 @@
 (s/defn configure-system
   "install the user space peaces in vm"
   [config :- DdaVmConfig]
-  (let [os-user-name (name (-> config :ide-user))
+  (let [os-user-name (name (-> config :vm-user))
         settings (-> config :settings)]
     (pallet.action/with-action-options 
       {:sudo-user "root"
@@ -119,6 +122,11 @@
       (when (contains? config :tightvnc-server)
               (tightvnc/configure-user-tightvnc-server config))
       )))
+
+(s/defn vm-test
+  "test vm"
+  [config :- DdaVmConfig]
+  (test-vm/test-vm config))
  
 (s/defmethod dda-crate/dda-settings facility 
   [dda-crate config]
@@ -135,14 +143,8 @@
 (s/defmethod dda-crate/dda-install facility 
   [dda-crate config]
   "dda managed vm: install routine"
-  (let [user-key (:ide-user config)
-        user-name (name user-key)
-        app-name (name (:facility dda-crate))
-        global-config (config/get-global-config)
-        git-user-name (:git-user-name config)
-        bookmarks-download-url (:bookmarks-download-url config)]
-    (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
-    (install-system config)
+  (let [global-config (config/get-global-config)]
+    (install-system config global-config)
     (install-user config)))
 
 (s/defmethod dda-crate/dda-configure facility 
@@ -155,7 +157,7 @@
 (s/defmethod dda-crate/dda-test facility 
   [dda-crate config]
   "dda managed vm: test routine"
-  (test-vm/test-vm config)
+  (vm-test config)
  )
 
 (def dda-vm-crate

@@ -52,7 +52,7 @@
     :domain-name "meissa-gmbh.de"
     :additional-config 
     {:dda-managed-vm 
-     (convention/meissa-convention {:ide-user :vmuser
+     (convention/meissa-convention {:vm-user :vmuser
                                     :platform :aws})
      :dda-backup 
      (convention/default-vm-backup-config :vmuser)}
