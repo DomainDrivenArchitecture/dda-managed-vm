@@ -21,7 +21,9 @@
              {:aot :all
               :main main}
              :dev
-             {:dependencies
+             {:source-paths ["integration"]
+              :resource-paths ["dev-resources"]
+              :dependencies
               [[org.clojure/test.check "0.9.0"]
                [com.palletops/pallet "0.8.12" :classifier "tests"]
                [org.domaindrivenarchitecture/dda-pallet-commons "0.3.0" :classifier "tests"]

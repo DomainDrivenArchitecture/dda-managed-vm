@@ -113,7 +113,7 @@
 (s/defn configure-user
   "install the user space peaces in vm"
   [config :- DdaVmConfig]
-  (let [os-user-name (name (-> config :ide-user))
+  (let [os-user-name (name (-> config :vm-user))
         settings (-> config :settings)]
     (pallet.action/with-action-options 
       {:sudo-user os-user-name

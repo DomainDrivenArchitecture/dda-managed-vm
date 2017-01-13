@@ -36,13 +36,12 @@
         (= platform :virtualbox) {:settings #{:install-virtualbox-guest 
                                           :install-libreoffice :install-open-jdk-8 :install-linus-basics :install-git}}
         (= platform :aws) {:tightvnc-server {:user-password "test"}
-                           :settings #{:install-xfce-desktop :install-tightvnc-server 
-                            :install-open-jdk-8 :install-linus-basics :install-git}}
+                           :settings #{:install-xfce-desktop :install-open-jdk-8 :install-linus-basics :install-git}}
         )        
       )
   )
 
-(s/defn meissa-convention :- crate/DdaVmConfig
+(s/defn ^:always-validate meissa-convention :- crate/DdaVmConfig
   [convention-config :- DdaVmConventionConfig]
   (let [user (:vm-user convention-config)
         platform (:platform convention-config)]
