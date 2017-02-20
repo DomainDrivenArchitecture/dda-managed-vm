@@ -41,9 +41,27 @@
       :literal true
       :content (util/create-file-content 
                  ["#!/bin/bash"
+                  "source /etc/profile"
                   "xrdb $HOME/.Xresources"
-                  "startxfce4 &"]))
+                  "startxfce4 &"
+                  "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))
     (set-user-password os-user password)
+    ))
+
+(defn install-user-vnc-tab-workaround
+  "Install a small script to fix tab issue on vnc."
+  [config]
+  (let [os-user (name (-> config :vm-user))
+        script-path (str "/home/" os-user "/vnc-tab-workaround.sh")]
+    (actions/remote-file 
+      script-path
+      :owner os-user 
+      :group os-user 
+      :mode "0700" 
+      :literal true
+      :content (util/create-file-content 
+                 ["#!/bin/bash"
+                  "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))
     ))
 
 (defn configure-system-tightvnc-server

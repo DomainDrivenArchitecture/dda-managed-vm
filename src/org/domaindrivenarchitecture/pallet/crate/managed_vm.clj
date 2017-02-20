@@ -91,7 +91,8 @@
       (when (contains? config :bookmarks-download-url)
         (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url)))
       (when (contains? config :tightvnc-server)
-        (tightvnc/install-user-tightvnc-server config))
+        (tightvnc/install-user-tightvnc-server config)
+        (tightvnc/install-user-vnc-tab-workaround config))
       ))
   )
 
