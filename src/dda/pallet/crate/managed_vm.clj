@@ -14,7 +14,7 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm
+(ns dda.pallet.crate.managed-vm
   (:require
     [pallet.api :as api]
     [schema.core :as s]
@@ -26,12 +26,12 @@
     [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]
     [org.domaindrivenarchitecture.pallet.crate.user :as user]
     [org.domaindrivenarchitecture.pallet.crate.user.os-user :as os-user]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm.basics :as basics]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm.tightvnc :as tightvnc]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm.office :as office]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience :as convenience]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm.java :as java]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm.test-vm :as test-vm]))
+    [dda.pallet.crate.managed-vm.basics :as basics]
+    [dda.pallet.crate.managed-vm.tightvnc :as tightvnc]
+    [dda.pallet.crate.managed-vm.office :as office]
+    [dda.pallet.crate.managed-vm.convenience :as convenience]
+    [dda.pallet.crate.managed-vm.java :as java]
+    [dda.pallet.crate.managed-vm.test-vm :as test-vm]))
   
 (def facility :dda-managed-vm)
     

@@ -13,7 +13,7 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.instantiate-aws
+(ns dda.pallet.crate.managed-vm.instantiate-aws
   (:require
     [clojure.inspector :as inspector]
     [schema.core :as s]
@@ -22,9 +22,9 @@
     [org.domaindrivenarchitecture.pallet.commons.encrypted-credentials :as crypto]
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
-    [org.domaindrivenarchitecture.cm.config :as vm-config]
-    [org.domaindrivenarchitecture.cm.group :as group]
-    [org.domaindrivenarchitecture.cm.operation :as operation]))
+    [org.domaindrivenarchitecture.cm.operation :as operation]
+    [dda.pallet.domain.managed-vm.config :as vm-config]
+    [dda.pallet.domain.managed-vm.group :as group]))
  
 (defn aws-node-spec []
   (api/node-spec

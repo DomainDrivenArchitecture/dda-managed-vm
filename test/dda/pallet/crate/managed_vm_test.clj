@@ -15,11 +15,11 @@
 ; limitations under the License.
 
 
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm-test
+(ns dda.pallet.crate.managed-vm-test
   (:require
     [clojure.test :refer :all]
     [schema.core :as s]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm :as sut]))
+    [dda.pallet.crate.managed-vm :as sut]))
 
 (def example-configuration 
   {:vm-user :test})

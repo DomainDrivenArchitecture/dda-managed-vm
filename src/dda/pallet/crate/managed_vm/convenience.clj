@@ -1,7 +1,7 @@
 ; Copyright (c) meissa GmbH. All rights reserved.
 ; You must not remove this notice, or any other, from this software.
 
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.convenience
+(ns dda.pallet.crate.managed-vm.convenience
   (:require
     [pallet.actions :as actions]
     ))

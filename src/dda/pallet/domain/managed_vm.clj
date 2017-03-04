@@ -1,12 +1,12 @@
 ; Copyright (c) meissa GmbH. All rights reserved.
 ; You must not remove this notice, or any other, from this software.
 
-(ns org.domaindrivenarchitecture.pallet.convention.managed-vm
+(ns dda.pallet.domain.managed-vm
   (:require
     [schema.core :as s]
     [org.domaindrivenarchitecture.config.commons.map-utils :as map-utils]
     [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm :as crate]))
+    [dda.pallet.crate.managed-vm :as crate]))
 
 (def DdaVmConventionConfig
   "The convention configuration for managed vms crate." 
