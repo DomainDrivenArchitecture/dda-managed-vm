@@ -13,37 +13,50 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.instantiate-existing
-  (:require
+(ns main
+  (:require 
     [clojure.inspector :as inspector]
     [pallet.api :as api]      
     [pallet.compute :as compute]
     [pallet.compute.node-list :as node-list]
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
-    [org.domaindrivenarchitecture.cm.config :as vm-config]
-    [org.domaindrivenarchitecture.cm.group :as group]
-    [org.domaindrivenarchitecture.cm.operation :as operation]))
+    [org.domaindrivenarchitecture.cm.operation :as operation]
+    [org.domaindrivenarchitecture.cm.cli-helper :as cli-helper]
+    [dda.pallet.domain.managed-vm.config :as vm-config]
+    [dda.pallet.domain.managed-vm.group :as group]
+    )
+  (:gen-class :main true))
+  
+(def localhost-node
+  (node-list/make-localhost-node 
+    :group-name "managed-vm-group" 
+    :id :meissa-vm))
 
 (def remote-node
   (node-list/make-node 
-    "mmanaged-vm" 
+    "meissa-vm" 
     "managed-vm-group" 
-    "35.156.245.56"
+    "10.0.2.11"
     :ubuntu
     :id :meissa-vm))
 
+(def user (System/getenv "LOGNAME"))
+
 (def provider
   (compute/instantiate-provider
-    "node-list"
-    :node-list [remote-node]))
+    "node-list" :node-list [localhost-node]))
 
-(defn install
-  ([]
-    (operation/do-apply-install provider (group/managed-vm-group "initial" vm-config/managed-vm-config)))
-  )
+(defn install []
+  (operation/do-apply-install provider (group/managed-vm-group vm-config/managed-vm-config user)))
+  
+(defn configure []
+  (operation/do-apply-configure provider (group/managed-vm-group vm-config/managed-vm-config user)))
 
-(defn server-test
-  ([] 
-    (operation/do-server-test provider (group/managed-vm-group "vmuser" vm-config/managed-vm-config)))
-  )
+(defn server-test [] 
+  (operation/do-server-test provider (group/managed-vm-group vm-config/managed-vm-config user)))
+
+(defn -main
+  "CLI main"
+  [& args]
+  (apply cli-helper/main install configure server-test args))

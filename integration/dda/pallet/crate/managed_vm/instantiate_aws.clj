@@ -13,43 +13,43 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.instantiate-aws
+(ns dda.pallet.crate.managed-vm.instantiate-aws
   (:require
     [clojure.inspector :as inspector]
     [schema.core :as s]
-    [pallet.api :as api]      
+    [pallet.api :as api]
     [pallet.compute :as compute]
     [org.domaindrivenarchitecture.pallet.commons.encrypted-credentials :as crypto]
     [org.domaindrivenarchitecture.pallet.commons.session-tools :as session-tools]
     [org.domaindrivenarchitecture.pallet.commons.pallet-schema :as ps]
-    [org.domaindrivenarchitecture.cm.config :as vm-config]
-    [org.domaindrivenarchitecture.cm.group :as group]
-    [org.domaindrivenarchitecture.cm.operation :as operation]))
- 
+    [org.domaindrivenarchitecture.cm.operation :as operation]
+    [dda.pallet.domain.managed-vm.config :as vm-config]
+    [dda.pallet.domain.managed-vm.group :as group]))
+
 (defn aws-node-spec []
   (api/node-spec
     :location {:location-id "eu-central-1a"
                ;:location-id "eu-west-1b"
                ;:location-id "us-east-1a"
                }
-    :image {:os-family :ubuntu 
-            ;eu-central-1 16-04 LTS hvm 
+    :image {:os-family :ubuntu
+            ;eu-central-1 16-04 LTS hvm
             :image-id "ami-82cf0aed"
             ;eu-west1 16-04 LTS hvm :image-id "ami-07174474"
             ;us-east-1 16-04 LTS hvm :image-id "ami-45b69e52"
             :os-version "16.04"
             :login-user "ubuntu"}
     :hardware {:hardware-id "t2.micro"}
-    :provider {:pallet-ec2 {:key-name "jem"               
+    :provider {:pallet-ec2 {:key-name "jem"
                             :network-interfaces [{:device-index 0
                                                   :groups ["sg-0606b16e"]
                                                   :subnet-id "subnet-f929df91"
                                                   :associate-public-ip-address true
                                                   :delete-on-termination true}]}}))
 
-(defn aws-provider 
+(defn aws-provider
   ([]
-  (let 
+  (let
     [aws-decrypted-credentials (get-in (pallet.configure/pallet-config) [:services :aws])]
     (compute/instantiate-provider
      :pallet-ec2
@@ -58,7 +58,7 @@
      :endpoint "eu-central-1"
      :subnet-ids ["subnet-f929df91"])))
   ([key-id key-passphrase]
-  (let 
+  (let
     [aws-encrypted-credentials (get-in (pallet.configure/pallet-config) [:services :aws])
      aws-decrypted-credentials (crypto/decrypt
                                  (crypto/get-secret-key
@@ -72,7 +72,7 @@
      :credential (get-in aws-decrypted-credentials [:secret])
      :endpoint "eu-central-1"
      :subnet-ids ["subnet-f929df91"]))))
- 
+
 (defn converge-install
   ([count]
     (operation/do-converge-install (aws-provider) (group/managed-vm-group count vm-config/managed-vm-config (aws-node-spec))))
@@ -81,9 +81,8 @@
   )
 
 (defn server-test
-  ([] 
+  ([]
     (operation/do-server-test (aws-provider) (group/managed-vm-group vm-config/managed-vm-config "ubuntu")))
   ([key-id key-passphrase]
     (operation/do-server-test (aws-provider key-id key-passphrase) (group/managed-vm-group vm-config/managed-vm-config "ubuntu")))
   )
- 

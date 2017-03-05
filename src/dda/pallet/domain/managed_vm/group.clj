@@ -13,12 +13,12 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns org.domaindrivenarchitecture.cm.group
+(ns dda.pallet.domain.managed-vm.group
   (:require
     [pallet.api :as api]      
     [org.domaindrivenarchitecture.pallet.crate.init :as init]
     [org.domaindrivenarchitecture.pallet.crate.config :as config]
-    [org.domaindrivenarchitecture.pallet.crate.managed-vm :as managed-vm]
+    [dda.pallet.crate.managed-vm :as managed-vm]
     [org.domaindrivenarchitecture.pallet.crate.backup :as backup]))
  
 (defn managed-vm-group 

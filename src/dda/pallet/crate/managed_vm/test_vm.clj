@@ -14,7 +14,7 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-(ns org.domaindrivenarchitecture.pallet.crate.managed-vm.test-vm
+(ns dda.pallet.crate.managed-vm.test-vm
   (:require
     [schema.core :as s]
     [org.domaindrivenarchitecture.pallet.servertest.fact.packages :as package-fact]
