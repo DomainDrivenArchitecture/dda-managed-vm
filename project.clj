@@ -1,4 +1,4 @@
-(defproject org.domaindrivenarchitecture/dda-managed-vm "0.2.0"
+(defproject org.domaindrivenarchitecture/dda-managed-vm "0.2.1-SNAPSHOT"
   :description "The managed vm desktop crate"
   :url "https://www.domaindrivenarchitecture.org"
   :license {:name "Apache License, Version 2.0"
@@ -10,9 +10,9 @@
                  [com.palletops/git-crate "0.8.0-alpha.2" :exclusions [org.clojure/clojure]]
                  [org.domaindrivenarchitecture/dda-pallet "0.3.1"]
                  [org.domaindrivenarchitecture/dda-pallet-commons "0.3.0"]
-                 [org.domaindrivenarchitecture/dda-user-crate "0.3.5-SNAPSHOT"]
-                 [org.domaindrivenarchitecture/dda-init-crate "0.2.1-SNAPSHOT"]
-                 [org.domaindrivenarchitecture/dda-backup-crate "0.4.1-SNAPSHOT"]]
+                 [org.domaindrivenarchitecture/dda-user-crate "0.3.5"]
+                 [org.domaindrivenarchitecture/dda-init-crate "0.2.1"]
+                 [org.domaindrivenarchitecture/dda-backup-crate "0.4.1"]]
   :repositories [["snapshots" :clojars]
                   ["releases" :clojars]]
   :deploy-repositories [["snapshots" :clojars]
@@ -25,9 +25,9 @@
               :resource-paths ["dev-resources"]
               :dependencies
               [[org.clojure/test.check "0.9.0"]
+               [org.domaindrivenarchitecture/pallet-aws "0.2.8.2"]
                [com.palletops/pallet "0.8.12" :classifier "tests"]
                [org.domaindrivenarchitecture/dda-pallet-commons "0.3.0" :classifier "tests"]
-               [org.domaindrivenarchitecture/pallet-aws "0.2.8-SNAPSHOT"]
                [ch.qos.logback/logback-classic "1.2.1"]
                [org.slf4j/jcl-over-slf4j "1.7.24"]]
               :plugins
