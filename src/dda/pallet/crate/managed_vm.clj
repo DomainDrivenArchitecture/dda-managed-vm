@@ -62,20 +62,36 @@
       {:sudo-user "root"
        :script-dir "/root/"
        :script-env {:HOME (str "/root")}}
+      (actions/as-action
+          (logging/info (str facility "-install system: create user " user-key)))
       (user/create-sudo-user (os-user/new-os-user-from-config user-key global-config))
       (when (contains? settings :install-git)
+        (actions/as-action
+          (logging/info (str facility "-install system: git")))
         (basics/install-git))
       (when (contains? settings :install-linus-basics)
+        (actions/as-action
+          (logging/info (str facility "-install system: linus tools")))
         (basics/install-linus-basics))
       (when (contains? settings :install-xfce-desktop)
+        (actions/as-action
+          (logging/info (str facility "-install system: xfce")))
         (basics/install-xfce-desktop))
       (when (contains? settings :install-virtualbox-guest)
+        (actions/as-action
+          (logging/info (str facility "-install system: virtualbox-guest")))
         (basics/install-virtualbox-guest-additions))
       (when (contains? config :tightvnc-server)
+        (actions/as-action
+          (logging/info (str facility "-install system: tightvnc")))
         (tightvnc/install-system-tightvnc-server config))
       (when (contains? settings :install-libreoffice)
+        (actions/as-action
+          (logging/info (str facility "-install system: libreoffice")))
         (office/install-libreoffice))
       (when (contains? settings :install-open-jdk-8)
+        (actions/as-action
+          (logging/info (str facility "-install system: openjdk")))
         (java/install-open-jdk-8))
       )))
 
@@ -89,8 +105,12 @@
        :script-dir (str "/home/" os-user-name "/")
        :script-env {:HOME (str "/home/" os-user-name "/")}}
       (when (contains? config :bookmarks-download-url)
+        (actions/as-action
+          (logging/info (str facility "-install user: bookmarks")))
         (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url)))
       (when (contains? config :tightvnc-server)
+        (actions/as-action
+          (logging/info (str facility "-install user: tightvnc")))
         (tightvnc/install-user-tightvnc-server config)
         (tightvnc/install-user-vnc-tab-workaround config))
       ))
@@ -106,8 +126,12 @@
        :script-dir "/root/"
        :script-env {:HOME (str "/root")}}
       (when (contains? config :tightvnc-server)
-              (tightvnc/configure-system-tightvnc-server config))
+        (actions/as-action
+          (logging/info (str facility "-configure system: tightvnc")))
+        (tightvnc/configure-system-tightvnc-server config))
       (when (contains? settings :install-virtualbox-guest)
+        (actions/as-action
+          (logging/info (str facility "-configure system: tightvnc")))
         (basics/configure-virtualbox-guest-additions config))
       )))
 
@@ -121,7 +145,9 @@
        :script-dir (str "/home/" os-user-name "/")
        :script-env {:HOME (str "/home/" os-user-name "/")}}
       (when (contains? config :tightvnc-server)
-              (tightvnc/configure-user-tightvnc-server config))
+        (actions/as-action
+          (logging/info (str facility "-configure user: tightvnc")))
+        (tightvnc/configure-user-tightvnc-server config))
       )))
 
 (s/defn vm-test
