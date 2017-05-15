@@ -8,9 +8,7 @@
     [pallet.stevedore :as stevedore]
     [pallet.crate.git :as git]
     [org.domaindrivenarchitecture.pallet.crate.util :as util]
-    [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]
-    ))
-
+    [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]))
 
 
 (defn install-virtualbox-guest-additions
@@ -24,22 +22,23 @@
   "configures virtual-box guest additions"
   [config]
   (let [os-user-name (name (-> config :vm-user))]
-    (actions/exec-script ("usermod" "-G vboxsf" (str "-a " ~os-user-name)))
-    ))
+    (actions/exec-script ("usermod" "-G vboxsf" (str "-a " ~os-user-name)))))
 
-(defn install-xfce-desktop 
+
+(defn install-xfce-desktop
   "Install the xubuntu desktop."
   []
   (actions/package "xfce4")
   (actions/package "xfce4-goodies"))
 
-(defn install-linus-basics 
+(defn install-linus-basics
   "Install tools for linus."
   []
   (actions/package "bash-completion")
   (actions/package "lsof")
   (actions/package "strace"))
 
+;TODO: remove after factoring git out
 (defn install-git
   "installs the git package"
   []
