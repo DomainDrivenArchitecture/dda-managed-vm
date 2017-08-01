@@ -1,21 +1,21 @@
 ; Copyright (c) meissa GmbH. All rights reserved.
 ; You must not remove this notice, or any other, from this software.
 
-(ns dda.pallet.crate.managed-vm.office
+(ns dda.pallet.dda-managed-vm.infra.office
   (:require
     [schema.core :as s]
     [pallet.actions :as actions]
     [pallet.stevedore :as stevedore]
     [org.domaindrivenarchitecture.pallet.crate.util :as util]
-    [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]
-    ))
+    [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]))
 
-(defn install-libreoffice 
+
+(defn install-libreoffice
   []
   (actions/package "hyphen-de")
   (actions/package "hunspell-de-de")
-  (actions/package "libreoffice")
-  )
+  (actions/package "libreoffice"))
+
 
 ; Install keepassx on ubuntu 14.04
 ;
@@ -23,7 +23,7 @@
 ; apt-get update
 ; apt-get install keepassx
 ; https://chrome.google.com/webstore/detail/chromeipass/ompiailgknfdndiefoaoiligalphfdae?hl=en-US
-; https://addons.mozilla.org/DE/firefox/addon/keefox/?src=search or 
+; https://addons.mozilla.org/DE/firefox/addon/keefox/?src=search or
 ; https://addons.mozilla.org/DE/firefox/addon/passifox/?src=search
 ;
 ; open: do a security risk & trust check

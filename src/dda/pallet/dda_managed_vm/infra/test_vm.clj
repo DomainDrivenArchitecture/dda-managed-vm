@@ -14,39 +14,19 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-
-(ns dda.pallet.crate.managed-vm-test
+(ns dda.pallet.dda-managed-vm.infra.test-vm
   (:require
-    [clojure.test :refer :all]
     [schema.core :as s]
-    [dda.pallet.crate.managed-vm :as sut]))
+    [dda.pallet.dda-serverspec-crate.infra.fact.packages :as package-fact]
+    [dda.pallet.dda-serverspec-crate.infra.test.packages :as package-test]
+    [dda.pallet.dda-serverspec-crate.infra.fact.netstat :as netstat-fact]
+    [dda.pallet.dda-serverspec-crate.infra.test.netstat :as netstat-test]))
 
-(def example-configuration 
-  {:vm-user :test})
-
-(def example-hashset-configuration
-  {:vm-user :test
-   :settings (hash-set :install-virtualbox-guest :failure)
-   })
-
-(def example-hashset-configuration2
-  {:vm-user :test
-   :settings (hash-set :install-virtualbox-guest :install-libreoffice :install-open-jdk-8)
-   })
+(defn collect-facts [config]
+  (netstat-fact/collect-netstat-fact)
+  (package-fact/collect-packages-fact))
 
 
- 
-(deftest test-schema
-  (testing 
-    "test the config schema" 
-    (is (s/validate sut/DdaVmConfig example-configuration ))
-    (is (thrown? Exception (s/validate sut/DdaVmConfig example-hashset-configuration)))
-    (is (s/validate sut/DdaVmConfig example-hashset-configuration2))
-    ))
-
-(deftest plan-def
-  (testing 
-    "test plan-def" 
-    (is sut/with-dda-vm)
-    ))
-
+(defn test-vm [config]
+  (netstat-test/test-prog-listen "Xtightvnc" 5901)
+  (package-test/test-installed? "xfce4"))

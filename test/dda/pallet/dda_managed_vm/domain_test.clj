@@ -14,20 +14,21 @@
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
 
-(ns dda.pallet.crate.managed-vm.test-vm
+
+(ns dda.pallet.dda-managed-vm.domain-test
   (:require
+    [clojure.test :refer :all]
     [schema.core :as s]
-    [org.domaindrivenarchitecture.pallet.servertest.fact.packages :as package-fact]
-    [org.domaindrivenarchitecture.pallet.servertest.test.packages :as package-test]
-    [org.domaindrivenarchitecture.pallet.servertest.fact.netstat :as netstat-fact]
-    [org.domaindrivenarchitecture.pallet.servertest.test.netstat :as netstat-test]))
+    [dda.pallet.dda-managed-vm.domain :as sut]))
 
-(defn collect-facts [config]
-  (netstat-fact/collect-netstat-fact)
-  (package-fact/collect-packages-fact)
-  )
+(def config-1
+  {:vm-user :test})
 
-(defn test-vm [config]
-  (netstat-test/test-prog-listen "Xtightvnc" 5901)
-  (package-test/test-installed? "xfce4")
-  )
+(def config-1
+  {:vm-user :test})
+
+(deftest test-git-config
+  (testing
+    "test the git config creation"
+    (is (thrown? Exception (sut/vm-git-config example-configuration)))
+    (is (sut/vm-git-config example-configuration))))

@@ -1,19 +1,18 @@
 ; Copyright (c) meissa GmbH. All rights reserved.
 ; You must not remove this notice, or any other, from this software.
 
-(ns dda.pallet.crate.managed-vm.convenience
+(ns dda.pallet.dda-managed-vm.infra.convenience
   (:require
-    [pallet.actions :as actions]
-    ))
+    [pallet.actions :as actions]))
+
 
 (defn install-user-bookmarks
   ""
   [user download-url]
-  (actions/remote-file 
-    (str "/home/" user "/bookmarks.html.zip") 
+  (actions/remote-file
+    (str "/home/" user "/bookmarks.html.zip")
     :literal true
     :owner user
     :group "users"
     :force true
-    :url download-url
-))
+    :url download-url))
