@@ -12,41 +12,53 @@
 (def DdaVmDomainConfig
   "The convention configuration for managed vms crate."
   {:vm-user s/Keyword
-   :platform (s/enum :virtualbox :aws)})
+   :platform (s/enum :virtualbox :aws)
+   (s/optional-key :user-email) s/Str})
 
 (def InfraResult {infra/facility infra/DdaVmConfig})
 
-(s/defn vm-git-config :- git-infra/
+(s/defn ^:always-validate vm-git-config :- git/InfraResult
  "Git repos for VM"
- [{:keys [vm-user]} vm-config]
- (git/infra-configuration
-   {:os-user vm-user
-    :user-email (str (name vm-user) "@domain")
-    :repos {:dda-book
-            ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]}}))
+ [vm-config :- DdaVmDomainConfig]
+ (let [{:keys [vm-user user-email]} vm-config
+       used-email (if (contains? vm-config :user-email)
+                      user-email
+                      (str (name vm-user) "@domain"))]
+   (git/infra-configuration
+     {:os-user vm-user
+      :user-email used-email
+      :repos {:dda-book
+              ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]}})))
 
-(defn vm-backup-config
+(s/defn ^:always-validate vm-backup-config
   "Managed vm crate default configuration"
-  [{:keys [vm-user]} vm-config]
-  {:backup-name "managed-vm"
-   :script-path "/usr/lib/dda-backup/"
-   :gens-stored-on-source-system 1
-   :elements [{:type :file-compressed
-               :name "user-home"
-               :root-dir (str "/home/" user-name)
-               :subdir-to-save ".ssh .mozilla"}]
-   :backup-user {:name "dataBackupSource"
-                 :encrypted-passwd "WIwn6jIUt2Rbc"}})
+  [vm-config :- DdaVmDomainConfig]
+  (let [{:keys [vm-user]} vm-config]
+    {:backup-name "managed-vm"
+     :script-path "/usr/lib/dda-backup/"
+     :gens-stored-on-source-system 1
+     :elements [{:type :file-compressed
+                 :name "user-home"
+                 :root-dir (str "/home/" (name vm-user))
+                 :subdir-to-save ".ssh .mozilla"}]
+     :backup-user {:name "dataBackupSource"
+                   :encrypted-passwd "WIwn6jIUt2Rbc"}}))
 
 (s/defn ^:always-validate meissa-convention :- InfraResult
   "Managed vm crate default configuration"
   [domain-config :- DdaVmDomainConfig]
-  (let [{:keys [vm-user plattform] domain-config}]
+  (let [{:keys [vm-user platform]} domain-config]
     {infra/facility
       (merge
-        {:vm-user user-name}
+        {:vm-user (name (vm-user))}
         (cond
-          (= platform :virtualbox) {:settings #{:install-virtualbox-guest
-                                                :install-libreoffice :install-open-jdk-8 :install-linus-basics :install-git}}
-          (= platform :aws) {:tightvnc-server {:user-password "test"}
-                             :settings #{:install-xfce-desktop :install-open-jdk-8 :install-linus-basics :install-git}}))}))
+          (= platform :virtualbox)
+          {:settings
+            #{:install-virtualbox-guest
+              :install-libreoffice :install-open-jdk-8
+              :install-linus-basics :install-git}}
+          (= platform :aws)
+          {:tightvnc-server {:user-password "test"
+                             :settings
+                             #{:install-xfce-desktop :install-open-jdk-8
+                               :install-linus-basics :install-git}}}))}))

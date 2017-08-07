@@ -22,13 +22,17 @@
     [dda.pallet.dda-managed-vm.domain :as sut]))
 
 (def config-1
-  {:vm-user :test})
+  {:vm-user :test
+   :platform :aws})
 
-(def config-1
-  {:vm-user :test})
+(def config-2
+  {:vm-user :test
+   :user-email "test@test.domain"
+   :platform :aws})
 
 (deftest test-git-config
   (testing
     "test the git config creation"
-    (is (thrown? Exception (sut/vm-git-config example-configuration)))
-    (is (sut/vm-git-config example-configuration))))
+    (is (thrown? Exception (sut/vm-git-config {})))
+    (is (sut/vm-git-config config-1))
+    (is (sut/vm-git-config config-2))))

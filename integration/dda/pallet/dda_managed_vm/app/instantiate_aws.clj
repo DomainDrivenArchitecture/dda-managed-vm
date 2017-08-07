@@ -33,23 +33,10 @@
    {:user-name {:encrypted-password  "xxx"
                 :authorized-keys [ssh-pub-key]}})
 
-
-
-
-(def git-config
-  {:os-user :ubuntu
-   :user-email "ubuntu@domain"
-   :repo-groups #{:dda-pallet}})
-
-(defn group [stack-config]
-  (let []
-   (api/group-spec
-     "dda-managed-ide-group"
-     :extends [(config-crate/with-config stack-config)]
-              server-test-crate/with-servertest
-              user-crate/with-user
-              git-crate/with-git
-              managed-vm/with-dda-vm)))
+(def vm-config
+  {:vm-user :user-name
+   :platform #{:aws}
+   :user-email "user-name@mydomain.org"})
 
 (defn integrated-group-spec [count]
   (merge

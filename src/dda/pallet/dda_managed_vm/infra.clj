@@ -50,8 +50,7 @@
 
 (s/defn install-system
   "install common used packages for vm"
-  [config :- DdaVmConfig
-   global-config]
+  [config :- DdaVmConfig]
   (let [settings (-> config :settings)
         user-key (:vm-user config)]
     (pallet.action/with-action-options
@@ -161,9 +160,8 @@
 (s/defmethod dda-crate/dda-install facility
   [dda-crate config]
   "dda managed vm: install routine"
-  (let [global-config (config/get-global-config)]
-    (install-system config global-config)
-    (install-user config)))
+  (install-system config)
+  (install-user config))
 
 (s/defmethod dda-crate/dda-configure facility
   [dda-crate config]
