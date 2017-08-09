@@ -32,7 +32,7 @@
  (mu/deep-merge
    (user/app-configuration user-config :group-key group-key)
    (git/app-configuration (domain/vm-git-config vm-config) :group-key group-key)
-   (test/app-configuration (domain/vm-test-config vm-config) :group-key group-key)
+   (test/app-configuration (domain/vm-serverspec-config vm-config) :group-key group-key)
    (create-app-configuration (domain/infra-configuration vm-config) :group-key group-key)))
 
 (s/defn ^:always-validate servertest-group-spec

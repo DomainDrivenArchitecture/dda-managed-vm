@@ -6,6 +6,7 @@
     [schema.core :as s]
     [dda.config.commons.map-utils :as map-utils]
     [dda.pallet.dda-git-crate.domain :as git]
+    [dda.pallet.dda-serverspec-crate.domain :as serverspec]
     [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
     [dda.pallet.dda-managed-vm.infra :as infra]))
 
@@ -29,6 +30,18 @@
       :user-email used-email
       :repos {:dda-book
               ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]}})))
+
+(s/defn ^:always-validate vm-serverspec-config :- serverspec/InfraResult
+ "serverspec for VM"
+ [vm-config :- DdaVmDomainConfig]
+ (let [{:keys [platform]} vm-config]
+   (cond
+     (= platform :aws)
+     (serverspec/infra-configuration
+      {:package {:xfce4 {:installed? true}}
+       :netstat {:Xtightvnc {:port "5901"}}})
+     :default
+     (serverspec/infra-configuration {}))))
 
 (s/defn ^:always-validate vm-backup-config
   "Managed vm crate default configuration"

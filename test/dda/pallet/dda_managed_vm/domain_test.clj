@@ -28,7 +28,7 @@
 (def config-2
   {:vm-user :test
    :user-email "test@test.domain"
-   :platform :aws})
+   :platform :virtualbox})
 
 (deftest test-git-config
   (testing
@@ -36,3 +36,10 @@
     (is (thrown? Exception (sut/vm-git-config {})))
     (is (sut/vm-git-config config-1))
     (is (sut/vm-git-config config-2))))
+
+(deftest test-serverspec-config
+  (testing
+    "test the serverspec config creation"
+    (is (thrown? Exception (sut/vm-serverspec-config {})))
+    (is (sut/vm-serverspec-config config-1))
+    (is (sut/vm-serverspec-config config-2))))
