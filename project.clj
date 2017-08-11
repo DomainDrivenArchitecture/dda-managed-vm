@@ -11,7 +11,7 @@
                  [dda/dda-pallet "0.5.3"]
                  [dda/dda-user-crate "0.6.0"]
                  [dda/dda-serverspec-crate "0.2.1"]
-                 [dda/dda-git-crate "0.1.2-SNAPSHOT"]
+                 [dda/dda-git-crate "0.1.2"]
                  [org.domaindrivenarchitecture/dda-backup-crate "0.4.1"]]
   :repositories [["snapshots" :clojars]
                  ["releases" :clojars]]
