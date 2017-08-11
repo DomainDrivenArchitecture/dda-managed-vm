@@ -1,4 +1,6 @@
 # dda-managed-vm
+[![Clojars Project](https://img.shields.io/clojars/v/dda/dda-managed-vm.svg)](https://clojars.org/dda/dda-managed-vm)
+[![Build Status](https://travis-ci.org/DomainDrivenArchitecture/dda-managed-vm.svg?branch=master)](https://travis-ci.org/DomainDrivenArchitecture/dda-managed-vm)
 
 Requirements can be found at https://dda.gitbooks.io/domaindrivenarchitecture/content/en/80_config_management/30_requirements/index.html
 
@@ -15,11 +17,11 @@ This crate is working with:
  * Browser & Bookmarks
  * LibreOffice & SpellChecking
 
-## Install & Configure by *.jar 
+## Install & Configure by *.jar
  Use dda-managed-vm on order to install you personal vm.
- 
+
 ### Build your own Installer & Configurator
-1. Get your own clone 
+1. Get your own clone
   1. git clone
 2. Adjust your own configuration
   1. cd dda-managed-vm
@@ -48,11 +50,11 @@ This crate is working with:
 ### watch log for debug reasons
 1. less logs/pallet.log
 
-## Install & Configure by ssh 
+## Install & Configure by ssh
  Use dda-managed-vm on order to install you personal vm remote using ssh.
- 
+
 ### Build your own Installer & Configurator
-1. Get your own clone 
+1. Get your own clone
   1. git clone
 2. Adjust your own configuration
   1. cd dda-managed-vm
@@ -78,12 +80,8 @@ This crate is working with:
 1. less logs/pallet.log
 
 ## Explanation of Configuration
-... 
+...
 
 
 # License
 Licensed under Apache2.0
-
-
-
-

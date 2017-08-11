@@ -15,38 +15,31 @@
 ; limitations under the License.
 
 
-(ns dda.pallet.crate.managed-vm-test
+(ns dda.pallet.dda-managed-vm.domain-test
   (:require
     [clojure.test :refer :all]
     [schema.core :as s]
-    [dda.pallet.crate.managed-vm :as sut]))
+    [dda.pallet.dda-managed-vm.domain :as sut]))
 
-(def example-configuration 
-  {:vm-user :test})
-
-(def example-hashset-configuration
+(def config-1
   {:vm-user :test
-   :settings (hash-set :install-virtualbox-guest :failure)
-   })
+   :platform :aws})
 
-(def example-hashset-configuration2
+(def config-2
   {:vm-user :test
-   :settings (hash-set :install-virtualbox-guest :install-libreoffice :install-open-jdk-8)
-   })
+   :user-email "test@test.domain"
+   :platform :virtualbox})
 
+(deftest test-git-config
+  (testing
+    "test the git config creation"
+    (is (thrown? Exception (sut/vm-git-config {})))
+    (is (sut/vm-git-config config-1))
+    (is (sut/vm-git-config config-2))))
 
- 
-(deftest test-schema
-  (testing 
-    "test the config schema" 
-    (is (s/validate sut/DdaVmConfig example-configuration ))
-    (is (thrown? Exception (s/validate sut/DdaVmConfig example-hashset-configuration)))
-    (is (s/validate sut/DdaVmConfig example-hashset-configuration2))
-    ))
-
-(deftest plan-def
-  (testing 
-    "test plan-def" 
-    (is sut/with-dda-vm)
-    ))
-
+(deftest test-serverspec-config
+  (testing
+    "test the serverspec config creation"
+    (is (thrown? Exception (sut/vm-serverspec-config {})))
+    (is (sut/vm-serverspec-config config-1))
+    (is (sut/vm-serverspec-config config-2))))

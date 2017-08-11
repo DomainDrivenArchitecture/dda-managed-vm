@@ -1,7 +1,7 @@
 ; Copyright (c) meissa GmbH. All rights reserved.
 ; You must not remove this notice, or any other, from this software.
 
-(ns dda.pallet.crate.managed-vm.basics
+(ns dda.pallet.dda-managed-vm.infra.basics
   (:require
     [pallet.actions :as actions]
     [pallet.crate.git :as git]
@@ -31,15 +31,12 @@
   (actions/package "xfce4")
   (actions/package "xfce4-goodies"))
 
-(defn install-linus-basics
+(defn install-analysis
   "Install tools for linus."
   []
   (actions/package "bash-completion")
   (actions/package "lsof")
-  (actions/package "strace"))
-
-;TODO: remove after factoring git out
-(defn install-git
-  "installs the git package"
-  []
-  (git/install))
+  (actions/package "strace")
+  (actions/package "htop")
+  (actions/package "iotop")
+  (actions/package "iftop"))
