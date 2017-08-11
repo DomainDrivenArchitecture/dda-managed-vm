@@ -36,6 +36,7 @@
  (s/validate domain/DdaVmDomainConfig vm-config)
  (mu/deep-merge
    (user/app-configuration user-config :group-key group-key)
+   ; TODO - only if install-git is selected
    (git/app-configuration (domain/vm-git-config vm-config) :group-key group-key)
    (serverspec/app-configuration (domain/vm-serverspec-config vm-config) :group-key group-key)
    (create-app-configuration (domain/infra-configuration vm-config) group-key)))

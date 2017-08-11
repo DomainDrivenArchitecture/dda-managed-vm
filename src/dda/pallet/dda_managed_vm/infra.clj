@@ -39,7 +39,7 @@
    (s/optional-key :settings)
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
                      :install-open-jdk-8 :install-xfce-desktop
-                     :install-linus-basics :install-git))})
+                     :install-analysis :install-git :install-password-store))})
 
 
 (s/defn init
@@ -59,14 +59,10 @@
        :script-env {:HOME (str "/root")}}
       (actions/as-action
           (logging/info (str facility "-install system: create user " user-key)))
-      (when (contains? settings :install-git)
+      (when (contains? settings :install-analysis)
         (actions/as-action
-          (logging/info (str facility "-install system: git")))
-        (basics/install-git))
-      (when (contains? settings :install-linus-basics)
-        (actions/as-action
-          (logging/info (str facility "-install system: linus tools")))
-        (basics/install-linus-basics))
+          (logging/info (str facility "-install system: analysis tools")))
+        (basics/install-analysis))
       (when (contains? settings :install-xfce-desktop)
         (actions/as-action
           (logging/info (str facility "-install system: xfce")))
@@ -83,6 +79,10 @@
         (actions/as-action
           (logging/info (str facility "-install system: libreoffice")))
         (office/install-libreoffice))
+      (when (contains? settings :install-password-store)
+        (actions/as-action
+          (logging/info (str facility "-install system: password-store")))
+        (office/install-password-store))
       (when (contains? settings :install-open-jdk-8)
         (actions/as-action
           (logging/info (str facility "-install system: openjdk")))

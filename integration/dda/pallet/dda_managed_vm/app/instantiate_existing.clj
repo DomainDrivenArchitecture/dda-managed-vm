@@ -16,9 +16,7 @@
 (ns dda.pallet.dda-managed-vm.app.instantiate-existing
   (:require
     [clojure.inspector :as inspector]
-    [pallet.api :as api]
-    [pallet.compute :as compute]
-    [pallet.compute.node-list :as node-list]
+    [pallet.repl :as pr]
     [dda.pallet.commons.session-tools :as session-tools]
     [dda.pallet.commons.pallet-schema :as ps]
     [dda.cm.existing :as existing]
@@ -27,7 +25,7 @@
     [dda.pallet.dda-managed-vm.app :as app]))
 
 (def provisioning-ip
-  "192.168.56.103")
+  "192.168.56.104")
 
 (def provisioning-user
   {:login "initial"
@@ -55,9 +53,10 @@
 
 (defn install
   ([]
-   (operation/do-apply-install  (provider) (integrated-group-spec))))
+   (pr/session-summary
+    (operation/do-apply-install  (provider) (integrated-group-spec)))))
 
-
-(defn server-test
+(defn test
   ([]
-   (operation/do-server-test  (provider) (integrated-group-spec))))
+   (pr/session-summary
+    (operation/do-server-test  (provider) (integrated-group-spec)))))

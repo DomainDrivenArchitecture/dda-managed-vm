@@ -31,15 +31,12 @@
   (actions/package "xfce4")
   (actions/package "xfce4-goodies"))
 
-(defn install-linus-basics
+(defn install-analysis
   "Install tools for linus."
   []
   (actions/package "bash-completion")
   (actions/package "lsof")
-  (actions/package "strace"))
-
-;TODO: remove after factoring git out
-(defn install-git
-  "installs the git package"
-  []
-  (git/install))
+  (actions/package "strace")
+  (actions/package "htop")
+  (actions/package "iotop")
+  (actions/package "iftop"))
