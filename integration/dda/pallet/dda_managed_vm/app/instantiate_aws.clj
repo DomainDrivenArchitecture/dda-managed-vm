@@ -20,13 +20,13 @@
     [pallet.api :as api]
     [pallet.compute :as compute]
     [dda.pallet.commons.encrypted-credentials :as crypto]
-    [dda.cm.operation :as operation]    
+    [dda.cm.operation :as operation]
     [dda.cm.aws :as cloud-target]
-    [dda.pallet.dda-user-crate.infra.user.os-user :as os-user]
+    [dda.config.commons.user-env :as user-env]
     [dda.pallet.dda-managed-vm.app :as app]))
 
 (def ssh-pub-key
-  (os-user/read-ssh-pub-key-to-config))
+  (user-env/read-ssh-pub-key-to-config))
 
 (def user-config
    {:user-name {:encrypted-password  "xxx"
