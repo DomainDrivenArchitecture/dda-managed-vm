@@ -33,7 +33,7 @@
 (s/defn ^:always-validate vm-serverspec-config :- serverspec/ServerTestDomainConfig
  "serverspec for VM"
  [vm-config :- DdaVmDomainConfig]
- (let [{:keys [platform]} vm-config]
+ (let [{:keys [platform vm-user]} vm-config]
    (cond
      (= platform :aws)
      {:package {:xfce4 {:installed? true}}
@@ -60,7 +60,14 @@
   (let [{:keys [vm-user platform]} domain-config]
     {infra/facility
       (merge
-        {:vm-user vm-user}
+        {:vm-user vm-user
+         :bookmarks [{:name "Bookmarks Toolbar"
+                      :links [["https://domaindrivenarchitecture.org/" "dda"]]
+                      :childs [{:name "WebConf"
+                                :links [["https://meet.jit.si/dda-pallet" "jitsi dda-pallet"]
+                                        ["http://meetingwords.com/" "MeetingWords"]
+                                        ["https://web.telegram.org/" "Telegram"]
+                                        ["http://www.meebl.de/" "meebl"]]}]}]}
         (cond
           (= platform :virtualbox)
           {:settings

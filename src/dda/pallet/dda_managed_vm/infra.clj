@@ -25,7 +25,7 @@
     [dda.pallet.dda-managed-vm.infra.basics :as basics]
     [dda.pallet.dda-managed-vm.infra.tightvnc :as tightvnc]
     [dda.pallet.dda-managed-vm.infra.office :as office]
-    [dda.pallet.dda-managed-vm.infra.convenience :as convenience]
+    [dda.pallet.dda-managed-vm.infra.mozilla :as mozilla]
     [dda.pallet.dda-managed-vm.infra.java :as java]))
 
 (def facility :dda-managed-vm)
@@ -34,8 +34,8 @@
 (def DdaVmConfig
   "The configuration for managed vms crate."
   {:vm-user s/Keyword
-   (s/optional-key :bookmarks-download-url) s/Str
    (s/optional-key :tightvnc-server) {:user-password s/Str}
+   (s/optional-key :bookmarks) mozilla/Bookmarks
    (s/optional-key :settings)
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
                      :install-open-jdk-8 :install-xfce-desktop
@@ -97,10 +97,6 @@
       {:sudo-user os-user-name
        :script-dir (str "/home/" os-user-name "/")
        :script-env {:HOME (str "/home/" os-user-name "/")}}
-      (when (contains? config :bookmarks-download-url)
-        (actions/as-action
-          (logging/info (str facility "-install user: bookmarks")))
-        (convenience/install-user-bookmarks os-user-name (-> config :bookmarks-download-url)))
       (when (contains? config :tightvnc-server)
         (actions/as-action
           (logging/info (str facility "-install user: tightvnc")))
@@ -128,16 +124,20 @@
 (s/defn configure-user
   "install the user space peaces in vm"
   [config :- DdaVmConfig]
-  (let [os-user-name (name (-> config :vm-user))
-        settings (-> config :settings)]
+  (let [{:keys [vm-user settings bookmarks]} config
+        user-name (name vm-user)]
     (pallet.action/with-action-options
-      {:sudo-user os-user-name
-       :script-dir (str "/home/" os-user-name "/")
-       :script-env {:HOME (str "/home/" os-user-name "/")}}
+      {:sudo-user user-name
+       :script-dir (str "/home/" user-name "/")
+       :script-env {:HOME (str "/home/" user-name "/")}}
       (when (contains? config :tightvnc-server)
         (actions/as-action
           (logging/info (str facility "-configure user: tightvnc")))
-        (tightvnc/configure-user-tightvnc-server config)))))
+        (tightvnc/configure-user-tightvnc-server config))
+      (when bookmarks
+        (actions/as-action
+          (logging/info (str facility "-configure user: bookmarks")))
+        (mozilla/configure-user-bookmarks user-name bookmarks)))))
 
 (s/defmethod dda-crate/dda-init facility
   [dda-crate config]
