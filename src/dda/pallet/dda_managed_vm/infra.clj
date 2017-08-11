@@ -139,18 +139,6 @@
           (logging/info (str facility "-configure user: tightvnc")))
         (tightvnc/configure-user-tightvnc-server config)))))
 
-(s/defn vm-test
-  "test vm"
-  [config :- DdaVmConfig])
-  ; TODO
-  ;(test-vm/test-vm config))
-
-(s/defmethod dda-crate/dda-settings facility
-  [dda-crate config]
-  "dda managed vm: test routine")
-  ; TODO
-  ;(test-vm/collect-facts config))
-
 (s/defmethod dda-crate/dda-init facility
   [dda-crate config]
   "dda managed vm: init routine"
@@ -168,11 +156,6 @@
   "dda managed vm: configure routine"
   (configure-user config)
   (configure-system config))
-
-(s/defmethod dda-crate/dda-test facility
-  [dda-crate config]
-  "dda managed vm: test routine"
-  (vm-test config))
 
 (def dda-vm-crate
   (dda-crate/make-dda-crate

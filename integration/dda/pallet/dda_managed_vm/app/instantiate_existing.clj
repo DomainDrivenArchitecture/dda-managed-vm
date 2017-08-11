@@ -21,28 +21,43 @@
     [pallet.compute.node-list :as node-list]
     [dda.pallet.commons.session-tools :as session-tools]
     [dda.pallet.commons.pallet-schema :as ps]
-    [dda.pallet.dda-managed-vm.domain.cm.config :as vm-config]
-    [dda.pallet.dda-managed-vm.domain.cm.group :as group]
-    [org.domaindrivenarchitecture.cm.operation :as operation]))
+    [dda.cm.existing :as existing]
+    [dda.cm.operation :as operation]
+    [dda.pallet.dda-user-crate.infra.user.os-user :as os-user]
+    [dda.pallet.dda-managed-vm.app :as app]))
 
-(def remote-node
-  (node-list/make-node
-    "mmanaged-vm"
-    "managed-vm-group"
-    "35.156.245.56"
-    :ubuntu
-    :id :meissa-vm))
+(def provisioning-ip
+  "192.168.56.103")
 
-(def provider
-  (compute/instantiate-provider
-    "node-list"
-    :node-list [remote-node]))
+(def provisioning-user
+  {:login "initial"
+   :password "secure1234"})
+
+(def ssh-pub-key
+  (os-user/read-ssh-pub-key-to-config))
+
+(def user-config
+   {:user-name {:encrypted-password  "xxx"
+                :authorized-keys [ssh-pub-key]}})
+
+(def vm-config
+  {:vm-user :user-name
+   :platform :virtualbox
+   :user-email "user-name@mydomain.org"})
+
+(defn integrated-group-spec []
+ (merge
+   (app/vm-group-spec (app/app-configuration user-config vm-config))
+   (existing/node-spec provisioning-user)))
+
+(defn provider []
+  (existing/provider provisioning-ip "node-id" "dda-vm-group"))
 
 (defn install
   ([]
-   (operation/do-apply-install provider (group/managed-vm-group "initial" vm-config/managed-vm-config))))
+   (operation/do-apply-install  (provider) (integrated-group-spec))))
 
 
 (defn server-test
   ([]
-   (operation/do-server-test provider (group/managed-vm-group "vmuser" vm-config/managed-vm-config))))
+   (operation/do-server-test  (provider) (integrated-group-spec))))

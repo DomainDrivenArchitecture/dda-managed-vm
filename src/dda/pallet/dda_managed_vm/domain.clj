@@ -4,7 +4,7 @@
 (ns dda.pallet.dda-managed-vm.domain
   (:require
     [schema.core :as s]
-    [dda.config.commons.map-utils :as map-utils]
+    [dda.config.commons.map-utils :as mu]
     [dda.pallet.dda-git-crate.domain :as git]
     [dda.pallet.dda-serverspec-crate.domain :as serverspec]
     [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
@@ -18,30 +18,27 @@
 
 (def InfraResult {infra/facility infra/DdaVmConfig})
 
-(s/defn ^:always-validate vm-git-config :- git/InfraResult
+(s/defn ^:always-validate vm-git-config :- git/GitDomainConfig
  "Git repos for VM"
  [vm-config :- DdaVmDomainConfig]
  (let [{:keys [vm-user user-email]} vm-config
        used-email (if (contains? vm-config :user-email)
                       user-email
                       (str (name vm-user) "@domain"))]
-   (git/infra-configuration
-     {:os-user vm-user
-      :user-email used-email
-      :repos {:dda-book
-              ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]}})))
+   {:os-user vm-user
+    :user-email used-email
+    :repos {:dda-book
+            ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]}}))
 
-(s/defn ^:always-validate vm-serverspec-config :- serverspec/InfraResult
+(s/defn ^:always-validate vm-serverspec-config :- serverspec/ServerTestDomainConfig
  "serverspec for VM"
  [vm-config :- DdaVmDomainConfig]
  (let [{:keys [platform]} vm-config]
    (cond
      (= platform :aws)
-     (serverspec/infra-configuration
-      {:package {:xfce4 {:installed? true}}
-       :netstat {:Xtightvnc {:port "5901"}}})
-     :default
-     (serverspec/infra-configuration {}))))
+     {:package {:xfce4 {:installed? true}}
+      :netstat {:Xtightvnc {:port "5901"}}}
+     :default {})))
 
 (s/defn ^:always-validate vm-backup-config
   "Managed vm crate default configuration"
@@ -57,13 +54,13 @@
      :backup-user {:name "dataBackupSource"
                    :encrypted-passwd "WIwn6jIUt2Rbc"}}))
 
-(s/defn ^:always-validate meissa-convention :- InfraResult
+(s/defn ^:always-validate infra-configuration :- InfraResult
   "Managed vm crate default configuration"
   [domain-config :- DdaVmDomainConfig]
   (let [{:keys [vm-user platform]} domain-config]
     {infra/facility
       (merge
-        {:vm-user (name (vm-user))}
+        {:vm-user vm-user}
         (cond
           (= platform :virtualbox)
           {:settings

@@ -20,11 +20,10 @@
     [pallet.api :as api]
     [pallet.compute :as compute]
     [dda.pallet.commons.encrypted-credentials :as crypto]
-    [dda.cm.operation :as operation]
-    [dda.pallet.dda-managed-vm.app :as app]
-
-    [dda.pallet.dda-managed-vm.domain.config :as vm-config]
-    [dda.pallet.dda-managed-vm.domain.group :as group]))
+    [dda.cm.operation :as operation]    
+    [dda.cm.aws :as cloud-target]
+    [dda.pallet.dda-user-crate.infra.user.os-user :as os-user]
+    [dda.pallet.dda-managed-vm.app :as app]))
 
 (def ssh-pub-key
   (os-user/read-ssh-pub-key-to-config))
@@ -35,12 +34,12 @@
 
 (def vm-config
   {:vm-user :user-name
-   :platform #{:aws}
+   :platform :aws
    :user-email "user-name@mydomain.org"})
 
 (defn integrated-group-spec [count]
   (merge
-    (group (group-configuration))
+    (app/vm-group-spec (app/app-configuration user-config vm-config))
     (cloud-target/node-spec "jem")
     {:count count}))
 
