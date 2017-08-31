@@ -28,8 +28,8 @@
   "192.168.56.104")
 
 (def provisioning-user
-  {:login "initial"
-   :password "secure1234"})
+  {:login "testymctestface"
+   :password "test1234"})
 
 (def ssh-pub-key
   (user-env/read-ssh-pub-key-to-config))

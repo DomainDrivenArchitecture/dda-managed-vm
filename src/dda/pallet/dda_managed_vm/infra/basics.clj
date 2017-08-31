@@ -14,9 +14,10 @@
 (defn install-virtualbox-guest-additions
   "make virtual machine run properly sized on virtualbox"
   []
-  (actions/package "xserver-xorg-core")
+  (actions/packages :aptitude ["xserver-xorg-core" "xserver-xorg-input-vmmouse" "xserver-xorg-input-all"])
   (actions/package "virtualbox-guest-dkms")
-  (actions/package "virtualbox-guest-x11"))
+  (actions/package "virtualbox-guest-x11")
+  )
 
 (defn configure-virtualbox-guest-additions
   "configures virtual-box guest additions"
