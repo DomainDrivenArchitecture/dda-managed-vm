@@ -25,6 +25,7 @@
    [dda.pallet.dda-managed-vm.infra.basics :as basics]
    [dda.pallet.dda-managed-vm.infra.tightvnc :as tightvnc]
    [dda.pallet.dda-managed-vm.infra.office :as office]
+   [dda.pallet.dda-managed-vm.infra.passwordstore :as password-store]
    [dda.pallet.dda-managed-vm.infra.mozilla :as mozilla]
    [dda.pallet.dda-managed-vm.infra.java :as java]))
 
@@ -81,7 +82,7 @@
      (when (contains? settings :install-password-store)
        (actions/as-action
         (logging/info (str facility "-install system: password-store")))
-       (office/install-password-store))
+       (password-store/install-password-store))
      (when (contains? settings :install-open-jdk-8)
        (actions/as-action
         (logging/info (str facility "-install system: openjdk")))
@@ -111,15 +112,16 @@
      {:sudo-user "root"
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
+     (when (contains? settings :install-password-store)
+      (password-store/configure-password-store os-user-name))
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-configure system: tightvnc")))
        (tightvnc/configure-system-tightvnc-server config))
-      ; (when (contains? settings :install-virtualbox-guest)
-      ;   (actions/as-action
-      ;     (logging/info (str facility "-configure system: tightvnc")))
-      ;   (basics/configure-virtualbox-guest-additions config))
-)))
+     (when (contains? settings :install-virtualbox-guest)
+       (actions/as-action
+         (logging/info (str facility "-configure system: tightvnc")))
+       (basics/configure-virtualbox-guest-additions config)))))
 
 (s/defn configure-user
   "install the user space peaces in vm"

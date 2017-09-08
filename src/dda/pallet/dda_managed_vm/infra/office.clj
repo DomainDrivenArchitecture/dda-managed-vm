@@ -14,8 +14,3 @@
   (actions/package "hyphen-de")
   (actions/package "hunspell-de-de")
   (actions/package "libreoffice"))
-
-(defn install-password-store
-  []
-  (actions/package "pass")
-  (actions/package "gnupg2"))

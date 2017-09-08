@@ -28,7 +28,8 @@
    {:os-user vm-user
     :user-email used-email
     :repos {:dda-book
-            ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]}}))
+            ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"
+             "https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}}))
 
 (s/defn ^:always-validate vm-serverspec-config :- serverspec/ServerTestDomainConfig
  "serverspec for VM"
