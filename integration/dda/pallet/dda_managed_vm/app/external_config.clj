@@ -16,6 +16,8 @@
 (ns dda.pallet.dda-managed-vm.app.external-config
   (:require
     [schema.core :as s]
+    [clojure.string :as str]
+    [clojure.edn :as edn]
     [dda.config.commons.user-env :as user-env]
     [keypin.core :refer [defkey letval] :as k]))
 
@@ -37,6 +39,47 @@
 (def provisioning-user
   {:login "initial"
    :password "secure1234"})
+
+;TODO: works with keypin and additional recursive conversion protocols
+;TODO: source: https://groups.google.com/forum/#!topic/clojure/1NzLnWUtj0Q
+(defprotocol ConvertibleToClojure
+  (->clj [o]))
+
+(extend-protocol ConvertibleToClojure
+  java.util.Map
+  (->clj [o] (let [entries (.entrySet o)]
+               (reduce (fn [m [^String k v]]
+                         (assoc m (keyword k) (->clj v)))
+                       {} entries)))
+
+  java.util.List
+  (->clj [o] (vec (map ->clj o)))
+
+  java.lang.Object
+  (->clj [o] o)
+
+  nil
+  (->clj [_] nil))
+
+(defn as-clj-map
+  [m]
+  (->clj m))
+
+(defn dispatch-file-type
+  "Dispatches a string to a keyword which represents the file type."
+  [file-name]
+  (keyword (last (str/split file-name #"\."))))
+
+(defmulti parse-config dispatch-file-type)
+
+(defmethod parse-config :edn
+  [file-path]
+  (as-clj-map (k/read-config [file-path])))
+
+(defn ex-config
+  "reads external edn-config"
+  [user-config]
+  (println (parse-config user-config)))
 
 (def ssh-pub-key
   (user-env/read-ssh-pub-key-to-config))
