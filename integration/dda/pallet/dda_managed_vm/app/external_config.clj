@@ -33,15 +33,14 @@
           (s/optional-key :gpg-private-key) s/Str
           (s/optional-key :gpg-passphrase) s/Str}})
 
-(def provisioning-ip
-  "192.168.56.103")
-
-(defn provisioning-ip-new [file]
- (-> (ex-config file) :provisioning :ip))
+(defn provisioning-ip
+  (let [file user-config-path])
+  (-> (ex-config file) :provisioning :ip))
 
 (def provisioning-user
-  {:login "initial"
-   :password "secure1234"})
+  (let [file user-config-path])
+  {:login (-> (ex-config file) :provisioning :login)
+   :password (-> (ex-config file) :provisioning :password)})
 
 ;TODO: works with keypin and additional recursive conversion protocols
 ;TODO: source: https://groups.google.com/forum/#!topic/clojure/1NzLnWUtj0Q
