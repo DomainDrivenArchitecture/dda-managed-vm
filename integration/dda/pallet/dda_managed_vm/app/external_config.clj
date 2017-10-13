@@ -17,7 +17,7 @@
   (:require
     [schema.core :as s]
     [dda.config.commons.user-env :as user-env]
-    keypin.core :refer [defkey letval] :as k]))
+    [keypin.core :refer [defkey letval] :as k]))
 
 (def ExternalConfigSchema
   {:provisioning {:ip s/Str
