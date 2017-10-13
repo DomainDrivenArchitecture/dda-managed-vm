@@ -19,8 +19,8 @@
     [dda.config.commons.user-env :as user-env]))
 
 (def ExternalConfigSchema
-  {:provisioning {:ip s/str
-                  :login s/str
+  {:provisioning {:ip s/Str
+                  :login s/Str
                   :password s/Str}
    :user {:name s/Str
           :password s/Str
@@ -96,7 +96,7 @@ orVoJcs081M33hIFGyiETDanGni2zMlrf5Roy5LO8b5OW/zCgC/z
 -----END PGP PRIVATE KEY BLOCK-----
 ")
 
-(def user-config
+(defn user-config []
    {:myuser {:encrypted-password  "xxx"
              :authorized-keys [ssh-pub-key]
              :gpg {:trusted-key {:public-key snakeoil-gpg-public-key
