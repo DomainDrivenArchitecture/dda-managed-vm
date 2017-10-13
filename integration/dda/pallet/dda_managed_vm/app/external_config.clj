@@ -16,7 +16,8 @@
 (ns dda.pallet.dda-managed-vm.app.external-config
   (:require
     [schema.core :as s]
-    [dda.config.commons.user-env :as user-env]))
+    [dda.config.commons.user-env :as user-env]
+    keypin.core :refer [defkey letval] :as k]))
 
 (def ExternalConfigSchema
   {:provisioning {:ip s/Str
