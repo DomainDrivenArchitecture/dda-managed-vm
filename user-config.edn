@@ -1,7 +1,7 @@
-{:provisioning [{:ip "192.168.0.103"
+{:provisioning  {:ip "192.168.0.104"
                  :login "initial"
-                 :password "test123"}]
- :user         [{:name "test"
+                 :password "test123"}
+ :user          {:name "test"
                  :password "xxx"
                  :email "myuser@mydomain.org"
                  :ssh-pub-key "AAGInwQYAQIACQUCWbJf3wIbDAAKCRBKBKH092UHBf8NA"
@@ -58,4 +58,4 @@
                  orVoJcs081M33hIFGyiETDanGni2zMlrf5Roy5LO8b5OW/zCgC/z
                  =0/aC
                  -----END PGP PRIVATE KEY BLOCK-----"
-                 :gpg-passphrase "passphrase"}]}
+                 :gpg-passphrase "passphrase"}}

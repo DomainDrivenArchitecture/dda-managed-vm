@@ -25,7 +25,7 @@
     [dda.pallet.dda-managed-vm.app :as app]))
 
 (def provisioning-ip
-  "192.168.56.103")
+  "192.168.56.104")
 
 (def provisioning-user
   {:login "initial"
