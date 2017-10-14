@@ -85,10 +85,10 @@ orVoJcs081M33hIFGyiETDanGni2zMlrf5Roy5LO8b5OW/zCgC/z
 
 (def user-config
    {:myuser {:hashed-password  "xxx"
-                :authorized-keys [ssh-pub-key]
-                :gpg {:trusted-key {:public-key snakeoil-gpg-public-key
-                                    :private-key snakeoil-gpg-private-key
-                                    :passphrase "passphrase"}}}})
+             :authorized-keys [ssh-pub-key]
+             :gpg {:trusted-key {:public-key snakeoil-gpg-public-key
+                                 :private-key snakeoil-gpg-private-key
+                                 :passphrase "passphrase"}}}})
 
 (def vm-config
   {:vm-user :myuser

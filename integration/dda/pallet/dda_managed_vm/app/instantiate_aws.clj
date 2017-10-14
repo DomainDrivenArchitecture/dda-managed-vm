@@ -37,20 +37,44 @@
    :platform :aws
    :user-email "user-name@mydomain.org"})
 
-(defn integrated-group-spec [count]
+(defn provisioning-spec [count]
   (merge
     (app/vm-group-spec (app/app-configuration user-config vm-config))
     (cloud-target/node-spec "jem")
     {:count count}))
 
 (defn converge-install
-  ([count]
-   (operation/do-converge-install (cloud-target/provider) (integrated-group-spec count)))
-  ([key-id key-passphrase count]
-   (operation/do-converge-install (cloud-target/provider key-id key-passphrase) (integrated-group-spec count))))
+  [count & options]
+  (let [{:keys [gpg-key-id gpg-passphrase
+                summarize-session]
+         :or {summarize-session true}} options]
+   (operation/do-converge-install
+     (if (some? gpg-key-id)
+       (cloud-target/provider gpg-key-id gpg-passphrase)
+       (cloud-target/provider))
+     (provisioning-spec count)
+     :summarize-session summarize-session)))
 
-(defn server-test
-  ([count]
-   (operation/do-server-test (cloud-target/provider) (integrated-group-spec count)))
-  ([key-id key-passphrase count]
-   (operation/do-server-test (cloud-target/provider key-id key-passphrase) (integrated-group-spec count))))
+(defn configure
+ [& options]
+ (let [{:keys [gpg-key-id gpg-passphrase
+               summarize-session]
+        :or {summarize-session true}} options]
+  (operation/do-apply-configure
+    (if (some? gpg-key-id)
+      (cloud-target/provider gpg-key-id gpg-passphrase)
+      (cloud-target/provider))
+    (provisioning-spec 0)
+    :summarize-session summarize-session)))
+
+(defn serverspec
+  [& options]
+  (let [{:keys [gpg-key-id gpg-passphrase
+                summarize-session]
+         :or {summarize-session true}} options]
+   (operation/do-server-test
+     (if (some? gpg-key-id)
+       (cloud-target/provider gpg-key-id gpg-passphrase)
+       (cloud-target/provider))
+     (provisioning-spec 0)
+     :summarize-session summarize-session)))

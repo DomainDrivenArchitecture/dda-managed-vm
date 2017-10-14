@@ -45,7 +45,7 @@
   (adapter/get-secret-wo-newline (str "meissa/" user-name "/system/password")))
 
 (defn user-config [user-name]
-   {(keyword user-name) {:unencrypted-password (password user-name)
+   {(keyword user-name) {:clear-password (password user-name)
                          :personal-key {:public-key (ssh-pub-key user-name)
                                         :private-key (ssh-priv-key user-name)}
                          :authorized-keys [(ssh-pub-key user-name)]
