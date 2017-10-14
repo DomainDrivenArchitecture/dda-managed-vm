@@ -1,10 +1,10 @@
 {:provisioning  {:ip "192.168.0.104"
                  :login "initial"
                  :password "test123"}
- :user          {:name "test"
+ :user          {:name "test-user"
                  :password "xxx"
                  :email "myuser@mydomain.org"
-                 :ssh-pub-key "AAGInwQYAQIACQUCWbJf3wIbDAAKCRBKBKH092UHBf8NA"
+                 :ssh-pub-key "ssh-rsa AAAAB3Nza...lLL comment"
                  :gpg-public-key "-----BEGIN PGP PUBLIC KEY BLOCK-----
                  Version: GnuPG v1
 

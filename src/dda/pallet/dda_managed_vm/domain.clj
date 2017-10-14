@@ -7,7 +7,7 @@
     [dda.config.commons.map-utils :as mu]
     [dda.pallet.dda-git-crate.domain :as git]
     [dda.pallet.dda-serverspec-crate.domain :as serverspec]
-    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
+    [dda.pallet.dda-backup-crate.domain :as backup]
     [dda.pallet.dda-managed-vm.infra :as infra]))
 
 (def DdaVmDomainConfig
@@ -76,7 +76,7 @@
               :install-libreoffice :install-open-jdk-8
               :install-analysis :install-git :install-password-store}}
           (= platform :aws)
-          {:tightvnc-server {:user-password "test"
-                             :settings
-                             #{:install-xfce-desktop :install-open-jdk-8
-                               :install-analysis :install-git}}}))}))
+          {:tightvnc-server {:user-password "test"}
+           :settings
+           #{:install-xfce-desktop :install-open-jdk-8 :install-analysis
+             :install-git}}))}))

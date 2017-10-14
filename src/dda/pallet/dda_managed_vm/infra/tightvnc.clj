@@ -4,11 +4,7 @@
 (ns dda.pallet.dda-managed-vm.infra.tightvnc
   (:require
     [pallet.actions :as actions]
-    [pallet.crate.git :as git]
-    [pallet.stevedore :as stevedore]
-    [org.domaindrivenarchitecture.pallet.crate.util :as util]
-    [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]))
-
+    [dda.pallet.crate.util :as util]))
 
 (defn set-user-password [os-user password]
    (let [vnc-path (str "/home/" os-user "/.vnc")]
@@ -17,8 +13,6 @@
          (pipe (println ~password) ("vncpasswd" -f > ~(str vnc-path "/passwd")))
          ("chown" "-R" ~(str os-user ":" os-user) ~vnc-path)
          ("chmod" "0600" ~(str vnc-path "/passwd")))))
-
-
 
 (defn install-system-tightvnc-server
   "Install remote desktop viewing."
@@ -47,7 +41,6 @@
                   "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))
     (set-user-password os-user password)))
 
-
 (defn install-user-vnc-tab-workaround
   "Install a small script to fix tab issue on vnc."
   [config]
@@ -62,7 +55,6 @@
       :content (util/create-file-content
                  ["#!/bin/bash"
                   "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))))
-
 
 (defn configure-system-tightvnc-server
   "Install remote desktop viewing."
@@ -97,7 +89,6 @@
       ("systemctl" "daemon-reload")
       ("systemctl" "enable" ~vnv-service-name)
       ("systemctl" "start" ~vnv-service-name))))
-
 
 (defn configure-user-tightvnc-server
   "Install remote desktop viewing."

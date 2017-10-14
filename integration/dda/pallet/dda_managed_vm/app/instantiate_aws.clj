@@ -23,7 +23,8 @@
     [dda.pallet.commons.operation :as operation]
     [dda.pallet.commons.aws :as cloud-target]
     [dda.config.commons.user-env :as user-env]
-    [dda.pallet.dda-managed-vm.app :as app]))
+    [dda.pallet.dda-managed-vm.app :as app]
+    [dda.pallet.dda-managed-vm.app.external-config :as ext-config]))
 
 (def ssh-pub-key
   (user-env/read-ssh-pub-key-to-config))
@@ -33,13 +34,13 @@
                 :authorized-keys [ssh-pub-key]}})
 
 (def vm-config
-  {:vm-user :user-name
+  {:vm-user :test-user
    :platform :aws
    :user-email "user-name@mydomain.org"})
 
 (defn provisioning-spec [count]
   (merge
-    (app/vm-group-spec (app/app-configuration user-config vm-config))
+    (app/vm-group-spec (app/app-configuration (ext-config/user-config) vm-config))
     (cloud-target/node-spec "jem")
     {:count count}))
 

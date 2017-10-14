@@ -7,7 +7,6 @@
     [dda.cm.group :as group]
     [dda.config.commons.map-utils :as mu]
     [dda.pallet.dda-config-crate.infra :as config-crate]
-    [org.domaindrivenarchitecture.pallet.crate.backup :as backup]
     [dda.pallet.dda-git-crate.app :as git]
     [dda.pallet.dda-user-crate.app :as user]
     [dda.pallet.dda-serverspec-crate.app :as serverspec]

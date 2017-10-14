@@ -3,13 +3,7 @@
 
 (ns dda.pallet.dda-managed-vm.infra.basics
   (:require
-    [pallet.actions :as actions]
-    [pallet.crate.git :as git]
-    [pallet.stevedore :as stevedore]
-    [pallet.crate.git :as git]
-    [org.domaindrivenarchitecture.pallet.crate.util :as util]
-    [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]))
-
+    [pallet.actions :as actions]))
 
 (defn install-virtualbox-guest-additions
   "make virtual machine run properly sized on virtualbox"
@@ -19,13 +13,11 @@
    ("apt-get" "install -y" "xserver-xorg-core xserver-xorg-input-vmmouse"
      "xserver-xorg-input-all" "virtualbox-guest-dkms" "virtualbox-guest-x11")))
 
-
 (defn configure-virtualbox-guest-additions
   "configures virtual-box guest additions"
   [config]
   (let [os-user-name (name (-> config :vm-user))]
     (actions/exec-script ("usermod" "-G vboxsf" "-a" ~os-user-name))))
-
 
 (defn install-xfce-desktop
   "Install the xubuntu desktop."

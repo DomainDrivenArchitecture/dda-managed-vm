@@ -5,8 +5,8 @@
 ; to you under the Apache License, Version 2.0 (the
 ; "License"); you may not use this file except in compliance
 ; with the License. You may obtain a copy of the License at
-;
 ; http://www.apache.org/licenses/LICENSE-2.0
+;
 ;
 ; Unless required by applicable law or agreed to in writing, software
 ; distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,14 +33,10 @@
           (s/optional-key :gpg-private-key) s/Str
           (s/optional-key :gpg-passphrase) s/Str}})
 
-(defn provisioning-ip []
-  (let [file user-config-path]
-   (-> (ex-config file) :provisioning :ip)))
-
-(defn provisioning-user []
-  (let [file user-config-path]
-   {:login (-> (ex-config file) :provisioning :login)
-    :password (-> (ex-config file) :provisioning :password)}))
+(defn dispatch-file-type
+  "Dispatches a string to a keyword which represents the file type."
+  [file-name]
+  (keyword (last (str/split file-name #"\."))))
 
 ;TODO: works with keypin and additional recursive conversion protocols
 ;TODO: source: https://groups.google.com/forum/#!topic/clojure/1NzLnWUtj0Q
@@ -66,11 +62,6 @@
   [m]
   (->clj m))
 
-(defn dispatch-file-type
-  "Dispatches a string to a keyword which represents the file type."
-  [file-name]
-  (keyword (last (str/split file-name #"\."))))
-
 (defmulti parse-config dispatch-file-type)
 (defmethod parse-config :edn
   [file-path]
@@ -84,17 +75,28 @@
 (def user-config-path
   "./user-config.edn")
 
+(defn provisioning-ip []
+  (let [file user-config-path]
+   (-> (ex-config file) :provisioning :ip)))
+
+(defn provisioning-user []
+  (let [file user-config-path]
+   {:login (-> (ex-config file) :provisioning :login)
+    :password (-> (ex-config file) :provisioning :password)}))
+
 (def ssh-pub-key
   (user-env/read-ssh-pub-key-to-config))
 
 (defn user-config []
-   (let [file user-config-path]
-    {:myuser
-      {:hashed-password  (-> (ex-config file) :user :password)
-               :authorized-keys (-> (ex-config file) :user :ssh-pub-key)
-               :gpg {:trusted-key {:public-key (-> (ex-config file) :user :gpg-public-key)
-                                   :private-key (-> (ex-config file) :user :gpg-private-key)
-                                   :passphrase (-> (ex-config file) :user :gpg-passphrase)}}}}))
+   (let [{:keys [user]} (ex-config user-config-path)
+         pub-ssh (user-env/string-to-pub-key-config (:ssh-pub-key user))]
+
+    {(keyword (:name user))
+     {:clear-password  (:password user)
+      :authorized-keys [pub-ssh]
+      :gpg {:trusted-key {:public-key (:gpg-public-key user)
+                          :private-key (:gpg-private-key user)
+                          :passphrase (:gpg-passphrase user)}}}}))
 
 (defn vm-config []
   (let [file user-config-path]

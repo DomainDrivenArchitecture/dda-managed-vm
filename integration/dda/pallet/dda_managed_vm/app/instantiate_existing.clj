@@ -20,7 +20,7 @@
     [dda.pallet.commons.session-tools :as session-tools]
     [dda.pallet.commons.pallet-schema :as ps]
     [dda.pallet.commons.operation :as operation]
-    [dda.cm.existing :as existing]
+    [dda.pallet.commons.existing :as existing]
     [dda.config.commons.user-env :as user-env]
     [dda.pallet.dda-managed-vm.app :as app]
     [dda.pallet.dda-managed-vm.app.external-config :as ext-config]))

@@ -4,10 +4,7 @@
 (ns dda.pallet.dda-managed-vm.infra.office
   (:require
     [schema.core :as s]
-    [pallet.actions :as actions]
-    [pallet.stevedore :as stevedore]
-    [org.domaindrivenarchitecture.pallet.crate.util :as util]
-    [org.domaindrivenarchitecture.pallet.crate.package :as dda-package]))
+    [pallet.actions :as actions]))
 
 (defn install-libreoffice
   []
