@@ -78,4 +78,6 @@
     (actions/remote-file
       (str "/home/" user "/bookmarks.html")
       :literal true
+      :owner user
+      :group user
       :content content)))

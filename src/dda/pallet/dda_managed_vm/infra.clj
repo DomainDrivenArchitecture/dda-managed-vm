@@ -93,15 +93,17 @@
   [config :- DdaVmConfig]
   (let [os-user-name (name (-> config :vm-user))
         settings (-> config :settings)]
+    (when (contains? config :tightvnc-server)
+      (actions/as-action
+       (logging/info (str facility "-install user: tightvnc")))
+      (tightvnc/install-user-tightvnc-server config)
+      (tightvnc/install-user-vnc-tab-workaround config))
     (pallet.action/with-action-options
      {:sudo-user os-user-name
       :script-dir (str "/home/" os-user-name "/")
       :script-env {:HOME (str "/home/" os-user-name "/")}}
      (when (contains? config :tightvnc-server)
-       (actions/as-action
-        (logging/info (str facility "-install user: tightvnc")))
-       (tightvnc/install-user-tightvnc-server config)
-       (tightvnc/install-user-vnc-tab-workaround config)))))
+       (tightvnc/configure-user-tightvnc-server-script config)))))
 
 (s/defn configure-system
   "install the user space peaces in vm"
@@ -128,6 +130,10 @@
   [config :- DdaVmConfig]
   (let [{:keys [vm-user settings bookmarks]} config
         user-name (name vm-user)]
+    (when bookmarks
+      (actions/as-action
+       (logging/info (str facility "-configure user: bookmarks")))
+      (mozilla/configure-user-bookmarks user-name bookmarks))
     (pallet.action/with-action-options
      {:sudo-user user-name
       :script-dir (str "/home/" user-name "/")
@@ -135,11 +141,7 @@
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-configure user: tightvnc")))
-       (tightvnc/configure-user-tightvnc-server config))
-     (when bookmarks
-       (actions/as-action
-        (logging/info (str facility "-configure user: bookmarks")))
-       (mozilla/configure-user-bookmarks user-name bookmarks)))))
+       (tightvnc/configure-user-tightvnc-server-script config)))))
 
 (s/defmethod dda-crate/dda-init facility
   [dda-crate config]

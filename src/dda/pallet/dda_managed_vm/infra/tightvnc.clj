@@ -38,8 +38,7 @@
                   "source /etc/profile"
                   "xrdb $HOME/.Xresources"
                   "startxfce4 &"
-                  "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))
-    (set-user-password os-user password)))
+                  "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))))
 
 (defn install-user-vnc-tab-workaround
   "Install a small script to fix tab issue on vnc."
@@ -90,11 +89,9 @@
       ("systemctl" "enable" ~vnv-service-name)
       ("systemctl" "start" ~vnv-service-name))))
 
-(defn configure-user-tightvnc-server
+(defn configure-user-tightvnc-server-script
   "Install remote desktop viewing."
   [config]
   (let [os-user (name (-> config :vm-user))
-        password (-> config :tightvnc-server :user-password)
-        vnc-path (str "/home/" os-user "/.vnc")
-        vnv-service-name (str "vncserver@" os-user ".service")]
+        password (-> config :tightvnc-server :user-password)]
     (set-user-password os-user password)))
