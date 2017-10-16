@@ -18,8 +18,9 @@
     [schema.core :as s]
     [clojure.string :as str]
     [clojure.edn :as edn]
-    [dda.config.commons.user-env :as user-env]
-    [keypin.core :refer [defkey letval] :as k]))
+    [keypin.core :refer [defkey letval] :as k]
+    [keypin.util :as ku]
+    [dda.config.commons.user-env :as user-env]))
 
 (def ExternalConfigSchema
   {:provisioning {:ip s/Str
@@ -38,34 +39,10 @@
   [file-name]
   (keyword (last (str/split file-name #"\."))))
 
-;TODO: works with keypin and additional recursive conversion protocols
-;TODO: source: https://groups.google.com/forum/#!topic/clojure/1NzLnWUtj0Q
-(defprotocol ConvertibleToClojure
-  (->clj [o]))
-(extend-protocol ConvertibleToClojure
-  java.util.Map
-  (->clj [o] (let [entries (.entrySet o)]
-               (reduce (fn [m [^String k v]]
-                         (assoc m (keyword k) (->clj v)))
-                       {} entries)))
-
-  java.util.List
-  (->clj [o] (vec (map ->clj o)))
-
-  java.lang.Object
-  (->clj [o] o)
-
-  nil
-  (->clj [_] nil))
-
-(defn as-clj-map
-  [m]
-  (->clj m))
-
 (defmulti parse-config dispatch-file-type)
 (defmethod parse-config :edn
   [file-path]
-  (as-clj-map (k/read-config [file-path])))
+  (ku/clojurize-data (k/read-config [file-path])))
 
 (defn ex-config
   "reads external edn-config"
@@ -73,7 +50,7 @@
   (parse-config user-config))
 
 (def user-config-path
-  "./user-config.edn")
+  "user-config.edn")
 
 (defn provisioning-ip []
   (let [file user-config-path]
