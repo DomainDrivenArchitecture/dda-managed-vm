@@ -1,0 +1,7 @@
+{:provisioning  {:ip "192.168.0.104"
+                 :login "initial"
+                 :password "test123"}
+ :user          {:name "test-user"
+                 :password "xxx"
+                 :email "myuser@mydomain.org"
+                 :ssh-pub-key "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKfbhWMJq3mBikS+/d2rmPIZDA94KLHMIru6AtWjO8zOB2dzHeunFmO7l9WMUEE0TpLAW5FAstT3Hr/H5Y3eSKpxZV1D5bQzDEv79V5wSPOBBZoKXO3X2P4osyAX46FN4Mk1bg6k/l04wC3TErGBvDlxIOOJQKuOlDNjD40rBwozKN7dVlB7yFOJxTptJMNIW5iwOAqeuFI3AB63oRXsYoyfRZ92VhH2cEjZN0j6Ju54DFo55KojIGoSiqAzK3klYkr8TaijgHCsJg/sfQrFqOvjvYUCGidu3yWWSno1RSKztbo+NtPdsxQj6c+Ht0WmhcG12PI53i5JiwOT0B+xan lukas@lukas-VirtualBox"}}

@@ -26,7 +26,7 @@
     [dda.pallet.dda-managed-vm.app.external-config :as ext-config]))
 
 (defn hallo []
- (println (ext-config/provisioning-ip)))
+ (app/app-configuration (ext-config/user-config) (ext-config/vm-config)))
 
 (def ssh-pub-key
   (user-env/read-ssh-pub-key-to-config))
@@ -57,7 +57,7 @@
      (provisioning-spec)
      :summarize-session summarize-session)))
 
-(defn test
+(defn test "executes the tests on the server"
   [& options]
   (let [{:keys [summarize-session]}
         :or {summarize-session true} options]

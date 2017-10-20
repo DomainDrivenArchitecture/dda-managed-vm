@@ -28,11 +28,12 @@
                   :password s/Str}
    :user {:name s/Str
           :password s/Str
-          (s/optional-key :email) s/Str
-          (s/optional-key :ssh-pub-key) s/Str
-          (s/optional-key :gpg-public-key) s/Str
-          (s/optional-key :gpg-private-key) s/Str
-          (s/optional-key :gpg-passphrase) s/Str}})
+          :email s/Str
+          (s/optional-key :ssh {:ssh-pub-key s/Str
+                                :ssh-prvate-key s/Str})
+          (s/optional-key :gpg {:gpg-public-key s/Str
+                                :gpg-private-key s/Str
+                                :gpg-passphrase s/Str})}})
 
 (defn dispatch-file-type
   "Dispatches a string to a keyword which represents the file type."
@@ -65,15 +66,32 @@
   (user-env/read-ssh-pub-key-to-config))
 
 (defn user-config []
-   (let [{:keys [user]} (ex-config user-config-path)
-         pub-ssh (user-env/string-to-pub-key-config (:ssh-pub-key user))]
+   (let [{:keys [user]} (ex-config user-config-path)]
+     (if (= (:ssh-pub-key user) nil)
+      (user-config-help nil)
+      (user-config-help (user-env/string-to-pub-key-config (:ssh-pub-key user))))))
 
+(defn user-config-help [todo]
+   (let [{:keys [user]} (ex-config user-config-path)]
     {(keyword (:name user))
      {:clear-password  (:password user)
-      :authorized-keys [pub-ssh]
+      :authorized-keys todo
       :gpg {:trusted-key {:public-key (:gpg-public-key user)
                           :private-key (:gpg-private-key user)
                           :passphrase (:gpg-passphrase user)}}}}))
+
+(defn user-config-test []
+  (let [{:keys [user]} (ex-config user-config-path)
+        map {(keyword (-> (ex-config user-config-path) :user :name))
+             {:clear-password (-> (ex-config user-config-path) :user :password)}}]
+    (println (-> map :lukas))
+    (if (contains? user :shh)
+      (merge map {:ssh user})
+      (merge map {}))
+    (if (contains? user :gpg)
+      (merge map {:gpg user})
+      (merge map {}))))
+
 
 (defn vm-config []
   (let [file user-config-path]
