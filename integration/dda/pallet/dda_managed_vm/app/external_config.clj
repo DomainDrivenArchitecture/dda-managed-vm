@@ -75,6 +75,18 @@
                           :private-key (:gpg-private-key user)
                           :passphrase (:gpg-passphrase user)}}}}))
 
+(defn user-config-test []
+  (let [{:keys [user]} (ex-config user-config-path)
+        map {(keyword (-> (ex-config user-config-path) :user :name))
+             {:clear-password (-> (ex-config user-config-path) :user :password)}}]
+    (println (-> map :lukas))
+    (if (contains? user :shh)
+      (merge map {:ssh user})
+      (merge map {}))
+    (if (contains? user :gpg)
+      (merge map {:gpg user})
+      (merge map {}))))
+
 (defn vm-config []
   (let [file user-config-path]
    {:vm-user :myuser
