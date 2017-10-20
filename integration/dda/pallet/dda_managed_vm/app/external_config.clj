@@ -29,11 +29,11 @@
    :user {:name s/Str
           :password s/Str
           :email s/Str
-          (s/optional-key :ssh {:ssh-pub-key s/Str
-                                :ssh-prvate-key s/Str})
-          (s/optional-key :gpg {:gpg-public-key s/Str
-                                :gpg-private-key s/Str
-                                :gpg-passphrase s/Str})}})
+          (s/optional-key :ssh) {:ssh-pub-key s/Str
+                                 :ssh-prvate-key s/Str}
+          (s/optional-key :gpg) {:gpg-public-key s/Str
+                                 :gpg-private-key s/Str
+                                 :gpg-passphrase s/Str}}})
 
 (defn dispatch-file-type
   "Dispatches a string to a keyword which represents the file type."
@@ -65,37 +65,28 @@
 (def ssh-pub-key
   (user-env/read-ssh-pub-key-to-config))
 
+(defn authorized-keys [user-edn]
+   (let [{:keys [ssh]} user-edn]
+    (if (contains? user-edn :ssh)
+      {:authorized-keys [(user-env/string-to-pub-key-config (:ssh-pub-key ssh))]}
+      {})))
+
+(defn gpg [user-edn]
+   (let [{:keys [gpg]} user-edn]
+    (if (contains? user-edn :gpg)
+      {:gpg {:trusted-key {:public-key (:gpg-public-key gpg)
+                           :private-key (:gpg-private-key gpg)
+                           :passphrase (:gpg-passphrase gpg)}}}
+      {})))
+
 (defn user-config []
    (let [{:keys [user]} (ex-config user-config-path)]
-     (if (= (:ssh-pub-key user) nil)
-      (user-config-help nil)
-      (user-config-help (user-env/string-to-pub-key-config (:ssh-pub-key user))))))
-
-(defn user-config-help [todo]
-   (let [{:keys [user]} (ex-config user-config-path)]
     {(keyword (:name user))
-     {:clear-password  (:password user)
-      :authorized-keys todo
-      :gpg {:trusted-key {:public-key (:gpg-public-key user)
-                          :private-key (:gpg-private-key user)
-                          :passphrase (:gpg-passphrase user)}}}}))
+     (merge
+       {:clear-password (:password user)}
+       (authorized-keys user)
+       (gpg user))}))
 
-(defn user-config-test []
-  (let [{:keys [user]} (ex-config user-config-path)
-        map {(keyword (-> (ex-config user-config-path) :user :name))
-             {:clear-password (-> (ex-config user-config-path) :user :password)}}]
-    (println (-> map :lukas))
-    (if (contains? user :shh)
-      (merge map {:ssh user})
-      (merge map {}))
-    (if (contains? user :gpg)
-      (merge map {:gpg user})
-      (merge map {}))))
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 067163df0a6529598c1f020f626965a62454db21
 (defn vm-config []
   (let [file user-config-path]
    {:vm-user :myuser

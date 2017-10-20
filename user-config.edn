@@ -4,7 +4,7 @@
  :user          {:name "lukas123"
                  :password "xxx"
                  :email "myuser@mydomain.org"
-                 :ssh {:ssh-pub-key "Test123"
+                 :ssh {:ssh-pub-key "rsa-ssh kfjri5r8irohgn...test.key comment"
                        :ssh-prvate-key "123Test"}
                  :gpg {:gpg-public-key "-----BEGIN PGP PUBLIC KEY BLOCK-----
                                        Version: GnuPG v1
