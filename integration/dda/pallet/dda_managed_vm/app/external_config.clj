@@ -92,7 +92,10 @@
       (merge map {:gpg user})
       (merge map {}))))
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 067163df0a6529598c1f020f626965a62454db21
 (defn vm-config []
   (let [file user-config-path]
    {:vm-user :myuser

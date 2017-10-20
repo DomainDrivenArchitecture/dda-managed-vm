@@ -25,9 +25,12 @@
     [dda.pallet.dda-managed-vm.app :as app]
     [dda.pallet.dda-managed-vm.app.external-config :as ext-config]))
 
+<<<<<<< HEAD
 (defn hallo []
  (app/app-configuration (ext-config/user-config) (ext-config/vm-config)))
 
+=======
+>>>>>>> 067163df0a6529598c1f020f626965a62454db21
 (def ssh-pub-key
   (user-env/read-ssh-pub-key-to-config))
 
