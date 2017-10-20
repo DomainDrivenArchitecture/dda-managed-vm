@@ -1,10 +1,9 @@
 {:provisioning  {:ip "192.168.56.104"
-                 :login "meissa"
-                 :password "meissa"}
+                 :login "inital"
+                 :password "secure1234"}
  :user          {:name "test-user"
                  :password "xxx"
                  :email "test-user@mydomain.org"
-                 :email "myuser@mydomain.org"
                  :ssh {:ssh-pub-key "rsa-ssh kfjri5r8irohgn...test.key comment"
                        :ssh-prvate-key "123Test"}
                  :gpg {:gpg-public-key "-----BEGIN PGP PUBLIC KEY BLOCK-----
