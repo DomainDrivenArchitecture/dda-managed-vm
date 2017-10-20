@@ -89,6 +89,6 @@
 
 (defn vm-config []
   (let [file user-config-path]
-   {:vm-user :myuser
+   {:vm-user (keyword (-> (ex-config file) :user :name))
     :platform :virtualbox
     :user-email (-> (ex-config file) :user :email)}))
