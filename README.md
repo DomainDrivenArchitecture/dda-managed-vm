@@ -62,5 +62,6 @@ sudo apt-get install openssh-server openjdk-7-jre-headless
 ### watch log for debug reasons
 1. less logs/pallet.log
 
+
 # License
 Licensed under Apache2.0
