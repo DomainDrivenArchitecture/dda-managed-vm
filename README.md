@@ -9,79 +9,58 @@ Requirements can be found at https://dda.gitbooks.io/domaindrivenarchitecture/co
 This crate is working with:
  * pallet 0.8
  * clojure 1.7
- * ubuntu 16.04
+ * xubuntu 16.04.02
 
 ## Features
- * VirtualBox Tools
- * Java JRE
- * Browser & Bookmarks
- * LibreOffice & SpellChecking
+### VirtualBox Tools
+are installed by apt-get and will be updated automatically.
 
-## Install & Configure by *.jar
- Use dda-managed-vm on order to install you personal vm.
+### Browser & Bookmarks
+You can seed some bookmarks in ~/bookmark.html in order to import in ffox or chromium.
 
-### Build your own Installer & Configurator
+### Team able passwordstore
+Store your passwords encrypted by gpg and versioned by git.
+For more details see: https://www.passwordstore.org/ and https://github.com/DomainDrivenArchitecture/password-store-for-teams
+In order to test you can
+```
+demo-pass                       #see all passwords stored
+demo-pass testuser/demo-secret  # decrypt the demo-secret. Works if youve installed the snakeoil key
+```
+
+### gpg key & ssh key
+As part of dda-user-crate your gpg- and ssh key can be installed.
+
+### More Software
+* Java JRE 1.8
+* LibreOffice & SpellChecking
+
+
+## Configure & Install
+Use dda-managed-vm on order to install you personal vm.
+
+### Prepare vm
+1. install xubuntu16.04.02
+2. login with your initial user
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install openssh-server openjdk-7-jre-headless
+```
+
+### Configure your vm
 1. Get your own clone
   1. git clone
 2. Adjust your own configuration
   1. cd dda-managed-vm
-  2. git checkout -b [your-personal-branch]
-  3. Adjust your configuration at /dda-managed-vm/src/vm_config.clj
-  4. ensure, that /src/main.clj has enabled localhost-node
-3. Create your installer
-  1. lein uberjar
+  2. Adjust your configuration at user-config.edn
 
-### Prepare ide-vm
-1. install xubuntu14.04.03
-2. login with your initial user
-3. sudo apt-get update
-4. sudo apt-get upgrade
-5. sudo apt-get install openssh-server openjdk-7-jre-headless
-6. scp target/dda-managed-vm-0.1.0-SNAPSHOT-standalone.jar [your initial user]@[your vms ip]:
-7. scp ~/.ssh/id_rsa* [your initial user]@[your vms ip]:
-
-### install ide
-1. sudo -i
-2. cd /home/[your initial user]
-3. java -jar dda-managed-vm-0.1.0-SNAPSHOT-standalone.jar init
-4. java -jar dda-managed-vm-0.1.0-SNAPSHOT-standalone.jar install
-5. java -jar dda-managed-vm-0.1.0-SNAPSHOT-standalone.jar configure
+### install vm remote
+1. Start your repl
+2. (in-ns 'dda.pallet.dda-managed-vm.app.instantiate-existing)
+3. (apply-install)
 
 ### watch log for debug reasons
 1. less logs/pallet.log
-
-## Install & Configure by ssh
- Use dda-managed-vm on order to install you personal vm remote using ssh.
-
-### Build your own Installer & Configurator
-1. Get your own clone
-  1. git clone
-2. Adjust your own configuration
-  1. cd dda-managed-vm
-  2. git checkout -b [your-personal-branch]
-  3. Adjust your configuration at /dda-managed-vm/src/vm_config.clj
-  4. ensure, that /src/main.clj has enabled remote-node
-3. Start your repl
-
-### Prepare ide-vm
-1. install xubuntu14.04.03
-2. login with your initial user
-3. sudo apt-get update
-4. sudo apt-get install opensssh-server
-6. scp ~/.ssh/id_rsa [your execution folder]
-
-### install ide
-1. launch main ns in repl
-2. (-main "init")
-3. (-main "install")
-4. (-main "configure")
-
-### watch log for debug reasons
-1. less logs/pallet.log
-
-## Explanation of Configuration
-...
-
 
 # License
 Licensed under Apache2.0

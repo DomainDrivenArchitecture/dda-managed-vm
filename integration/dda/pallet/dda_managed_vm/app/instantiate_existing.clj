@@ -25,13 +25,12 @@
     [dda.pallet.dda-managed-vm.app :as app]
     [dda.pallet.dda-managed-vm.app.external-config :as ext-config]))
 
-(def ssh-pub-key
-  (user-env/read-ssh-pub-key-to-config))
-
 (defn provisioning-spec []
  (merge
-   (app/vm-group-spec (app/app-configuration (ext-config/user-config) (ext-config/vm-config)))
-   (existing/node-spec (ext-config/provisioning-user))))
+   (app/vm-group-spec
+     (app/app-configuration (ext-config/user-config) (ext-config/vm-config)))
+   (existing/node-spec
+     (ext-config/provisioning-user))))
 
 (defn provider []
   (existing/provider (ext-config/provisioning-ip) "node-id" "dda-vm-group"))

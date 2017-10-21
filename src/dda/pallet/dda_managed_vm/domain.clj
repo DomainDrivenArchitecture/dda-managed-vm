@@ -27,7 +27,7 @@
                       (str (name vm-user) "@domain"))]
    {:os-user vm-user
     :user-email used-email
-    :repos {:dda-book
+    :repos {:stuff
             ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"
              "https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}}))
 

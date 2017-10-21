@@ -5,7 +5,7 @@
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [dda/dda-pallet "0.5.5"]
-                 [dda/dda-user-crate "0.6.2"]
+                 [dda/dda-user-crate "0.7.0-SNAPSHOT"]
                  [dda/dda-serverspec-crate "0.2.2"]
                  [dda/dda-git-crate "0.1.3"]
                  [dda/dda-backup-crate "0.6.1"]
