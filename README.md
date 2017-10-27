@@ -1,7 +1,8 @@
 # dda-managed-vm
-[Meet us on Slack](http://clojurians.herokuapp.com/)
 [![Clojars Project](https://img.shields.io/clojars/v/dda/dda-managed-vm.svg)](https://clojars.org/dda/dda-managed-vm)
 [![Build Status](https://travis-ci.org/DomainDrivenArchitecture/dda-managed-vm.svg?branch=master)](https://travis-ci.org/DomainDrivenArchitecture/dda-managed-vm)
+
+[Meet us on Slack](http://clojurians.herokuapp.com/) [Meet us on Meetup](https://www.meetup.com/de-DE/preview/dda-pallet-DevOps-Hacking-with-Clojure) 
 
 Requirements can be found at https://dda.gitbooks.io/domaindrivenarchitecture/content/en/80_config_management/30_requirements/index.html
 
