@@ -1,4 +1,5 @@
 # dda-managed-vm
+[Meet us on Slack](http://clojurians.herokuapp.com/)
 [![Clojars Project](https://img.shields.io/clojars/v/dda/dda-managed-vm.svg)](https://clojars.org/dda/dda-managed-vm)
 [![Build Status](https://travis-ci.org/DomainDrivenArchitecture/dda-managed-vm.svg?branch=master)](https://travis-ci.org/DomainDrivenArchitecture/dda-managed-vm)
 
