@@ -7,7 +7,6 @@
 ; with the License. You may obtain a copy of the License at
 ; http://www.apache.org/licenses/LICENSE-2.0
 ;
-;
 ; Unless required by applicable law or agreed to in writing, software
 ; distributed under the License is distributed on an "AS IS" BASIS,
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,14 +22,14 @@
   [user]
   (let [{:keys [ssh]} user]
     (if (contains? user :ssh)
-      {:authorized-keys [(user-env/string-to-pub-key-config (:ssh-pub-key ssh))]}
+      {:authorized-keys [(user-env/string-to-pub-key-config (:ssh-public-key ssh))]}
       {})))
 
 (defn ssh-personal-key
   [user]
   (let [{:keys [ssh]} user]
     (if (contains? user :ssh)
-      {:personal-key {:public-key (user-env/string-to-pub-key-config (:ssh-pub-key ssh))
+      {:personal-key {:public-key (user-env/string-to-pub-key-config (:ssh-public-key ssh))
                       :private-key (:ssh-private-key ssh)}}
       {})))
 
