@@ -23,26 +23,27 @@
     [dda.pallet.commons.existing :as existing]
     [dda.config.commons.user-env :as user-env]
     [dda.pallet.dda-managed-vm.app :as app]
-    [dda.pallet.dda-managed-vm.app.external-config :as ext-config]))
+    [dda.pallet.dda-managed-vm.infra :as infra]))
 
-(defn provisioning-spec []
- (merge
-   (app/vm-group-spec
-     (app/app-configuration (ext-config/user-config) (ext-config/vm-config)))
-   (existing/node-spec
-     (ext-config/provisioning-user))))
+(defn provisioning-spec [target-config domain-config]
+  (let [{:keys [provisioning-user]} target-config]
+    (merge
+      (app/vm-group-spec
+        (app/app-configuration domain-config))
+      (existing/node-spec provisioning-user))))
 
-(defn provider []
-  (existing/provider (ext-config/provisioning-ip) "node-id" "dda-vm-group"))
+(defn provider [target-config]
+  (let [{:keys [existing]} target-config]
+    (existing/provider
+     {infra/facility existing})))
 
-(defn apply-install
-  [& options]
-  (let [{:keys [summarize-session]
-         :or {summarize-session true}} options]
+(defn apply-install []
+  (let [target-config (existing/load-targets "targets.edn")
+        domain-config (app/load-domain "vm.edn")]
     (operation/do-apply-install
-     (provider)
-     (provisioning-spec)
-     :summarize-session summarize-session)))
+     (provider target-config)
+     (provisioning-spec target-config domain-config)
+     :summarize-session true)))
 
 (defn apply-configure
   [& options]

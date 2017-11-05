@@ -11,7 +11,8 @@
     [dda.pallet.dda-user-crate.app :as user]
     [dda.pallet.dda-serverspec-crate.app :as serverspec]
     [dda.pallet.dda-managed-vm.infra :as infra]
-    [dda.pallet.dda-managed-vm.domain :as domain]))
+    [dda.pallet.dda-managed-vm.domain :as domain]
+    [dda.pallet.commons.external-config :as ext-config]))
 
 (def with-dda-vm infra/with-dda-vm)
 
@@ -24,21 +25,21 @@
                      user/InfraResult
                      serverspec/InfraResult)}})
 
-(s/defn ^:allways-validate create-app-configuration :- DdaVmAppConfig
-  [config :- infra/DdaVmConfig
-   group-key :- s/Keyword]
-  {:group-specific-config
-     {group-key config}})
+(s/defn ^:always-validate load-domain :- domain/DdaVmDomainConfig
+  [file-name :- s/Str]
+  (ext-config/parse-config file-name))
 
-(defn app-configuration
- [user-config vm-config & {:keys [group-key] :or {group-key :dda-vm-group}}]
- (s/validate domain/DdaVmDomainConfig vm-config)
- (mu/deep-merge
-   (user/app-configuration user-config :group-key group-key)
-   ; TODO - only if install-git is selected
-   (git/app-configuration (domain/vm-git-config vm-config) :group-key group-key)
-   (serverspec/app-configuration (domain/vm-serverspec-config vm-config) :group-key group-key)
-   (create-app-configuration (domain/infra-configuration vm-config) group-key)))
+(s/defn ^:always-validate app-configuration :- DdaVmAppConfig
+ [domain-config :- domain/DdaVmDomainConfig
+  & options]
+ (let [{:keys [group-key] :or {group-key infra/facility}} options]
+   (mu/deep-merge
+     (user/app-configuration (domain/user-config domain-config) :group-key group-key)
+     ; TODO - only if install-git is selected
+     (git/app-configuration (domain/vm-git-config domain-config) :group-key group-key)
+     (serverspec/app-configuration (domain/vm-serverspec-config domain-config) :group-key group-key)
+     {:group-specific-config
+        {group-key (domain/infra-configuration domain-config)}})))
 
 (s/defn ^:always-validate vm-group-spec
  [app-config :- DdaVmAppConfig]
