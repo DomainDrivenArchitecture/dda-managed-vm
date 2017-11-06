@@ -39,9 +39,9 @@
 
 (s/defn resolve-secrets :- domain/DdaVmDomainResolvedConfig
   [domain-config :- domain/DdaVmDomainConfig]
-  (let [{:keys [user platform]} domain-config
+  (let [{:keys [user type]} domain-config
         {:keys [ssh gpg]} user]
-    {:platform platform
+    {:type type
      :user (assoc user
                   :password (resolve-secret (:password user))
                   :ssh {:ssh-public-key (resolve-secret (:ssh-public-key ssh))
