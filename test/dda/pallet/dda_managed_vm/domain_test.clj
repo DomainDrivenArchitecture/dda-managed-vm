@@ -22,13 +22,16 @@
     [dda.pallet.dda-managed-vm.domain :as sut]))
 
 (def config-1
-  {:vm-user :test
-   :platform :aws})
+  {:user {:name  "test"
+          :password "pwd"
+          :email "email"}
+   :type :remote})
 
 (def config-2
-  {:vm-user :test
-   :user-email "test@test.domain"
-   :platform :virtualbox})
+  {:user {:name  "test"
+          :password "pwd"
+          :email "email"}
+   :type :desktop-office})
 
 (deftest test-git-config
   (testing
