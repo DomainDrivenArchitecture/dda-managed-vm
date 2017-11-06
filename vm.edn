@@ -1,8 +1,6 @@
-{:provisioning  {:ip "192.168.56.104"
-                 :login "initial"
-                 :password "secure1234"}
+{:type :desktop-office
  :user          {:name "test-user"
-                 :password "xxx"
+                 :password {:plain "xxx"}
                  :email "test-user@mydomain.org"
                  :ssh {:ssh-public-key "rsa-ssh kfjri5r8irohgn...test.key comment"
                        :ssh-private-key "123Test"}

@@ -20,7 +20,23 @@
     [dda.pallet.dda-managed-vm.domain.user :as user]
     [dda.pallet.dda-managed-vm.infra :as infra]))
 
+(def Secret {(s/optional-key :plain) s/Str
+             (s/optional-key :password-store-single) s/Str
+             (s/optional-key :password-store-multi) s/Str})
+
 (def DdaVmDomainConfig
+  "The convention configuration for managed vms crate."
+  {:user {:name s/Str
+          :password Secret
+          :email s/Str
+          (s/optional-key :ssh) {:ssh-public-key Secret
+                                 :ssh-private-key Secret}
+          (s/optional-key :gpg) {:gpg-public-key Secret
+                                 :gpg-private-key Secret
+                                 :gpg-passphrase Secret}}
+   :type (s/enum :desktop-minimal :desktop-office :remote)})
+
+(def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
   {:user {:name s/Str
           :password s/Str
@@ -30,13 +46,12 @@
           (s/optional-key :gpg) {:gpg-public-key s/Str
                                  :gpg-private-key s/Str
                                  :gpg-passphrase s/Str}}
-   :platform (s/enum :virtualbox :aws)})
+   :type (s/enum :desktop-minimal :desktop-office :remote)})
 
 (def InfraResult {infra/facility infra/DdaVmConfig})
 
-
 (s/defn ^:always-validate user-config
-  [domain-config :- DdaVmDomainConfig]
+  [domain-config :- DdaVmDomainResolvedConfig]
   (let [{:keys [user]} domain-config]
     {(keyword (:name user))
      (merge
@@ -47,7 +62,7 @@
 
 (s/defn ^:always-validate vm-git-config
  "Git repos for VM"
- [domain-config :- DdaVmDomainConfig]
+ [domain-config :- DdaVmDomainResolvedConfig]
  (let [{:keys [user]} domain-config
        {:keys [name email]} user]
    {:os-user (keyword name)
@@ -58,17 +73,17 @@
 
 (s/defn ^:always-validate vm-serverspec-config
  "serverspec for VM"
- [domain-config :- DdaVmDomainConfig]
- (let [{:keys [platform user]} domain-config]
+ [domain-config :- DdaVmDomainResolvedConfig]
+ (let [{:keys [type user]} domain-config]
    (cond
-     (= platform :aws)
+     (= type :remote)
      {:package {:xfce4 {:installed? true}}
       :netstat {:Xtightvnc {:port "5901"}}}
      :default {})))
 
 (s/defn ^:always-validate vm-backup-config
   "Managed vm crate default configuration"
-  [domain-config :- DdaVmDomainConfig]
+  [domain-config :- DdaVmDomainResolvedConfig]
   (let [{:keys [user]} domain-config
         {:keys [name]} user]
     {:backup-name "dda-managed-vm"
@@ -83,8 +98,8 @@
 
 (s/defn ^:always-validate infra-configuration :- InfraResult
   "Managed vm crate default configuration"
-  [domain-config :- DdaVmDomainConfig]
-  (let [{:keys [user platform]} domain-config
+  [domain-config :- DdaVmDomainResolvedConfig]
+  (let [{:keys [user type]} domain-config
         {:keys [name]} user]
     {infra/facility
       (merge
@@ -97,12 +112,15 @@
                                         ["https://web.telegram.org/" "Telegram"]
                                         ["http://www.meebl.de/" "meebl"]]}]}]}
         (cond
-          (= platform :virtualbox)
+          (= type :desktop-minimal)
+          {:settings
+            #{:install-virtualbox-guest :install-analysis}}
+          (= type :desktop-office)
           {:settings
             #{:install-virtualbox-guest
               :install-libreoffice :install-open-jdk-8
               :install-analysis :install-git :install-password-store}}
-          (= platform :aws)
+          (= type :remote)
           {:tightvnc-server {:user-password "test"}
            :settings
            #{:install-xfce-desktop :install-open-jdk-8 :install-analysis
