@@ -46,19 +46,20 @@
   [domain-config :- domain/DdaVmDomainConfig]
   (let [{:keys [user type]} domain-config
         {:keys [ssh gpg]} user]
-    {:type type
-     :user (merge
-             user
-             {:password (secret-resolver/resolve-secret (:password user))}
-             (if (contains? user :ssh)
-              {:ssh {:ssh-public-key (secret-resolver/resolve-secret (:ssh-public-key ssh))
-                     :ssh-private-key (secret-resolver/resolve-secret (:ssh-private-key ssh))}}
-              {})
-             (if (contains? user :gpg)
-              {:gpg {:gpg-public-key (secret-resolver/resolve-secret (:gpg-public-key gpg))
-                     :gpg-private-key (secret-resolver/resolve-secret (:gpg-private-key gpg))
-                     :gpg-passphrase (secret-resolver/resolve-secret (:gpg-passphrase gpg))}}
-              {}))}))
+    (merge
+      domain-config
+      {:user (merge
+               user
+               {:password (secret-resolver/resolve-secret (:password user))}
+               (if (contains? user :ssh)
+                {:ssh {:ssh-public-key (secret-resolver/resolve-secret (:ssh-public-key ssh))
+                       :ssh-private-key (secret-resolver/resolve-secret (:ssh-private-key ssh))}}
+                {})
+               (if (contains? user :gpg)
+                {:gpg {:gpg-public-key (secret-resolver/resolve-secret (:gpg-public-key gpg))
+                       :gpg-private-key (secret-resolver/resolve-secret (:gpg-private-key gpg))
+                       :gpg-passphrase (secret-resolver/resolve-secret (:gpg-passphrase gpg))}}
+                {}))})))
 
 (s/defn ^:always-validate app-configuration :- DdaVmAppConfig
  [domain-config :- domain/DdaVmDomainConfig
