@@ -18,11 +18,13 @@
 (defn vm-git-config
  "Git repos for VM"
  [domain-config]
- (let [{:keys [user]} domain-config
+ (let [{:keys [user type]} domain-config
        {:keys [name email]
         :or {email (str name "@mydomain")}} user]
    {:os-user (keyword name)
     :user-email email
-    :repos {:stuff
-            ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"
-             "https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}}))
+    :repos (if (= type :desktop-minimal)
+             {}
+             {:stuff
+              ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"
+               "https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]})}))

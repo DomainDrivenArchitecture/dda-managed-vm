@@ -30,7 +30,7 @@
   "The convention configuration for managed vms crate."
   {:user {:name s/Str
           :password Secret
-          :email s/Str
+          (s/optional-key :email) s/Str
           (s/optional-key :ssh) {:ssh-public-key Secret
                                  :ssh-private-key Secret}
           (s/optional-key :gpg) {:gpg-public-key Secret
