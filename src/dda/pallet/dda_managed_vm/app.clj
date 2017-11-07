@@ -64,11 +64,13 @@
  [domain-config :- domain/DdaVmDomainConfig
   & options]
  (let [{:keys [group-key] :or {group-key infra/facility}} options
-       resolved-domain-config (resolve-secrets domain-config)]
+       resolved-domain-config (resolve-secrets domain-config)
+       {:keys [type]} resolved-domain-config]
    (mu/deep-merge
      (user/app-configuration (domain/user-config resolved-domain-config) :group-key group-key)
-     ; TODO - only if install-git is selected
-     (git/app-configuration (domain/vm-git-config resolved-domain-config) :group-key group-key)
+     (if (= type :desktop-minimal)
+       {}
+       (git/app-configuration (domain/vm-git-config resolved-domain-config) :group-key group-key))
      (serverspec/app-configuration (domain/vm-serverspec-config resolved-domain-config) :group-key group-key)
      {:group-specific-config
         {group-key (domain/infra-configuration resolved-domain-config)}})))
