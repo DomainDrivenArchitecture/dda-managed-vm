@@ -5,8 +5,8 @@
 ; to you under the Apache License, Version 2.0 (the
 ; "License"); you may not use this file except in compliance
 ; with the License. You may obtain a copy of the License at
-; http://www.apache.org/licenses/LICENSE-2.0
 ;
+; http://www.apache.org/licenses/LICENSE-2.0
 ;
 ; Unless required by applicable law or agreed to in writing, software
 ; distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,6 +18,8 @@
     [schema.core :as s]
     [dda.config.commons.map-utils :as mu]
     [dda.pallet.dda-managed-vm.domain.user :as user]
+    [dda.pallet.dda-managed-vm.domain.git :as git]
+    [dda.pallet.dda-managed-vm.domain.bookmark :as bookmark]
     [dda.pallet.dda-managed-vm.infra :as infra]))
 
 (def Secret {(s/optional-key :plain) s/Str
@@ -34,19 +36,21 @@
           (s/optional-key :gpg) {:gpg-public-key Secret
                                  :gpg-private-key Secret
                                  :gpg-passphrase Secret}}
-   :type (s/enum :desktop-minimal :desktop-office :remote)})
+   :type (s/enum :desktop-minimal :desktop-office :remote)
+   (s/optional-key :bookmarks) infra/Bookmarks})
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
   {:user {:name s/Str
           :password s/Str
-          :email s/Str
+          (s/optional-key :email) s/Str
           (s/optional-key :ssh) {:ssh-public-key s/Str
                                  :ssh-private-key s/Str}
           (s/optional-key :gpg) {:gpg-public-key s/Str
                                  :gpg-private-key s/Str
                                  :gpg-passphrase s/Str}}
-   :type (s/enum :desktop-minimal :desktop-office :remote)})
+   :type (s/enum :desktop-minimal :desktop-office :remote)
+   (s/optional-key :bookmarks) infra/Bookmarks})
 
 (def InfraResult {infra/facility infra/DdaVmConfig})
 
@@ -63,13 +67,7 @@
 (s/defn ^:always-validate vm-git-config
  "Git repos for VM"
  [domain-config :- DdaVmDomainResolvedConfig]
- (let [{:keys [user]} domain-config
-       {:keys [name email]} user]
-   {:os-user (keyword name)
-    :user-email email
-    :repos {:stuff
-            ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"
-             "https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}}))
+ (git/vm-git-config domain-config))
 
 (s/defn ^:always-validate vm-serverspec-config
  "serverspec for VM"
@@ -104,13 +102,7 @@
     {infra/facility
       (merge
         {:vm-user (keyword name)
-         :bookmarks [{:name "Bookmarks Toolbar"
-                      :links [["https://domaindrivenarchitecture.org/" "dda"]]
-                      :childs [{:name "WebConf"
-                                :links [["https://meet.jit.si/dda-pallet" "jitsi dda-pallet"]
-                                        ["http://meetingwords.com/" "MeetingWords"]
-                                        ["https://web.telegram.org/" "Telegram"]
-                                        ["http://www.meebl.de/" "meebl"]]}]}]}
+         :bookmarks (bookmark/bookmarks domain-config)}
         (cond
           (= type :desktop-minimal)
           {:settings

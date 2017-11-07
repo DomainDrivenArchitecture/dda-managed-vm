@@ -1,6 +1,18 @@
-; Copyright (c) meissa GmbH. All rights reserved.
-; You must not remove this notice, or any other, from this software.
-
+; Licensed to the Apache Software Foundation (ASF) under one
+; or more contributor license agreements. See the NOTICE file
+; distributed with this work for additional information
+; regarding copyright ownership. The ASF licenses this file
+; to you under the Apache License, Version 2.0 (the
+; "License"); you may not use this file except in compliance
+; with the License. You may obtain a copy of the License at
+;
+; http://www.apache.org/licenses/LICENSE-2.0
+;
+; Unless required by applicable law or agreed to in writing, software
+; distributed under the License is distributed on an "AS IS" BASIS,
+; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+; See the License for the specific language governing permissions and
+; limitations under the License.
 (ns dda.pallet.dda-managed-vm.app
   (:require
     [schema.core :as s]
@@ -13,7 +25,7 @@
     [dda.pallet.dda-managed-vm.infra :as infra]
     [dda.pallet.dda-managed-vm.domain :as domain]
     [dda.pallet.commons.external-config :as ext-config]
-    [dda.pallet.commons.passwordstore-adapter :as adapter]))
+    [dda.pallet.dda-managed-vm.app.secret-resolver :as secret-resolver]))
 
 (def with-dda-vm infra/with-dda-vm)
 
@@ -30,25 +42,23 @@
   [file-name :- s/Str]
   (ext-config/parse-config file-name))
 
-(s/defn ^:always-validate resolve-secret :- s/Str
-  [secret :- domain/Secret]
-  (cond
-    (contains? secret :plain) (:plain secret)
-    (contains? secret :password-store-single) (adapter/get-secret-wo-newline (:password-store-single secret))
-    (contains? secret :password-store-multi) (adapter/get-secret (:password-store-multi secret))))
-
 (s/defn resolve-secrets :- domain/DdaVmDomainResolvedConfig
   [domain-config :- domain/DdaVmDomainConfig]
   (let [{:keys [user type]} domain-config
         {:keys [ssh gpg]} user]
     {:type type
-     :user (assoc user
-                  :password (resolve-secret (:password user))
-                  :ssh {:ssh-public-key (resolve-secret (:ssh-public-key ssh))
-                        :ssh-private-key (resolve-secret (:ssh-private-key ssh))}
-                  :gpg {:gpg-public-key (resolve-secret (:gpg-public-key gpg))
-                        :gpg-private-key (resolve-secret (:gpg-private-key gpg))
-                        :gpg-passphrase (resolve-secret (:gpg-passphrase gpg))})}))
+     :user (merge
+             user
+             {:password (secret-resolver/resolve-secret (:password user))}
+             (if (contains? user :ssh)
+              {:ssh {:ssh-public-key (secret-resolver/resolve-secret (:ssh-public-key ssh))
+                     :ssh-private-key (secret-resolver/resolve-secret (:ssh-private-key ssh))}}
+              {})
+             (if (contains? user :gpg)
+              {:gpg {:gpg-public-key (secret-resolver/resolve-secret (:gpg-public-key gpg))
+                     :gpg-private-key (secret-resolver/resolve-secret (:gpg-private-key gpg))
+                     :gpg-passphrase (secret-resolver/resolve-secret (:gpg-passphrase gpg))}}
+              {}))}))
 
 (s/defn ^:always-validate app-configuration :- DdaVmAppConfig
  [domain-config :- domain/DdaVmDomainConfig

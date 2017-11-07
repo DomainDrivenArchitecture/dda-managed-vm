@@ -23,15 +23,20 @@
 
 (def config-1
   {:user {:name  "test"
-          :password "pwd"
-          :email "email"}
+          :password "pwd"}
    :type :remote})
 
 (def config-2
   {:user {:name  "test"
-          :password "pwd"
-          :email "email"}
+          :password "pwd"}
    :type :desktop-office})
+
+(def config-3
+  {:type :desktop-minimal
+   :bookmarks [{:name "Bookmarks Toolbar"
+                :links [["url" "name"]]}]
+   :user {:name  "test"
+          :password "pwd"}})
 
 (deftest test-git-config
   (testing
@@ -46,3 +51,10 @@
     (is (thrown? Exception (sut/vm-serverspec-config {})))
     (is (sut/vm-serverspec-config config-1))
     (is (sut/vm-serverspec-config config-2))))
+
+(deftest test-infra-configuration
+  (testing
+    "test the serverspec config creation"
+    (is (thrown? Exception (sut/infra-configuration {})))
+    (is (sut/infra-configuration config-1))
+    (is (sut/infra-configuration config-3))))
