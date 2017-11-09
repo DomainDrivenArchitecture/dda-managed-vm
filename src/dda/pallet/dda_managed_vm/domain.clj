@@ -26,8 +26,7 @@
              (s/optional-key :password-store-single) s/Str
              (s/optional-key :password-store-multi) s/Str})
 
-(def DdaVmDomainConfig
-  "The convention configuration for managed vms crate."
+(def DdaVmUser
   {:user {:name s/Str
           :password Secret
           (s/optional-key :email) s/Str
@@ -35,9 +34,18 @@
                                  :ssh-private-key Secret}
           (s/optional-key :gpg) {:gpg-public-key Secret
                                  :gpg-private-key Secret
-                                 :gpg-passphrase Secret}}
-   :type (s/enum :desktop-minimal :desktop-office :remote)
-   (s/optional-key :bookmarks) infra/Bookmarks})
+                                 :gpg-passphrase Secret}}})
+
+(def DdaVmBookmarks
+  {(s/optional-key :bookmarks) infra/Bookmarks})
+
+(def DdaVmDomainConfig
+  "The convention configuration for managed vms crate."
+  (merge
+    DdaVmUser
+    DdaVmBookmarks
+    {:type (s/enum :desktop-minimal :desktop-office :remote)}))
+
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
