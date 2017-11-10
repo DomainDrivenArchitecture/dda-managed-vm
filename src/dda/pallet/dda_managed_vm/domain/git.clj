@@ -25,6 +25,7 @@
     :user-email email
     :repos (if (= type :desktop-minimal)
              {}
-             {:stuff
-              ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"
-               "https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]})}))
+             {:book
+              ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]
+              :password-store
+              ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]})}))
