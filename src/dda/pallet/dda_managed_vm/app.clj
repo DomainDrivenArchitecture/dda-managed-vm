@@ -18,14 +18,14 @@
     [schema.core :as s]
     [dda.cm.group :as group]
     [dda.config.commons.map-utils :as mu]
+    [dda.pallet.commons.secret :as secret]
     [dda.pallet.dda-config-crate.infra :as config-crate]
     [dda.pallet.dda-git-crate.app :as git]
     [dda.pallet.dda-user-crate.app :as user]
     [dda.pallet.dda-serverspec-crate.app :as serverspec]
     [dda.pallet.dda-managed-vm.infra :as infra]
     [dda.pallet.dda-managed-vm.domain :as domain]
-    [dda.pallet.commons.external-config :as ext-config]
-    [dda.pallet.dda-managed-vm.app.secret-resolver :as secret-resolver]))
+    [dda.pallet.commons.external-config :as ext-config]))
 
 (def with-dda-vm infra/with-dda-vm)
 
@@ -50,15 +50,15 @@
       domain-config
       {:user (merge
                user
-               {:password (secret-resolver/resolve-secret (:password user))}
+               {:password (secret/resolve-secret (:password user))}
                (if (contains? user :ssh)
-                {:ssh {:ssh-public-key (secret-resolver/resolve-secret (:ssh-public-key ssh))
-                       :ssh-private-key (secret-resolver/resolve-secret (:ssh-private-key ssh))}}
+                {:ssh {:ssh-public-key (secret/resolve-secret (:ssh-public-key ssh))
+                       :ssh-private-key (secret/resolve-secret (:ssh-private-key ssh))}}
                 {})
                (if (contains? user :gpg)
-                {:gpg {:gpg-public-key (secret-resolver/resolve-secret (:gpg-public-key gpg))
-                       :gpg-private-key (secret-resolver/resolve-secret (:gpg-private-key gpg))
-                       :gpg-passphrase (secret-resolver/resolve-secret (:gpg-passphrase gpg))}}
+                {:gpg {:gpg-public-key (secret/resolve-secret (:gpg-public-key gpg))
+                       :gpg-private-key (secret/resolve-secret (:gpg-private-key gpg))
+                       :gpg-passphrase (secret/resolve-secret (:gpg-passphrase gpg))}}
                 {}))})))
 
 (s/defn ^:always-validate app-configuration :- DdaVmAppConfig

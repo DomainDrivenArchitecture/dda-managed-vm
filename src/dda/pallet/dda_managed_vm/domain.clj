@@ -17,24 +17,21 @@
   (:require
     [schema.core :as s]
     [dda.config.commons.map-utils :as mu]
+    [dda.pallet.commons.secret :as secret]
     [dda.pallet.dda-managed-vm.domain.user :as user]
     [dda.pallet.dda-managed-vm.domain.git :as git]
     [dda.pallet.dda-managed-vm.domain.bookmark :as bookmark]
     [dda.pallet.dda-managed-vm.infra :as infra]))
 
-(def Secret {(s/optional-key :plain) s/Str
-             (s/optional-key :password-store-single) s/Str
-             (s/optional-key :password-store-multi) s/Str})
-
 (def DdaVmUser
   {:user {:name s/Str
-          :password Secret
+          :password secret/Secret
           (s/optional-key :email) s/Str
-          (s/optional-key :ssh) {:ssh-public-key Secret
-                                 :ssh-private-key Secret}
-          (s/optional-key :gpg) {:gpg-public-key Secret
-                                 :gpg-private-key Secret
-                                 :gpg-passphrase Secret}}})
+          (s/optional-key :ssh) {:ssh-public-key secret/Secret
+                                 :ssh-private-key secret/Secret}
+          (s/optional-key :gpg) {:gpg-public-key secret/Secret
+                                 :gpg-private-key secret/Secret
+                                 :gpg-passphrase secret/Secret}}})
 
 (def DdaVmBookmarks
   {(s/optional-key :bookmarks) infra/Bookmarks})
