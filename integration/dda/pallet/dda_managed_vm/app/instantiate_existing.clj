@@ -45,20 +45,18 @@
      (provisioning-spec target-config domain-config)
      :summarize-session true)))
 
-(defn apply-configure
-  [& options]
-  (let [{:keys [summarize-session]}
-        :or {summarize-session true} options]
+(defn apply-configure []
+  (let [target-config (existing/load-targets "targets.edn")
+        domain-config (app/load-domain "vm.edn")]
     (operation/do-apply-configure
-     (provider)
-     (provisioning-spec)
-     :summarize-session summarize-session)))
+     (provider target-config)
+     (provisioning-spec target-config domain-config)
+     :summarize-session true)))
 
-(defn test "executes the tests on the server"
-  [& options]
-  (let [{:keys [summarize-session]}
-        :or {summarize-session true} options]
+(defn test []
+  (let [target-config (existing/load-targets "targets.edn")
+        domain-config (app/load-domain "vm.edn")]
     (operation/do-server-test
-     (provider)
-     (provisioning-spec)
-     :summarize-session summarize-session)))
+     (provider target-config)
+     (provisioning-spec target-config domain-config)
+     :summarize-session true)))
