@@ -80,8 +80,8 @@
  (let [{:keys [type user]} domain-config]
    (cond
      (= type :remote)
-     {:package {:xfce4 {:installed? true}}
-      :netstat {:Xtightvnc {:port "5901"}}}
+     {:package [{:name "xfce4" :installed? true}]
+      :netstat [{:process-name "Xtightvnc" :port "5901"}]}
      :default {})))
 
 (s/defn ^:always-validate vm-backup-config

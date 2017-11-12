@@ -19,6 +19,7 @@
     [dda.cm.group :as group]
     [dda.config.commons.map-utils :as mu]
     [dda.pallet.commons.secret :as secret]
+    [dda.pallet.commons.existing :as existing]
     [dda.pallet.dda-config-crate.infra :as config-crate]
     [dda.pallet.dda-git-crate.app :as git]
     [dda.pallet.dda-user-crate.app :as user]
@@ -29,7 +30,13 @@
 
 (def with-dda-vm infra/with-dda-vm)
 
+(def DdaVmDomainConfig domain/DdaVmDomainConfig)
+
 (def InfraResult domain/InfraResult)
+
+(def ProvisioningUser existing/ProvisioningUser)
+
+(def Targets existing/Targets)
 
 (def DdaVmAppConfig
   {:group-specific-config
@@ -38,12 +45,16 @@
                      user/InfraResult
                      serverspec/InfraResult)}})
 
-(s/defn ^:always-validate load-domain :- domain/DdaVmDomainConfig
+(s/defn ^:always-validate load-targets :- Targets
+  [file-name :- s/Str]
+  (ext-config/parse-config file-name))
+
+(s/defn ^:always-validate load-domain :- DdaVmDomainConfig
   [file-name :- s/Str]
   (ext-config/parse-config file-name))
 
 (s/defn resolve-secrets :- domain/DdaVmDomainResolvedConfig
-  [domain-config :- domain/DdaVmDomainConfig]
+  [domain-config :- DdaVmDomainConfig]
   (let [{:keys [user type]} domain-config
         {:keys [ssh gpg]} user]
     (merge
@@ -62,7 +73,7 @@
                 {}))})))
 
 (s/defn ^:always-validate app-configuration :- DdaVmAppConfig
- [domain-config :- domain/DdaVmDomainConfig
+ [domain-config :- DdaVmDomainConfig
   & options]
  (let [{:keys [group-key] :or {group-key infra/facility}} options
        resolved-domain-config (resolve-secrets domain-config)
@@ -82,3 +93,11 @@
                user/with-user
                git/with-git
                with-dda-vm]))
+
+(s/defn ^:always-validate existing-provisioning-spec
+  "Creates an integrated group spec from a domain config and a provisioning user."
+  [domain-config :- DdaVmDomainConfig
+   provisioning-user :- ProvisioningUser]
+  (merge
+   (vm-group-spec (app-configuration domain-config))
+   (existing/node-spec provisioning-user)))
