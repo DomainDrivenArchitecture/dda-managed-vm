@@ -37,26 +37,38 @@
     (existing/provider
      {infra/facility existing})))
 
-(defn apply-install []
-  (let [target-config (existing/load-targets "targets.edn")
-        domain-config (app/load-domain "vm.edn")]
+(defn apply-install
+  [& options]
+  (let [{:keys [domain targets]
+         :or {domain "vm.edn"
+              targets "targets.edn"}} options
+        target-config (existing/load-targets targets)
+        domain-config (app/load-domain domain)]
     (operation/do-apply-install
      (provider target-config)
      (provisioning-spec target-config domain-config)
      :summarize-session true)))
 
-(defn apply-configure []
-  (let [target-config (existing/load-targets "targets.edn")
-        domain-config (app/load-domain "vm.edn")]
+(defn apply-configure
+  [& options]
+  (let [{:keys [domain targets]
+         :or {domain "vm.edn"
+              targets "targets.edn"}} options
+        target-config (existing/load-targets targets)
+        domain-config (app/load-domain domain)]
     (operation/do-apply-configure
-     (provider target-config)
-     (provisioning-spec target-config domain-config)
-     :summarize-session true)))
+      (provider target-config)
+      (provisioning-spec target-config domain-config)
+      :summarize-session true)))
 
-(defn test []
-  (let [target-config (existing/load-targets "targets.edn")
-        domain-config (app/load-domain "vm.edn")]
+(defn test
+  [& options]
+  (let [{:keys [domain targets]
+         :or {domain "vm.edn"
+              targets "targets.edn"}} options
+        target-config (existing/load-targets targets)
+        domain-config (app/load-domain domain)]
     (operation/do-server-test
-     (provider target-config)
-     (provisioning-spec target-config domain-config)
-     :summarize-session true)))
+      (provider target-config)
+      (provisioning-spec target-config domain-config)
+      :summarize-session true)))

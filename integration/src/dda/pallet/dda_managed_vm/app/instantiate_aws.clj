@@ -18,64 +18,49 @@
     [clojure.inspector :as inspector]
     [schema.core :as s]
     [pallet.api :as api]
-    [pallet.compute :as compute]
-    [dda.pallet.commons.encrypted-credentials :as crypto]
     [dda.pallet.commons.operation :as operation]
     [dda.pallet.commons.aws :as cloud-target]
-    [dda.config.commons.user-env :as user-env]
     [dda.pallet.dda-managed-vm.app :as app]))
 
-(def ssh-pub-key
-  (user-env/read-ssh-pub-key-to-config))
-
-(def user-config
-   {:user-name {:hashed-password  "xxx"
-                :authorized-keys [ssh-pub-key]}})
-
-(def vm-config
-  {:vm-user :test-user
-   :platform :aws
-   :user-email "user-name@mydomain.org"})
-
-(defn provisioning-spec [target-config domain-config count]
+(defn provisioning-spec [domain-config target-config count]
   (merge
     (app/vm-group-spec
       (app/app-configuration domain-config))
-    (cloud-target/node-spec "jem")
+    (cloud-target/node-spec target-config)
     {:count count}))
 
 (defn converge-install
   [count & options]
-  (let [{:keys [gpg-key-id gpg-passphrase
-                summarize-session]
-         :or {summarize-session true}} options]
+  (let [{:keys [gpg-key-id gpg-passphrase domain targets]
+         :or {domain "vm.edn"
+              targets "integration/resources/jem-aws-target-external.edn"}} options
+        target-config (cloud-target/load-targets targets)
+        domain-config (app/load-domain domain)]
    (operation/do-converge-install
-     (if (some? gpg-key-id)
-       (cloud-target/provider gpg-key-id gpg-passphrase)
-       (cloud-target/provider))
-     (provisioning-spec count)
-     :summarize-session summarize-session)))
+     (cloud-target/provider (:context target-config))
+     (provisioning-spec domain-config (:node-spec target-config) count)
+     :summarize-session true)))
 
 (defn configure
  [& options]
- (let [{:keys [gpg-key-id gpg-passphrase
-               summarize-session]
-        :or {summarize-session true}} options]
+ (let [{:keys [gpg-key-id gpg-passphrase domain targets]
+        :or {domain "vm.edn"
+             targets "integration/resources/jem-aws-target-external.edn"}} options
+       target-config (cloud-target/load-targets targets)
+       domain-config (app/load-domain domain)]
   (operation/do-apply-configure
-    (if (some? gpg-key-id)
-      (cloud-target/provider gpg-key-id gpg-passphrase)
-      (cloud-target/provider))
-    (provisioning-spec 0)
-    :summarize-session summarize-session)))
+    (cloud-target/provider (:context target-config))
+    (provisioning-spec domain-config (:node-spec target-config) 0)
+    :summarize-session true)))
 
 (defn serverspec
   [& options]
-  (let [{:keys [gpg-key-id gpg-passphrase
-                summarize-session]
-         :or {summarize-session true}} options]
+  (let [{:keys [gpg-key-id gpg-passphrase domain targets]
+         :or {domain "vm.edn"
+              targets "integration/resources/jem-aws-target-external.edn"}} options
+        target-config (cloud-target/load-targets targets)
+        domain-config (app/load-domain domain)]
    (operation/do-server-test
-     (if (some? gpg-key-id)
-       (cloud-target/provider gpg-key-id gpg-passphrase)
-       (cloud-target/provider))
-     (provisioning-spec 0)
-     :summarize-session summarize-session)))
+     (cloud-target/provider (:context target-config))
+     (provisioning-spec domain-config (:node-spec target-config) 0)
+     :summarize-session true)))
