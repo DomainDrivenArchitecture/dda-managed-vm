@@ -21,7 +21,7 @@ The following software/packages are installed by this dda-managed-vm:
 are installed by apt-get and will be updated automatically.
 
 ### Gpg key & ssh key
-Optionally, you can install your gpg- and/or ssh key.
+Optionally, you can install your gpg- and/or ssh keys.
 
 ### Team-able passwordstore
 Store your passwords in the passwordstore, encrypted by gpg and versioned by git.
@@ -55,14 +55,19 @@ You can install git repositories & servertrust.
 This crate installs and configures software on your virtual machine. You can provision pre-created virtual machines (see paragraph "Prepare vm" below) or cloud instances.
 
 ### Prepare vm
-If you want to use this crate, please ensure you meet the preconditions for the remote machine, i.e. xubuntu and openssh-server installed. You may use the steps below:
+If you want to use this crate, please ensure you meet the preconditions for the remote machine, i.e. xubuntu and openssh-server installed. If not yet installed, you may use the steps below:
 1. Install xubuntu16.04.02
-2. Login with your initial user
+2. Login with your initial user and use:
 ```
 sudo apt-get update
 sudo apt-get upgrade
-sudo apt-get install openssh-server openjdk-7-jre-headless
+sudo apt-get install openssh-server
 ```
+In case you want to install the software on the local machine rahter than remote, you wouldn't need openssh-server but only a Java runtime environment. If not yet available, you can install Java by:
+```
+sudo apt-get install openjdk-7-jre-headless
+```
+
 
 ### Usage Summary
 1. Download the jar-file from the releases page of this repository (e.g. dda-manage-vm-x.x.x-standalone.jar).
