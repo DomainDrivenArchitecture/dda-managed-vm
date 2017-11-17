@@ -34,6 +34,16 @@
        provisioning-user)
      :summarize-session true)))
 
+(defn execute-configure
+  [domain-config targets]
+  (let [{:keys [existing provisioning-user]} targets]
+    (operation/do-apply-configure
+     (existing/provider {:dda-managed-vm existing})
+     (app/existing-provisioning-spec
+       domain-config
+       provisioning-user)
+     :summarize-session true)))
+
 (defn execute-install
   [domain-config targets]
   (let [{:keys [existing provisioning-user]} targets]
@@ -47,6 +57,7 @@
 (def cli-options
   [["-h" "--help"]
    ["-s" "--server-test"]
+   ["-c" "--configure"]
    ["-t" "--targets TARGETS.edn" "edn file containing the targets to install on."
     :default "targets.edn"]])
 
@@ -80,8 +91,11 @@
       errors (exit 1 (error-msg errors))
       (not= (count arguments) 1) (exit 1 (usage summary))
       (:server-test options) (execute-server-test
-                                        (app/load-domain (first arguments))
-                                        (app/load-targets (:targets options)))
+                               (app/load-domain (first arguments))
+                               (app/load-targets (:targets options)))
+      (:configure options) (execute-configure
+                             (app/load-domain (first arguments))
+                             (app/load-targets (:targets options)))
       :default (execute-install
                  (app/load-domain (first arguments))
                  (app/load-targets (:targets options))))))

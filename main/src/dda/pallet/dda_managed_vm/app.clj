@@ -47,7 +47,7 @@
 
 (s/defn ^:always-validate load-targets :- Targets
   [file-name :- s/Str]
-  (ext-config/parse-config file-name))
+  (existing/load-targets file-name))
 
 (s/defn ^:always-validate load-domain :- DdaVmDomainConfig
   [file-name :- s/Str]

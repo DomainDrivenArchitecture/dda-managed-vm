@@ -32,7 +32,7 @@
 (defn converge-install
   [count & options]
   (let [{:keys [gpg-key-id gpg-passphrase domain targets]
-         :or {domain "vm.edn"
+         :or {domain "integration/resources/snakeoil-vm-remote.edn"
               targets "integration/resources/jem-aws-target-external.edn"}} options
         target-config (cloud-target/load-targets targets)
         domain-config (app/load-domain domain)]
@@ -44,7 +44,7 @@
 (defn configure
  [& options]
  (let [{:keys [gpg-key-id gpg-passphrase domain targets]
-        :or {domain "vm.edn"
+        :or {domain "integration/resources/snakeoil-vm-remote.edn"
              targets "integration/resources/jem-aws-target-external.edn"}} options
        target-config (cloud-target/load-targets targets)
        domain-config (app/load-domain domain)]
@@ -56,7 +56,7 @@
 (defn serverspec
   [& options]
   (let [{:keys [gpg-key-id gpg-passphrase domain targets]
-         :or {domain "vm.edn"
+         :or {domain "integration/resources/snakeoil-vm-remote.edn"
               targets "integration/resources/jem-aws-target-external.edn"}} options
         target-config (cloud-target/load-targets targets)
         domain-config (app/load-domain domain)]
