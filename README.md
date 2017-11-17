@@ -4,30 +4,35 @@
 
 [![Slack](https://img.shields.io/badge/chat-clojurians-green.svg?style=flat)](https://clojurians.slack.com/messages/#dda-pallet/) | [<img src="https://domaindrivenarchitecture.org/img/meetup.svg" width=50 alt="DevOps Hacking with Clojure Meetup"> DevOps Hacking with Clojure](https://www.meetup.com/de-DE/preview/dda-pallet-DevOps-Hacking-with-Clojure) | [Website & Blog](https://domaindrivenarchitecture.org)
 
-## compatability
+## Compatibility
 
-This crate is working with:
+This crate works with:
  * pallet 0.8
  * clojure 1.7
  * xubuntu 16.04.02
 
 ## Features
+
+This crate automatically installs software on a Linux system. It can be a standalone system, but normally would be a virtual machine. For this reason we usually refer to the system as "virtual machine" in the text below.
+
+The following software/packages are installed by this dda-managed-vm:
+
 ### VirtualBox Tools
 are installed by apt-get and will be updated automatically.
 
-### Browser & Bookmarks
-You can seed some bookmarks in ~/bookmark.html in order to import in ffox or chromium.
+### Gpg key & ssh key
+Optionally, you can install your gpg- and/or ssh key.
 
-### Team able passwordstore
-Store your passwords encrypted by gpg and versioned by git.
-For more details see: https://www.passwordstore.org/ and https://github.com/DomainDrivenArchitecture/password-store-for-teams
-In order to test you can
+### Team-able passwordstore
+Store your passwords in the passwordstore, encrypted by gpg and versioned by git.
+For more details see: https://www.passwordstore.org/ and https://github.com/DomainDrivenArchitecture/password-store-for-teams.
+In order to test you can use:
 ```
 demo-pass                       #see all passwords stored
-demo-pass testuser/demo-secret  # decrypt the demo-secret. Works if youve installed the snakeoil key
+demo-pass testuser/demo-secret  #decrypt the demo-secret. Works, if you've installed the snakeoil key.
 ```
-### tightvnc-server (experimental)
-You may connect to your vm using a vnc tool (eg. gtk-vnc) using:
+### Tightvnc-server (experimental)
+Tightvnc software allows you to connect to your vm and control it with a vnc tool (eg. gtk-vnc) using:
 ```
  server: [ip]:5091
  account: [vm-user]
@@ -35,11 +40,11 @@ You may connect to your vm using a vnc tool (eg. gtk-vnc) using:
 ```
 You can find a configuration example here: `integration/resources/snakeoil-vm-remote.edn`
 
-### gpg key & ssh key
-As part of dda-user-crate your gpg- and ssh key can be installed.
+### Browser & Bookmarks
+Some bookmarks are installed in `~/bookmark.html`, which you can import in your browser, e.g. Firefox or Google Chrome.
 
-### git & git repos
-As part of dda-git-crate you can preinstall git repositories & servertrust.
+### Git & git repos
+You can install git repositories & servertrust.
 
 ### More Software
 * Java JRE 1.8
@@ -47,11 +52,12 @@ As part of dda-git-crate you can preinstall git repositories & servertrust.
 * htop, iotop, iftop, strace, mtr in case of low level debugging.
 
 ## Usage documentation
-This crate installs and configures your desktop (-vm). You can provision precreated desktops (see Prepare VM) or cloud instances.
+This crate installs and configures software on your virtual machine. You can provision pre-created virtual machines (see paragraph "Prepare vm" below) or cloud instances.
 
-### Prepare vm (optional)
-1. install xubuntu16.04.02
-2. login with your initial user
+### Prepare vm
+If you want to use this crate, please ensure you meet the preconditions for the remote machine, i.e. xubuntu and openssh-server installed. You may use the steps below:
+1. Install xubuntu16.04.02
+2. Login with your initial user
 ```
 sudo apt-get update
 sudo apt-get upgrade
@@ -59,28 +65,32 @@ sudo apt-get install openssh-server openjdk-7-jre-headless
 ```
 
 ### Usage Summary
-1. Download the jar from the releases page of this repository
-2. Deploy jar on the source machine
-3. Adjust vm.edn (Domain-Schema for your desktop) and target.edn (Schema for Targets to be provisioned) according to the reference and our example configs
-4. Start installation:
+1. Download the jar-file from the releases page of this repository (e.g. dda-manage-vm-x.x.x-standalone.jar).
+2. Deploy the jar-file on the source machine
+3. Create the files `vm.edn` (Domain-Schema for your desktop) and `target.edn` (Schema for Targets to be provisioned) according to the reference and our example configurations. Please create them in the same folder where you've saved the jar-file. For more information about these files refer to the corresponding information below.
+4. Start the installation:
 ```bash
 java -jar dda-managed-vm-standalone.jar --targets targets.edn vm.edn
 ```
 
 ### Configuration
-Configuraion consist in two files,
-* `targets.edn`: describe the target to be provisioned and
-* `vm.edn`: describe your desktop-vm to be installed
+The configuration consists of two files defining both WHERE to install the software and WHAT to install.
+* `targets.edn`: describes on which target system(s) the software will be installed
+* `vm.edn`: describes which software/packages will be installed
 
-#### Targets config Example
+You can download examples of these configuration files from [https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/targets.edn](https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/targets.edn) and [https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/vm.edn](https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/vm.edn) respectively.
+
+#### Targets config example
+Example content of file `targets.edn`:
 ```clojure
 {:existing [{:node-name "test-vm1"            ; semantic name
-             :node-ip "35.157.19.218"}]       ; the ip4 adress to be provisioned
- :provisioning-user {:login "initial"          ; account used to provision
+             :node-ip "35.157.19.218"}]       ; the ip4 address of the machine to be provisioned
+ :provisioning-user {:login "initial"         ; account used to provision
                      :password "secure1234"}} ; optional password, if no ssh key is authorized
 ```
 
-#### VM config Example
+#### VM config example
+Example content of file `vm.edn`:
 ```clojure
 {:type :desktop-office
  :user {:name "test-user"
@@ -95,18 +105,19 @@ Configuraion consist in two files,
               :gpg-passphrase {:plain "passphrase"}}}}
 ```         
 
-The vm config determines the vm-type and user credentials to be installed.
+The vm config defines the software/packages and user credentials of the newly created user to be installed.
 
-### watch log for debug reasons
+### Watch log for debug reasons
+In case of problems you may want to have a look at the log-file:
 `less logs/pallet.log`
 
 ## Reference
-We provide two levels of API - domain is a high level API with many build in conventions. If this conventions doe not fit your needs, you can use our low-level (infra) API and realize your own conventions.
+Some details about the architecture: We provide two levels of API. **Domain** is a high-level API with many build in conventions. If this conventions don't fit your needs, you can use our low-level **infra** API and realize your own conventions.
 
 ### Domain API
 
 #### Targets
-The schema is:
+The schema for the targets config is:
 ```clojure
 (def ExistingNode {:node-name Str                   ; your name for the node
                    :node-ip Str                     ; nodes ip4 address       
@@ -120,10 +131,10 @@ The schema is:
               :provisioning-user ProvisioningUser   ; common user account on all nodes given above
               })
 ```
-The "targets.edn" has the schema of the Targets
+The "targets.edn" uses this schema.
 
-#### Tests
-The schema is:
+#### VM config
+The schema for the vm configuration is:
 ```clojure
 (def Bookmarks
   [{(optional-key :childs) [(recursive
@@ -152,15 +163,15 @@ The schema is:
         (optional-key :email) Str}}                                 ; email for git config
 ```
 
-For `Secret` there can be found more adapters in dda-palet-commons.
+For `Secret` you can find more adapters in dda-palet-commons.
 
 ### Infra API
-The Infra configuration is a configuration on the infrastructure level of a crate. It contains the complete configuration options that are possible with the crate functions. You can find the infra reference of used crates here:
-* dda-user-crate
-* dda-git-crate
-* dda-serverspec-crate
+The Infra configuration is a configuration on the infrastructure level of a crate. It contains the complete configuration options that are possible with the crate functions. You can find the details of the infra configurations at the other crates used:
+* [dda-user-crate](https://github.com/DomainDrivenArchitecture/dda-user-crate)
+* [dda-git-crate](https://github.com/DomainDrivenArchitecture/dda-git-crate)
+* [dda-serverspec-crate](https://github.com/DomainDrivenArchitecture/dda-serverspec-crate)
 
-For vm installation & configuration the schema is:
+For installation & configuration with the dda-managed-vm the schema is:
 ```clojure
 (def DdaVmConfig {
   {:vm-user s/Keyword                                           ; user-name
