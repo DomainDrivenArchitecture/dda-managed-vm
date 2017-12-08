@@ -9,7 +9,7 @@
                  [dda/dda-user-crate "0.7.0"]
                  [dda/dda-serverspec-crate "0.4.0"]
                  [dda/dda-git-crate "0.2.2"]
-                 [dda/dda-backup-crate "0.7.0-SNAPSHOT"]]
+                 [dda/dda-backup-crate "0.7.0"]]
   :source-paths ["main/src"]
   :resource-paths ["main/resources"]
   :repositories [["snapshots" :clojars]
