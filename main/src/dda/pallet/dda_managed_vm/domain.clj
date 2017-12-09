@@ -17,7 +17,7 @@
   (:require
     [schema.core :as s]
     [dda.config.commons.map-utils :as mu]
-    [dda.config.commons.secret :as secret]
+    [dda.pallet.commons.secret :as secret]
     [dda.pallet.dda-managed-vm.domain.user :as user]
     [dda.pallet.dda-managed-vm.domain.git :as git]
     [dda.pallet.dda-managed-vm.domain.bookmark :as bookmark]
