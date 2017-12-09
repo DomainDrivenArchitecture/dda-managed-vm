@@ -33,7 +33,7 @@
   [count & options]
   (let [{:keys [gpg-key-id gpg-passphrase domain targets]
          :or {domain "integration/resources/snakeoil-vm-remote.edn"
-              targets "integration/resources/jem-aws-target-external.edn"}} options
+              targets "integration/resources/jem-aws-target.edn"}} options
         target-config (cloud-target/load-targets targets)
         domain-config (app/load-domain domain)]
    (operation/do-converge-install
@@ -45,7 +45,7 @@
  [& options]
  (let [{:keys [gpg-key-id gpg-passphrase domain targets]
         :or {domain "integration/resources/snakeoil-vm-remote.edn"
-             targets "integration/resources/jem-aws-target-external.edn"}} options
+             targets "integration/resources/jem-aws-target.edn"}} options
        target-config (cloud-target/load-targets targets)
        domain-config (app/load-domain domain)]
   (operation/do-apply-configure
@@ -57,7 +57,7 @@
   [& options]
   (let [{:keys [gpg-key-id gpg-passphrase domain targets]
          :or {domain "integration/resources/snakeoil-vm-remote.edn"
-              targets "integration/resources/jem-aws-target-external.edn"}} options
+              targets "integration/resources/jem-aws-target.edn"}} options
         target-config (cloud-target/load-targets targets)
         domain-config (app/load-domain domain)]
    (operation/do-server-test

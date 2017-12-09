@@ -18,7 +18,7 @@
     [schema.core :as s]
     [dda.cm.group :as group]
     [dda.config.commons.map-utils :as mu]
-    [dda.pallet.commons.secret :as secret]
+    [dda.config.commons.secret :as secret]
     [dda.pallet.commons.existing :as existing]
     [dda.pallet.dda-config-crate.infra :as config-crate]
     [dda.pallet.dda-git-crate.app :as git]
