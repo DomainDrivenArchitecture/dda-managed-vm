@@ -33,6 +33,16 @@
                                  :gpg-private-key secret/Secret
                                  :gpg-passphrase secret/Secret}}})
 
+(def DdaVmUserResolved
+  {:user {:name s/Str
+          :password s/Str
+          (s/optional-key :email) s/Str
+          (s/optional-key :ssh) {:ssh-public-key s/Str
+                                 :ssh-private-key s/Str}
+          (s/optional-key :gpg) {:gpg-public-key s/Str
+                                 :gpg-private-key s/Str
+                                 :gpg-passphrase s/Str}}})
+
 (def DdaVmBookmarks
   {(s/optional-key :bookmarks) infra/Bookmarks})
 
@@ -43,19 +53,12 @@
     DdaVmBookmarks
     {:type (s/enum :desktop-minimal :desktop-office :remote)}))
 
-
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
-  {:user {:name s/Str
-          :password s/Str
-          (s/optional-key :email) s/Str
-          (s/optional-key :ssh) {:ssh-public-key s/Str
-                                 :ssh-private-key s/Str}
-          (s/optional-key :gpg) {:gpg-public-key s/Str
-                                 :gpg-private-key s/Str
-                                 :gpg-passphrase s/Str}}
-   :type (s/enum :desktop-minimal :desktop-office :remote)
-   (s/optional-key :bookmarks) infra/Bookmarks})
+  (merge
+    DdaVmUserResolved
+    {:type (s/enum :desktop-minimal :desktop-office :remote)
+     (s/optional-key :bookmarks) infra/Bookmarks}))
 
 (def InfraResult {infra/facility infra/DdaVmConfig})
 

@@ -32,6 +32,8 @@
 
 (def DdaVmDomainConfig domain/DdaVmDomainConfig)
 
+(def DdaVmDomainResolvedConfig domain/DdaVmDomainResolvedConfig)
+
 (def InfraResult domain/InfraResult)
 
 (def ProvisioningUser existing/ProvisioningUser)
@@ -45,15 +47,18 @@
                      user/InfraResult
                      serverspec/InfraResult)}})
 
-(s/defn ^:always-validate load-targets :- Targets
+(s/defn ^:always-validate
+  load-targets :- Targets
   [file-name :- s/Str]
   (existing/load-targets file-name))
 
-(s/defn ^:always-validate load-domain :- DdaVmDomainConfig
+(s/defn ^:always-validate
+  load-domain :- DdaVmDomainConfig
   [file-name :- s/Str]
   (ext-config/parse-config file-name))
 
-(s/defn resolve-secrets :- domain/DdaVmDomainResolvedConfig
+(s/defn ^:always-validate
+  resolve-secrets :- DdaVmDomainResolvedConfig
   [domain-config :- DdaVmDomainConfig]
   (let [{:keys [user type]} domain-config
         {:keys [ssh gpg]} user]
@@ -62,28 +67,33 @@
       {:user (merge
                user
                {:password (secret/resolve-secret (:password user))}
-               (if (contains? user :ssh)
+               (when (contains? user :ssh)
                 {:ssh {:ssh-public-key (secret/resolve-secret (:ssh-public-key ssh))
-                       :ssh-private-key (secret/resolve-secret (:ssh-private-key ssh))}}
-                {})
-               (if (contains? user :gpg)
+                       :ssh-private-key (secret/resolve-secret (:ssh-private-key ssh))}})
+               (when (contains? user :gpg)
                 {:gpg {:gpg-public-key (secret/resolve-secret (:gpg-public-key gpg))
                        :gpg-private-key (secret/resolve-secret (:gpg-private-key gpg))
-                       :gpg-passphrase (secret/resolve-secret (:gpg-passphrase gpg))}}
-                {}))})))
+                       :gpg-passphrase (secret/resolve-secret (:gpg-passphrase gpg))}}))})))
 
-(s/defn ^:always-validate app-configuration :- DdaVmAppConfig
- [domain-config :- DdaVmDomainConfig
-  & options]
- (let [{:keys [group-key] :or {group-key infra/facility}} options
-       resolved-domain-config (resolve-secrets domain-config)
-       {:keys [type]} resolved-domain-config]
-   (mu/deep-merge
-     (user/app-configuration (domain/user-config resolved-domain-config) :group-key group-key)
-     (git/app-configuration (domain/vm-git-config resolved-domain-config) :group-key group-key)
-     (serverspec/app-configuration (domain/vm-serverspec-config resolved-domain-config) :group-key group-key)
-     {:group-specific-config
-        {group-key (domain/infra-configuration resolved-domain-config)}})))
+(s/defn ^:always-validate
+  app-configuration-resolved :- DdaVmAppConfig
+  [resolved-domain-config :- DdaVmDomainResolvedConfig
+   & options]
+  (let [{:keys [group-key] :or {group-key infra/facility}} options
+        {:keys [type]} resolved-domain-config]
+    (mu/deep-merge
+      (user/app-configuration (domain/user-config resolved-domain-config) :group-key group-key)
+      (git/app-configuration (domain/vm-git-config resolved-domain-config) :group-key group-key)
+      (serverspec/app-configuration (domain/vm-serverspec-config resolved-domain-config) :group-key group-key)
+      {:group-specific-config
+         {group-key (domain/infra-configuration resolved-domain-config)}})))
+
+(s/defn ^:always-validate
+  app-configuration :- DdaVmAppConfig
+  [domain-config :- DdaVmDomainConfig
+   & options]
+  (let [resolved-domain-config (resolve-secrets domain-config)]
+    (apply app-configuration-resolved resolved-domain-config options)))
 
 (s/defn ^:always-validate vm-group-spec
  [app-config :- DdaVmAppConfig]
