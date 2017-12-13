@@ -1,0 +1,9 @@
+{:type :desktop-office
+ :user {:name "jem"
+        :password {:password-store-single "jem/meissa/password"}
+        :email "michael.jerger@meissa-gmbh.de"
+        :ssh {:ssh-public-key {:password-store-single "jem/meissa/ssh/id_rsa_pub"}
+              :ssh-private-key {:password-store-multi "jem/meissa/ssh/id_rsa_priv"}}
+        :gpg {:gpg-public-key {:password-store-multi "jem/meissa/gpg/key.pub"}
+              :gpg-private-key {:password-store-multi "jem/meissa/gpg/key.priv"}
+              :gpg-passphrase {:password-store-single "jem/meissa/gpg/key.passphrase"}}}}

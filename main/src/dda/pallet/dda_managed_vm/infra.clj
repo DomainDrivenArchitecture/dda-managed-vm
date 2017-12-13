@@ -32,11 +32,13 @@
 (def facility :dda-managed-vm)
 (def version  [0 0 0])
 
+(def Bookmarks mozilla/Bookmarks)
+
 (def DdaVmConfig
   "The configuration for managed vms crate."
   {:vm-user s/Keyword
    (s/optional-key :tightvnc-server) {:user-password s/Str}
-   (s/optional-key :bookmarks) mozilla/Bookmarks
+   (s/optional-key :bookmarks) Bookmarks
    (s/optional-key :settings)
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
                      :install-open-jdk-8 :install-xfce-desktop
