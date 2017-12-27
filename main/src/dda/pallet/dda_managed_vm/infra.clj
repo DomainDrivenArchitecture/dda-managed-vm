@@ -41,8 +41,10 @@
    (s/optional-key :bookmarks) Bookmarks
    (s/optional-key :settings)
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
-                     :install-open-jdk-8 :install-xfce-desktop
-                     :install-analysis :install-git :install-password-store))})
+                     :install-spellchecking :install-open-jdk-8
+                     :install-xfce-desktop  :install-analysis
+                     :install-keymgm :install-git
+                     :install-password-store))})
 
 (s/defn init
   "init package management"
@@ -65,6 +67,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: analysis tools")))
        (basics/install-analysis))
+     (when (contains? settings :install-keymgm)
+       (actions/as-action
+        (logging/info (str facility "-install system: key management tools")))
+       (basics/install-keymgm))
      (when (contains? settings :install-xfce-desktop)
        (actions/as-action
         (logging/info (str facility "-install system: xfce")))
@@ -77,6 +83,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: tightvnc")))
        (tightvnc/install-system-tightvnc-server config))
+     (when (contains? settings :install-spellchecking)
+       (actions/as-action
+        (logging/info (str facility "-install system: spellchecking")))
+       (office/install-spellchecking))
      (when (contains? settings :install-libreoffice)
        (actions/as-action
         (logging/info (str facility "-install system: libreoffice")))

@@ -25,6 +25,11 @@
   (actions/package "xfce4")
   (actions/package "xfce4-goodies"))
 
+(defn install-keymgm
+  "Install keymanagement tools"
+  []
+  (actions/package "seahorse"))
+
 (defn install-analysis
   "Install analysis tools"
   []
