@@ -3,9 +3,9 @@
         :password {:plain "xxx"}
         :email "test-user@mydomain.org"
         :ssh {:ssh-public-key {:plain "rsa-ssh kfjri5r8irohgn...test.key comment"}
-              :ssh-private-key {:plain "123Test"}}}
-       :gpg {:gpg-public-key
-             {:plain "-----BEGIN PGP PUBLIC KEY BLOCK-----
+              :ssh-private-key {:plain "123Test"}}
+        :gpg {:gpg-public-key
+                  {:plain "-----BEGIN PGP PUBLIC KEY BLOCK-----
 Version: GnuPG v1
 
 mI0EWbJf3wEEALq5GqjqzlYRLLXa3oz0Ow/nPnzurAPr1+yn2UZinSMk6wgB6ayf
@@ -23,7 +23,7 @@ J/wzlkhuyRpR9Ht+VdzARdzFEQLo77TLGEA1N/Sa2afgD3VxveR4LZaWhFK6F670
 CN8eNvWgBPPb5UT/wngyJZTPWkkcKUx0v5k4J6K1aCXLNPNTN94SBRsohEw2pxp4
 tszJa3+UaMuSzvG+Tlv8woAv8w==
 =WIFr
------END PGP PUBLIC KEY BLOCK-----"
+-----END PGP PUBLIC KEY BLOCK-----"}
               :gpg-private-key
               {:plain "-----BEGIN PGP PRIVATE KEY BLOCK-----
 Version: GnuPG v1
