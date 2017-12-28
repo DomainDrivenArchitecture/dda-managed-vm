@@ -108,7 +108,7 @@ Example content of file `vm.edn`:
               :gpg-private-key
               {:plain "-----BEGIN PGP ...."}
               :gpg-passphrase {:plain "passphrase"}}}}
-```         
+```
 
 The vm config defines the software/packages and user credentials of the newly created user to be installed.
 
@@ -125,7 +125,7 @@ Some details about the architecture: We provide two levels of API. **Domain** is
 The schema for the targets config is:
 ```clojure
 (def ExistingNode {:node-name Str                   ; your name for the node
-                   :node-ip Str                     ; nodes ip4 address       
+                   :node-ip Str                     ; nodes ip4 address
                    })
 
 (def ProvisioningUser {:login Str                   ; user account used for provisioning / executing tests
@@ -181,11 +181,13 @@ For installation & configuration with the dda-managed-vm the schema is:
 (def DdaVmConfig {
   {:vm-user s/Keyword                                           ; user-name
    (s/optional-key :tightvnc-server) {:user-password s/Str}     ; install vnc?
-   (s/optional-key :bookmarks) Bookmarks                        
+   (s/optional-key :bookmarks) Bookmarks
    (s/optional-key :settings)
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
-                     :install-open-jdk-8 :install-xfce-desktop
-                     :install-analysis :install-git :install-password-store))})
+                     :install-spellchecking :install-open-jdk-8
+                     :install-xfce-desktop  :install-analysis
+                     :install-keymgm :install-git
+                     :install-password-store))})
 ```
 
 ## License
