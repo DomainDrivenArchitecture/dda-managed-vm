@@ -29,8 +29,7 @@
                     [ch.qos.logback/logback-classic "1.2.3"]
                     [org.slf4j/jcl-over-slf4j "1.8.0-beta0"]]
                    :plugins
-                   [[com.palletops/pallet-lein "0.8.0-alpha.1"]
-                    [lein-sub "0.3.0"]]
+                   [[lein-sub "0.3.0"]]
                    :leiningen/reply
                    {:dependencies [[org.slf4j/jcl-over-slf4j "1.8.0-beta0"]]
                     :exclusions [commons-logging]}}
@@ -41,5 +40,7 @@
                        :resource-paths ["uberjar/resources"]
                        :aot :all
                        :main dda.pallet.dda-managed-vm.main
-                       :dependencies [[org.clojure/tools.cli "0.3.5"]]}}
+                       :dependencies [[org.clojure/tools.cli "0.3.5"]
+                                      [ch.qos.logback/logback-classic "1.2.3"]
+                                      [org.slf4j/jcl-over-slf4j "1.8.0-beta0"]]}}
   :local-repo-classpath true)
