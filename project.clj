@@ -32,7 +32,8 @@
                    [[lein-sub "0.3.0"]]
                    :leiningen/reply
                    {:dependencies [[org.slf4j/jcl-over-slf4j "1.8.0-beta0"]]
-                    :exclusions [commons-logging]}}
+                    :exclusions [commons-logging]}
+                   :repl-options {:init-ns dda.pallet.dda-managed-vm.app.instantiate-aws}}
              :test {:test-paths ["test/src"]
                     :resource-paths ["test/resources"]
                     :dependencies [[com.palletops/pallet "0.8.12" :classifier "tests"]]}
