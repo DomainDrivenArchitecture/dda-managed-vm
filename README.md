@@ -141,31 +141,50 @@ The "targets.edn" uses this schema.
 #### VM config
 The schema for the vm configuration is:
 ```clojure
-(def Bookmarks
+(def Secret                           ; see dda-pallet-commons
+  (either
+    {:plain Str}                      ;   as plain text
+    {:password-store-single Str}      ;   as password store key wo linebreaks & whitespaces
+    {:password-store-record           ;   as password store entry containing login (record :login)
+      {:path Str,                     ;      and password (no field or :password)
+       :element (enum :password :login)}}
+    {:password-store-multi Str}       ;   as password store key with linebreaks
+    {:pallet-secret {:key-id Str,
+                    :service-path [Keyword],
+                    :record-element (enum :secret :account)}})
+
+(def User                             ; see dda-user-crate
+  {:password Secret,
+   :name Str,
+   (optional-key :gpg) {:gpg-passphrase Secret
+                        :gpg-public-key Secret
+                        :gpg-private-key Secret}
+   (optional-key :ssh) {:ssh-private-key Secret
+                        :ssh-public-key Secret}})
+
+(def Bookmarks                        ; see dda-managed-vm
   [{(optional-key :childs) [(recursive
                            (var
                             dda.pallet.dda-managed-vm.infra.mozilla/Folder))],
   :name Str,
   (optional-key :links) [[(one Str "url") (one Str "name")]]}])
 
-(def Secret                                       ; secrets can be given
-  { (optional-key :plain) Str,                    ;   as plain text
-    (optional-key :password-store-single) Str,    ;   as password store key wo linebreaks
-    (optional-key :password-store-multi) Str})    ;   as password store key with linebreaks
+(def RepoAuth
+  {:password Secret
+   :username Secret
+   :repo Str})
 
-{:type (enum :remote :desktop-office :desktop-minimal),             ; remote: all featured software, no vbox-guest-utils
-                                                                    ; desktop-office: vbox-guest utils, all featured software, no vnc
-                                                                    ; desktop-minimal: just vbox-guest-utils, no java
- (optional-key :bookmarks) Bookmarks,                               ; initial bookmarks
- :user {:name s/Str                                                 ; user with his credentials
-        :password Secret
-        (s/optional-key :email) s/Str
-        (s/optional-key :ssh) {:ssh-public-key Secret
-                               :ssh-private-key Secret}
-        (s/optional-key :gpg) {:gpg-public-key Secret
-                               :gpg-private-key Secret
-                               :gpg-passphrase Secret}}
-        (optional-key :email) Str}}                                 ; email for git config
+(def DdaIdeDomainConfig
+   {:vm-type                          ; remote: all featured software, no vbox-guest-utils
+      (enum :remote :desktop),        ; desktop: vbox-guest utils, all featured software, no vnc
+    :dev-platform                     ; clojure-atom: full clojure and atom setup
+      (enum :clojure-atom             ; clojure-nightlight: full clojure and nightlight web server setup
+            :clojure-nightlight),
+    :user User                        ; user to create with his credentials
+    (optional-key :lein-auth) [RepoAuth],
+    (optional-key :bookmarks) Bookmarks, ; initial bookmarks
+    (optional-key :email) Str         ; email for git config
+  }})
 ```
 
 For `Secret` you can find more adapters in dda-palet-commons.
