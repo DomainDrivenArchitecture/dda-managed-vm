@@ -169,19 +169,14 @@ The schema for the vm configuration is:
   :name Str,
   (optional-key :links) [[(one Str "url") (one Str "name")]]}])
 
-(def RepoAuth
-  {:password Secret
-   :username Secret
-   :repo Str})
 
-(def DdaIdeDomainConfig
+(def DdaVmDomainConfig
    {:vm-type                          ; remote: all featured software, no vbox-guest-utils
       (enum :remote :desktop),        ; desktop: vbox-guest utils, all featured software, no vnc
     :dev-platform                     ; clojure-atom: full clojure and atom setup
       (enum :clojure-atom             ; clojure-nightlight: full clojure and nightlight web server setup
             :clojure-nightlight),
     :user User                        ; user to create with his credentials
-    (optional-key :lein-auth) [RepoAuth],
     (optional-key :bookmarks) Bookmarks, ; initial bookmarks
     (optional-key :email) Str         ; email for git config
   }})
