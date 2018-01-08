@@ -34,14 +34,7 @@
                                  :gpg-passphrase secret/Secret}}})
 
 (def DdaVmUserResolved
-  {:user {:name s/Str
-          :password s/Str
-          (s/optional-key :email) s/Str
-          (s/optional-key :ssh) {:ssh-public-key s/Str
-                                 :ssh-private-key s/Str}
-          (s/optional-key :gpg) {:gpg-public-key s/Str
-                                 :gpg-private-key s/Str
-                                 :gpg-passphrase s/Str}}})
+  (secret/create-resolved-schema DdaVmUser))
 
 (def DdaVmBookmarks
   {(s/optional-key :bookmarks) infra/Bookmarks})
@@ -55,10 +48,7 @@
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
-  (merge
-    DdaVmUserResolved
-    {:type (s/enum :desktop-minimal :desktop-office :remote)
-     (s/optional-key :bookmarks) infra/Bookmarks}))
+  (secret/create-resolved-schema DdaVmDomainConfig))
 
 (def InfraResult {infra/facility infra/DdaVmConfig})
 

@@ -58,24 +58,6 @@
   (ext-config/parse-config file-name))
 
 (s/defn ^:always-validate
-  resolve-secrets :- DdaVmDomainResolvedConfig
-  [domain-config :- DdaVmDomainConfig]
-  (let [{:keys [user type]} domain-config
-        {:keys [ssh gpg]} user]
-    (merge
-      domain-config
-      {:user (merge
-               user
-               {:password (secret/resolve-secret (:password user))}
-               (when (contains? user :ssh)
-                {:ssh {:ssh-public-key (secret/resolve-secret (:ssh-public-key ssh))
-                       :ssh-private-key (secret/resolve-secret (:ssh-private-key ssh))}})
-               (when (contains? user :gpg)
-                {:gpg {:gpg-public-key (secret/resolve-secret (:gpg-public-key gpg))
-                       :gpg-private-key (secret/resolve-secret (:gpg-private-key gpg))
-                       :gpg-passphrase (secret/resolve-secret (:gpg-passphrase gpg))}}))})))
-
-(s/defn ^:always-validate
   app-configuration-resolved :- DdaVmAppConfig
   [resolved-domain-config :- DdaVmDomainResolvedConfig
    & options]
@@ -92,7 +74,7 @@
   app-configuration :- DdaVmAppConfig
   [domain-config :- DdaVmDomainConfig
    & options]
-  (let [resolved-domain-config (resolve-secrets domain-config)]
+  (let [resolved-domain-config (secret/resolve-secrets domain-config DdaVmDomainConfig)]
     (apply app-configuration-resolved resolved-domain-config options)))
 
 (s/defn ^:always-validate vm-group-spec
