@@ -74,7 +74,7 @@
   app-configuration :- DdaVmAppConfig
   [domain-config :- DdaVmDomainConfig
    & options]
-  (let [resolved-domain-config (secret/resolve-secrets DdaVmDomainConfig domain-config)]
+  (let [resolved-domain-config (secret/resolve-secrets domain-config DdaVmDomainConfig)]
     (apply app-configuration-resolved resolved-domain-config options)))
 
 (s/defn ^:always-validate vm-group-spec

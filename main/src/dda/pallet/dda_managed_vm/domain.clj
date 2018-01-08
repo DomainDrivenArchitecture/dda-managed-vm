@@ -34,7 +34,7 @@
                                  :gpg-passphrase secret/Secret}}})
 
 (def DdaVmUserResolved
-  (secret/replace-secret-schema DdaVmUser))
+  (secret/create-resolved-schema DdaVmUser))
 
 (def DdaVmBookmarks
   {(s/optional-key :bookmarks) infra/Bookmarks})
@@ -48,7 +48,7 @@
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
-  (secret/replace-secret-schema DdaVmDomainConfig))
+  (secret/create-resolved-schema DdaVmDomainConfig))
 
 (def InfraResult {infra/facility infra/DdaVmConfig})
 
