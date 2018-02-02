@@ -21,7 +21,6 @@
     [dda.pallet.commons.pallet-schema :as ps]
     [dda.pallet.commons.operation :as operation]
     [dda.pallet.commons.existing :as existing]
-    [dda.config.commons.user-env :as user-env]
     [dda.pallet.dda-managed-vm.app :as app]
     [dda.pallet.dda-managed-vm.infra :as infra]))
 
@@ -61,7 +60,7 @@
       (provisioning-spec target-config domain-config)
       :summarize-session true)))
 
-(defn test
+(defn serverspec
   [& options]
   (let [{:keys [domain targets]
          :or {domain "vm.edn"
