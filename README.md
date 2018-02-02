@@ -108,7 +108,7 @@ Example content of file `vm.edn`:
               :gpg-private-key
               {:plain "-----BEGIN PGP ...."}
               :gpg-passphrase {:plain "passphrase"}}}}
-```         
+```
 
 The vm config defines the software/packages and user credentials of the newly created user to be installed.
 
@@ -125,7 +125,7 @@ Some details about the architecture: We provide two levels of API. **Domain** is
 The schema for the targets config is:
 ```clojure
 (def ExistingNode {:node-name Str                   ; your name for the node
-                   :node-ip Str                     ; nodes ip4 address       
+                   :node-ip Str                     ; nodes ip4 address
                    })
 
 (def ProvisioningUser {:login Str                   ; user account used for provisioning / executing tests
@@ -141,31 +141,45 @@ The "targets.edn" uses this schema.
 #### VM config
 The schema for the vm configuration is:
 ```clojure
-(def Bookmarks
+(def Secret                           ; see dda-pallet-commons
+  (either
+    {:plain Str}                      ;   as plain text
+    {:password-store-single Str}      ;   as password store key wo linebreaks & whitespaces
+    {:password-store-record           ;   as password store entry containing login (record :login)
+      {:path Str,                     ;      and password (no field or :password)
+       :element (enum :password :login)}}
+    {:password-store-multi Str}       ;   as password store key with linebreaks
+    {:pallet-secret {:key-id Str,
+                    :service-path [Keyword],
+                    :record-element (enum :secret :account)}})
+
+(def User                             ; see dda-user-crate
+  {:password Secret,
+   :name Str,
+   (optional-key :gpg) {:gpg-passphrase Secret
+                        :gpg-public-key Secret
+                        :gpg-private-key Secret}
+   (optional-key :ssh) {:ssh-private-key Secret
+                        :ssh-public-key Secret}})
+
+(def Bookmarks                        ; see dda-managed-vm
   [{(optional-key :childs) [(recursive
                            (var
                             dda.pallet.dda-managed-vm.infra.mozilla/Folder))],
   :name Str,
   (optional-key :links) [[(one Str "url") (one Str "name")]]}])
 
-(def Secret                                       ; secrets can be given
-  { (optional-key :plain) Str,                    ;   as plain text
-    (optional-key :password-store-single) Str,    ;   as password store key wo linebreaks
-    (optional-key :password-store-multi) Str})    ;   as password store key with linebreaks
 
-{:type (enum :remote :desktop-office :desktop-minimal),             ; remote: all featured software, no vbox-guest-utils
-                                                                    ; desktop-office: vbox-guest utils, all featured software, no vnc
-                                                                    ; desktop-minimal: just vbox-guest-utils, no java
- (optional-key :bookmarks) Bookmarks,                               ; initial bookmarks
- :user {:name s/Str                                                 ; user with his credentials
-        :password Secret
-        (s/optional-key :email) s/Str
-        (s/optional-key :ssh) {:ssh-public-key Secret
-                               :ssh-private-key Secret}
-        (s/optional-key :gpg) {:gpg-public-key Secret
-                               :gpg-private-key Secret
-                               :gpg-passphrase Secret}}
-        (optional-key :email) Str}}                                 ; email for git config
+(def DdaVmDomainConfig
+   {:vm-type                          ; remote: all featured software, no vbox-guest-utils
+      (enum :remote :desktop),        ; desktop: vbox-guest utils, all featured software, no vnc
+    :dev-platform                     ; clojure-atom: full clojure and atom setup
+      (enum :clojure-atom             ; clojure-nightlight: full clojure and nightlight web server setup
+            :clojure-nightlight),
+    :user User                        ; user to create with his credentials
+    (optional-key :bookmarks) Bookmarks, ; initial bookmarks
+    (optional-key :email) Str         ; email for git config
+  }})
 ```
 
 For `Secret` you can find more adapters in dda-palet-commons.
@@ -181,11 +195,13 @@ For installation & configuration with the dda-managed-vm the schema is:
 (def DdaVmConfig {
   {:vm-user s/Keyword                                           ; user-name
    (s/optional-key :tightvnc-server) {:user-password s/Str}     ; install vnc?
-   (s/optional-key :bookmarks) Bookmarks                        
+   (s/optional-key :bookmarks) Bookmarks
    (s/optional-key :settings)
    (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
-                     :install-open-jdk-8 :install-xfce-desktop
-                     :install-analysis :install-git :install-password-store))})
+                     :install-spellchecking :install-open-jdk-8
+                     :install-xfce-desktop  :install-analysis
+                     :install-keymgm :install-git
+                     :install-password-store))})
 ```
 
 ## License

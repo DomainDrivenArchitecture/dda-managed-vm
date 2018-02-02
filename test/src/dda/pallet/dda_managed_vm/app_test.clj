@@ -40,17 +40,3 @@
   {:type :remote
    :user {:name "test-user"
           :password {:plain "xxx"}}})
-
-(deftest test-resolve-secrets-full
-  (testing
-    (is (sut/resolve-secrets config-full))
-    (is (=
-         "xxx"
-         (get-in (sut/resolve-secrets config-full) [:user :password])))))
-
-(deftest test-resolve-secrets-min
-  (testing
-    (is (sut/resolve-secrets config-min))
-    (is (=
-         "xxx"
-         (get-in (sut/resolve-secrets config-min) [:user :password])))))

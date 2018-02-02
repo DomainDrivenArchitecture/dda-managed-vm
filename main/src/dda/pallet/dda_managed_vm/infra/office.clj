@@ -8,6 +8,10 @@
 
 (defn install-libreoffice
   []
-  (actions/package "hyphen-de")
-  (actions/package "hunspell-de-de")
   (actions/package "libreoffice"))
+
+(defn install-spellchecking
+  []
+  (actions/package "hyphen-de")
+  (actions/package "hunspell")
+  (actions/package "hunspell-de-de"))
