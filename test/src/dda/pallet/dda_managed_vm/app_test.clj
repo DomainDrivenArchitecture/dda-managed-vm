@@ -40,4 +40,3 @@
   {:type :remote
    :user {:name "test-user"
           :password {:plain "xxx"}}})
-
