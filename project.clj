@@ -1,11 +1,10 @@
-(defproject dda/dda-managed-vm "0.5.1-SNAPSHOT"
+(defproject dda/dda-managed-vm "1.0.0-SNAPSHOT"
   :description "The managed vm desktop crate"
   :url "https://www.domaindrivenarchitecture.org"
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [dda/dda-pallet-commons "0.8.0-SNAPSHOT"]
-                 [dda/dda-pallet "0.7.0-SNAPSHOT"]
+                 [dda/dda-pallet "1.0.1"]
                  [dda/dda-user-crate "0.7.0"]
                  [dda/dda-serverspec-crate "0.4.0"]
                  [dda/dda-git-crate "0.2.2"]
@@ -25,9 +24,9 @@
                    [[org.clojure/test.check "0.10.0-alpha2"]
                     [org.domaindrivenarchitecture/pallet-aws "0.2.8.2"]
                     [com.palletops/pallet "0.8.12" :classifier "tests"]
-                    [dda/dda-pallet-commons "0.8.0-SNAPSHOT" :classifier "tests"]
-                    [ch.qos.logback/logback-classic "1.3.0-alpha0"]
-                    [org.slf4j/jcl-over-slf4j "1.8.0-beta0"]]
+                    [dda/dda-pallet-commons "1.0.0" :classifier "tests"]
+                    [ch.qos.logback/logback-classic "1.3.0-alpha2"]
+                    [org.slf4j/jcl-over-slf4j "1.8.0-beta1"]]
                    :plugins
                    [[lein-sub "0.3.0"]]
                    :leiningen/reply
@@ -42,6 +41,6 @@
                        :aot :all
                        :main dda.pallet.dda-managed-vm.main
                        :dependencies [[org.clojure/tools.cli "0.3.5"]
-                                      [ch.qos.logback/logback-classic "1.3.0-alpha0"]
-                                      [org.slf4j/jcl-over-slf4j "1.8.0-beta0"]]}}
+                                      [ch.qos.logback/logback-classic "1.3.0-alpha2"]
+                                      [org.slf4j/jcl-over-slf4j "1.8.0-beta1"]]}}
   :local-repo-classpath true)
