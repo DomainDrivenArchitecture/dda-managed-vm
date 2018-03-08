@@ -16,12 +16,10 @@
 
 (ns dda.pallet.dda-managed-vm.infra
   (:require
-   [pallet.api :as api]
-   [schema.core :as s]
    [clojure.tools.logging :as logging]
+   [schema.core :as s]
    [pallet.actions :as actions]
-   [dda.config.commons.map-utils :as map-utils]
-   [dda.pallet.core.dda-crate :as dda-crate]
+   [dda.pallet.core.infra :as core-infra]
    [dda.pallet.dda-managed-vm.infra.basics :as basics]
    [dda.pallet.dda-managed-vm.infra.tightvnc :as tightvnc]
    [dda.pallet.dda-managed-vm.infra.office :as office]
@@ -155,28 +153,27 @@
         (logging/info (str facility "-configure user: tightvnc")))
        (tightvnc/configure-user-tightvnc-server-script config)))))
 
-(s/defmethod dda-crate/dda-init facility
-  [dda-crate config]
+(s/defmethod core-infra/dda-init facility
+  [core-infra config]
   "dda managed vm: init routine"
-  (let [app-name (name (:facility dda-crate))]
+  (let [app-name (name (:facility core-infra))]
     (init app-name config)))
 
-(s/defmethod dda-crate/dda-install facility
-  [dda-crate config]
+(s/defmethod core-infra/dda-install facility
+  [core-infra config]
   "dda managed vm: install routine"
   (install-system config)
   (install-user config))
 
-(s/defmethod dda-crate/dda-configure facility
-  [dda-crate config]
+(s/defmethod core-infra/dda-configure facility
+  [core-infra config]
   "dda managed vm: configure routine"
   (configure-user config)
   (configure-system config))
 
 (def dda-vm-crate
-  (dda-crate/make-dda-crate
-   :facility facility
-   :version version))
+  (core-infra/make-dda-crate-infra
+   :facility facility))
 
 (def with-dda-vm
-  (dda-crate/create-server-spec dda-vm-crate))
+  (core-infra/create-infra-plan dda-vm-crate))

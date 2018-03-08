@@ -20,45 +20,14 @@
   (:require
     [clojure.string :as str]
     [clojure.tools.cli :as cli]
-    [dda.pallet.commons.existing :as existing]
-    [dda.pallet.commons.operation :as operation]
+    [dda.pallet.core.app :as core-app]
     [dda.pallet.dda-managed-vm.app :as app]))
-
-(defn execute-server-test
-  [domain-config targets]
-  (let [{:keys [existing provisioning-user]} targets]
-    (operation/do-server-test
-     (existing/provider {:dda-managed-vm existing})
-     (app/existing-provisioning-spec
-       domain-config
-       provisioning-user)
-     :summarize-session true)))
-
-(defn execute-configure
-  [domain-config targets]
-  (let [{:keys [existing provisioning-user]} targets]
-    (operation/do-apply-configure
-     (existing/provider {:dda-managed-vm existing})
-     (app/existing-provisioning-spec
-       domain-config
-       provisioning-user)
-     :summarize-session true)))
-
-(defn execute-install
-  [domain-config targets]
-  (let [{:keys [existing provisioning-user]} targets]
-    (operation/do-apply-install
-     (existing/provider {:dda-managed-vm existing})
-     (app/existing-provisioning-spec
-       domain-config
-       provisioning-user)
-     :summarize-session true)))
 
 (def cli-options
   [["-h" "--help"]
-   ["-s" "--server-test"]
+   ["-s" "--serverspec"]
    ["-c" "--configure"]
-   ["-t" "--targets TARGETS.edn" "edn file containing the targets to install on."
+   ["-t" "--targets targets.edn" "edn file containing the targets to install on."
     :default "targets.edn"]])
 
 (defn usage [options-summary]
@@ -90,12 +59,15 @@
       help (exit 0 (usage summary))
       errors (exit 1 (error-msg errors))
       (not= (count arguments) 1) (exit 1 (usage summary))
-      (:server-test options) (execute-server-test
-                               (app/load-domain (first arguments))
-                               (app/load-targets (:targets options)))
-      (:configure options) (execute-configure
-                             (app/load-domain (first arguments))
-                             (app/load-targets (:targets options)))
-      :default (execute-install
-                 (app/load-domain (first arguments))
-                 (app/load-targets (:targets options))))))
+      (:serverspec options) (core-app/existing-serverspec
+                              app/crate-app
+                              {:domain (first arguments)
+                               :targets (:targets options)})
+      (:configure options) (core-app/existing-configure
+                             app/crate-app
+                             {:domain (first arguments)
+                              :targets (:targets options)})
+      :default (core-app/existing-install
+                 app/crate-app
+                 {:domain (first arguments)
+                  :targets (:targets options)}))))
