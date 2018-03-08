@@ -6,7 +6,7 @@
     [schema.core :as s]
     [pallet.actions :as actions]
     [pallet.stevedore :as stevedore]
-    [dda.config.commons.user-env :as user-env]))
+    [dda.config.commons.ssh-key :as user-env]))
 
 (defn install-password-store
   []

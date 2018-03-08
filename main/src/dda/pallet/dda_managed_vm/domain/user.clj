@@ -15,8 +15,7 @@
 (ns dda.pallet.dda-managed-vm.domain.user
   (:require
    [schema.core :as s]
-   [clojure.string :as str]
-   [dda.config.commons.user-env :as user-env]))
+   [clojure.string :as str]))
 
 (defn authorized-keys
   [user]
