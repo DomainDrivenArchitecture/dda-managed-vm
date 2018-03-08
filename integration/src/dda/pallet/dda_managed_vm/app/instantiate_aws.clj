@@ -22,7 +22,7 @@
 (defn converge-install
   [count & options]
   (let [{:keys [domain targets summarize-session]
-         :or {domain "integration/resources/jem-vm.edn"
+         :or {domain "integration/resources/snakeoil-vm-remote.edn"
               targets "integration/resources/jem-aws-target.edn"
               summarize-session true}} options]
     (core-app/aws-install app/crate-app count
@@ -32,7 +32,7 @@
 (defn configure
  [& options]
  (let [{:keys [domain targets summarize-session]
-        :or {domain "integration/resources/jem-vm.edn"
+        :or {domain "integration/resources/snakeoil-vm-remote.edn"
              targets "integration/resources/jem-aws-target.edn"
              summarize-session true}} options]
   (core-app/aws-configure app/crate-app
@@ -42,7 +42,7 @@
 (defn serverspec
   [& options]
   (let [{:keys [domain targets summarize-session]
-         :or {domain "integration/resources/jem-vm.edn"
+         :or {domain "integration/resources/snakeoil-vm-remote.edn"
               targets "integration/resources/jem-aws-target.edn"
               summarize-session true}} options]
     (core-app/aws-serverspec app/crate-app

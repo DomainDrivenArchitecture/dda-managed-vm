@@ -50,7 +50,7 @@
   (let [{:keys [group-key] :or {group-key infra/facility}} options
         {:keys [type]} resolved-domain-config]
     (mu/deep-merge
-      (user/app-configuration (domain/user-config resolved-domain-config) :group-key group-key)
+      (user/app-configuration-resolved (domain/user-config resolved-domain-config) :group-key group-key)
       (git/app-configuration (domain/vm-git-config resolved-domain-config) :group-key group-key)
       (serverspec/app-configuration (domain/vm-serverspec-config resolved-domain-config) :group-key group-key)
       {:group-specific-config
