@@ -19,7 +19,7 @@
     [dda.cm.group :as group]
     [dda.config.commons.map-utils :as mu]
     [dda.pallet.commons.secret :as secret]
-    [dda.pallet.commons.existing :as existing]
+    [dda.pallet.core.app :as core-app]
     [dda.pallet.dda-config-crate.infra :as config-crate]
     [dda.pallet.dda-git-crate.app :as git]
     [dda.pallet.dda-user-crate.app :as user]
@@ -36,26 +36,12 @@
 
 (def InfraResult domain/InfraResult)
 
-(def ProvisioningUser existing/ProvisioningUser)
-
-(def Targets existing/Targets)
-
 (def DdaVmAppConfig
   {:group-specific-config
    {s/Keyword (merge InfraResult
                      git/InfraResult
                      user/InfraResult
                      serverspec/InfraResult)}})
-
-(s/defn ^:always-validate
-  load-targets :- Targets
-  [file-name :- s/Str]
-  (existing/load-targets file-name))
-
-(s/defn ^:always-validate
-  load-domain :- DdaVmDomainConfig
-  [file-name :- s/Str]
-  (ext-config/parse-config file-name))
 
 (s/defn ^:always-validate
   app-configuration-resolved :- DdaVmAppConfig
@@ -77,19 +63,20 @@
   (let [resolved-domain-config (secret/resolve-secrets domain-config DdaVmDomainConfig)]
     (apply app-configuration-resolved resolved-domain-config options)))
 
-(s/defn ^:always-validate vm-group-spec
- [app-config :- DdaVmAppConfig]
- (group/group-spec
-   app-config [(config-crate/with-config app-config)
-               serverspec/with-serverspec
-               user/with-user
-               git/with-git
-               with-dda-vm]))
+(s/defmethod ^:always-validate
+  core-app/group-spec infra/facility
+  [crate-app
+   domain-config :- DdaVmDomainResolvedConfig]
+  (let [app-config (app-configuration-resolved domain-config)]
+    (group/group-spec
+      app-config [(config-crate/with-config app-config)
+                  serverspec/with-serverspec
+                  user/with-user
+                  git/with-git
+                  with-dda-vm])))
 
-(s/defn ^:always-validate existing-provisioning-spec
-  "Creates an integrated group spec from a domain config and a provisioning user."
-  [domain-config :- DdaVmDomainConfig
-   provisioning-user :- ProvisioningUser]
-  (merge
-   (vm-group-spec (app-configuration domain-config))
-   (existing/node-spec provisioning-user)))
+(def crate-app (core-app/make-dda-crate-app
+                  :facility infra/facility
+                  :domain-schema DdaVmDomainConfig
+                  :domain-schema-resolved DdaVmDomainResolvedConfig
+                  :default-domain-file "vm.edn"))

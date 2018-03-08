@@ -22,15 +22,15 @@
   [user]
   (let [{:keys [ssh]} user]
     (if (contains? user :ssh)
-      {:authorized-keys [(user-env/string-to-pub-key-config (:ssh-public-key ssh))]}
+      {:ssh-authorized-keys [(:ssh-public-key ssh)]}
       {})))
 
 (defn ssh-personal-key
   [user]
   (let [{:keys [ssh]} user]
     (if (contains? user :ssh)
-      {:personal-key {:public-key (user-env/string-to-pub-key-config (:ssh-public-key ssh))
-                      :private-key (:ssh-private-key ssh)}}
+      {:ssh-key {:public-key (:ssh-public-key ssh)
+                 :private-key (:ssh-private-key ssh)}}
       {})))
 
 (defn gpg

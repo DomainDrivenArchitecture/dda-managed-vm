@@ -4,10 +4,10 @@
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [dda/dda-pallet "1.0.1"]
-                 [dda/dda-user-crate "0.7.0"]
-                 [dda/dda-serverspec-crate "0.4.0"]
-                 [dda/dda-git-crate "0.2.2"]
+                 [dda/dda-pallet "2.0.1"]
+                 [dda/dda-user-crate "1.0.2"]
+                 [dda/dda-serverspec-crate "1.0.1"]
+                 [dda/dda-git-crate "1.0.1"]
                  [dda/dda-backup-crate "0.7.1"]]
   :source-paths ["main/src"]
   :resource-paths ["main/resources"]
@@ -24,7 +24,7 @@
                    [[org.clojure/test.check "0.10.0-alpha2"]
                     [org.domaindrivenarchitecture/pallet-aws "0.2.8.2"]
                     [com.palletops/pallet "0.8.12" :classifier "tests"]
-                    [dda/dda-pallet-commons "1.0.0" :classifier "tests"]
+                    [dda/dda-pallet-commons "1.3.0" :classifier "tests"]
                     [ch.qos.logback/logback-classic "1.3.0-alpha2"]
                     [org.slf4j/jcl-over-slf4j "1.8.0-beta1"]]
                    :plugins
