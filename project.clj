@@ -4,10 +4,10 @@
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
-                 [dda/dda-pallet "2.0.1"]
-                 [dda/dda-user-crate "1.0.2"]
-                 [dda/dda-serverspec-crate "1.0.1"]
-                 [dda/dda-git-crate "1.0.1"]
+                 [dda/dda-pallet "2.1.0-SNAPSHOT"]
+                 [dda/dda-user-crate "1.0.3-SNAPSHOT"]
+                 [dda/dda-serverspec-crate "1.0.4-SNAPSHOT"]
+                 [dda/dda-git-crate "1.0.2-SNAPSHOT"]
                  [dda/dda-backup-crate "0.7.1"]]
   :source-paths ["main/src"]
   :resource-paths ["main/resources"]
@@ -25,7 +25,7 @@
                     [org.domaindrivenarchitecture/pallet-aws "0.2.8.2"]
                     [com.palletops/pallet "0.8.12" :classifier "tests"]
                     [dda/dda-pallet-commons "1.3.0" :classifier "tests"]
-                    [ch.qos.logback/logback-classic "1.3.0-alpha2"]
+                    [ch.qos.logback/logback-classic "1.3.0-alpha4"]
                     [org.slf4j/jcl-over-slf4j "1.8.0-beta1"]]
                    :plugins
                    [[lein-sub "0.3.0"]]
@@ -41,6 +41,6 @@
                        :aot :all
                        :main dda.pallet.dda-managed-vm.main
                        :dependencies [[org.clojure/tools.cli "0.3.5"]
-                                      [ch.qos.logback/logback-classic "1.3.0-alpha2"]
+                                      [ch.qos.logback/logback-classic "1.3.0-alpha4"]
                                       [org.slf4j/jcl-over-slf4j "1.8.0-beta1"]]}}
   :local-repo-classpath true)
