@@ -42,7 +42,7 @@
                      :install-spellchecking :install-open-jdk-8
                      :install-xfce-desktop  :install-analysis
                      :install-keymgm :install-git
-                     :install-password-store))})
+                     :install-password-store :install-desktop-wiki))})
 
 (s/defn init
   "init package management"
@@ -96,7 +96,11 @@
      (when (contains? settings :install-open-jdk-8)
        (actions/as-action
         (logging/info (str facility "-install system: openjdk")))
-       (java/install-open-jdk-8)))))
+       (java/install-open-jdk-8)))
+    (when (contains? settings :install-open-jdk-8)
+      (actions/as-action
+       (logging/info (str facility "-install system: desktop-wiki")))
+      (wiki/install-desktop-wiki))))
 
 (s/defn install-user
   "install the user space peaces in vm"

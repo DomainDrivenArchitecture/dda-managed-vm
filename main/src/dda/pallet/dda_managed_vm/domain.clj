@@ -111,7 +111,7 @@
               :install-libreoffice :install-spellchecking
               :install-open-jdk-8
               :install-analysis :install-git :install-keymgm
-              :install-password-store}}
+              :install-password-store :install-desktop-wiki}}
           (= type :remote)
           {:tightvnc-server {:user-password "test"}
            :settings
