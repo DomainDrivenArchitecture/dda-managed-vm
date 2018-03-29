@@ -25,6 +25,7 @@
    [dda.pallet.dda-managed-vm.infra.office :as office]
    [dda.pallet.dda-managed-vm.infra.passwordstore :as password-store]
    [dda.pallet.dda-managed-vm.infra.mozilla :as mozilla]
+   [dda.pallet.dda-managed-vm.infra.desktop-wiki :as wiki]
    [dda.pallet.dda-managed-vm.infra.java :as java]))
 
 (def facility :dda-managed-vm)
