@@ -119,26 +119,31 @@ In case of problems you may want to have a look at the log-file:
 ## Reference
 Some details about the architecture: We provide two levels of API. **Domain** is a high-level API with many build in conventions. If this conventions don't fit your needs, you can use our low-level **infra** API and realize your own conventions.
 
-### Domain API
-
-#### Targets
+### Targets
 The schema for the targets config is:
 ```clojure
-(def ExistingNode {:node-name Str                   ; your name for the node
-                   :node-ip Str                     ; nodes ip4 address
-                   })
+(def ExistingNode
+  "Represents a target node with ip and its name."
+  {:node-name s/Str   ; semantic name (keep the default or use a name that suits you)
+   :node-ip s/Str})   ; the ip4 address of the machine to be provisioned
 
-(def ProvisioningUser {:login Str                   ; user account used for provisioning / executing tests
-                       (optional-key :password) Str ; password, is no authorized ssh key is avail.
-                       })
+(def ExistingNodes
+  "A sequence of ExistingNodes."
+  {s/Keyword [ExistingNode]})
 
-(def Targets {:existing [ExistingNode]              ; nodes to test or install
-              :provisioning-user ProvisioningUser   ; common user account on all nodes given above
-              })
+(def ProvisioningUser
+  "User used for provisioning."
+  {:login s/Str                                ; user on the target machine, must have sudo rights
+   (s/optional-key :password) secret/Secret})  ; password can be ommited, if a ssh key is authorized
+
+(def Targets
+  "Targets to be used during provisioning."
+  {:existing [ExistingNode]                                ; one ore more target nodes.
+   (s/optional-key :provisioning-user) ProvisioningUser})  ; user can be ommited to execute on localhost with current user.
 ```
 The "targets.edn" uses this schema.
 
-#### VM config
+### Domain API
 The schema for the vm configuration is:
 ```clojure
 (def Secret                           ; see dda-pallet-commons
