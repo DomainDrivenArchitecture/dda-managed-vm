@@ -44,7 +44,7 @@
   (merge
     DdaVmUser
     DdaVmBookmarks
-    {:type (s/enum :desktop-minimal :desktop-office :remote)}))
+    {:type (s/enum :desktop-minimal :desktop-office :desktop-novbox :remote)}))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
@@ -105,6 +105,12 @@
           (= type :desktop-minimal)
           {:settings
             #{:install-virtualbox-guest :install-analysis}}
+          (= type :desktop-novbox)
+          {:settings
+            #{:install-libreoffice :install-spellchecking
+              :install-open-jdk-8
+              :install-analysis :install-git :install-keymgm
+              :install-password-store :install-desktop-wiki}}
           (= type :desktop-office)
           {:settings
             #{:install-virtualbox-guest
