@@ -26,4 +26,7 @@
   (actions/package "scrot")
   (actions/package "dvipng")
   (actions/package "gnuplot")
-  (actions/package "r-base"))
+  (actions/package "r-base")
+  (actions/package "python-gtkspellcheck")
+  (actions/package "aspell")
+  (actions/package "aspell-de"))
