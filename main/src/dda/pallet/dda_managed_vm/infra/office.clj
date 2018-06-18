@@ -19,7 +19,7 @@
     [pallet.actions :as actions]))
 
 (def Settings
-  (hash-set (s/enum :install-libreoffice :install-spellchecking-de)))
+  (hash-set :install-libreoffice :install-spellchecking-de))
 
 (defn install-libreoffice
   []

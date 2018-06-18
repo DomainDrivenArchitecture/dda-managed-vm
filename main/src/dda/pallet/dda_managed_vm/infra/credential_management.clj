@@ -20,8 +20,7 @@
     [dda.config.commons.user-home :as user-env]))
 
 (def Settings
-  (hash-set (s/enum :install-password-store
-                    :install-gopass)))
+  (hash-set :install-password-store :install-gopass))
 
 (defn install-gpg
   []

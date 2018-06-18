@@ -20,7 +20,7 @@
 
 (def Settings
   "The basic settings"
-  (hash-set (s/enum :install-desktop-wiki)))
+  (hash-set :install-desktop-wiki))
 
 (defn install-desktop-wiki
   []

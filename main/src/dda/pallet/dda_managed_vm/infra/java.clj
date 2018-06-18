@@ -20,11 +20,11 @@
 
 (def Settings
   "The basic settings"
-  (hash-set (s/enum :install-open-jdk-8 :install-open-jdk-11)))
+  (hash-set :install-open-jdk-8 :install-open-jdk-11))
 
 
 (defn install-open-jdk-8 []
   (actions/package "openjdk-8-jdk"))
 
-(defn install-open-jdk-9 []
+(defn install-open-jdk-11 []
   (actions/package "openjdk-11-jdk"))

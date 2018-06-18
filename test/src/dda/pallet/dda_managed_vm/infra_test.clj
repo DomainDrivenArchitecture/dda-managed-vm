@@ -31,7 +31,8 @@
 
 (def example-hashset-configuration2
   {:vm-user :test
-   :settings (hash-set :install-virtualbox-guest :install-libreoffice :install-open-jdk-8)})
+   :settings (hash-set :install-virtualbox-guest
+                       :install-libreoffice :install-open-jdk-8)})
 
 
 
