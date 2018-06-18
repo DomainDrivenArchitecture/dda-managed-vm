@@ -1,4 +1,5 @@
-{:type :remote
+{:target-type :remote-aws
+ :usage-type :desktop-base
  :user {:name "test-user"
         :password {:plain "xxx"}
         :email "test-user@mydomain.org"

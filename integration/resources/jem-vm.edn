@@ -1,4 +1,5 @@
-{:type :desktop-office
+{:target-type :virtualbox
+ :usage-type :desktop-office
  :user {:name "jem"
         :password {:password-store-single "jem/meissa/password"}
         :email "michael.jerger@meissa-gmbh.de"

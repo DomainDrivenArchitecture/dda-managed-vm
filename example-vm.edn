@@ -1,4 +1,5 @@
-{:type :desktop-office
+{:target-type :virtualbox
+ :usage-type :desktop-office
  :user {:name "test-user"
         :password {:plain "xxx"}
         :email "test-user@mydomain.org"
