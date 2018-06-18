@@ -150,6 +150,8 @@
        (actions/as-action
         (logging/info (str facility "-configure system: tightvnc")))
        (tightvnc/configure-system-tightvnc-server config))
+     (when (contains? settings :configure-no-swappiness)
+      (basics/configure-no-swappiness))
      (when (contains? settings :install-virtualbox-guest)
        (actions/as-action
          (logging/info (str facility "-configure system: tightvnc")))

@@ -22,7 +22,7 @@
   "The basic settings"
   (hash-set (s/enum :install-virtualbox-guest :remove-power-management
                     :install-xfce-desktop  :install-os-analysis
-                    :install-keymgm)))
+                    :install-keymgm :configure-no-swappiness)))
 
 (defn install-virtualbox-guest-additions
   "make virtual machine run properly sized on virtualbox"
@@ -59,3 +59,10 @@
   (actions/packages
     :aptitude ["bash-completion" "lsof" "strace"
                "htop" "iotop" "iftop"]))
+
+(defn configure-swappiness
+  []
+  (actions/exec-checked-script
+    "set swappiness to 0"
+    ("echo \"vm.swappiness=0\"" ">>" "/etc/sysctl.conf")
+    ("sysctl" "-p")))
