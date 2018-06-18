@@ -8,7 +8,7 @@
                  [dda/dda-user-crate "1.0.5"]
                  [dda/dda-git-crate "1.1.3"]
                  [dda/dda-backup-crate "1.0.4"]
-                 [dda/dda-serverspec-crate "1.1.0"]]
+                 [dda/dda-serverspec-crate "1.1.1"]]
   :source-paths ["main/src"]
   :resource-paths ["main/resources"]
   :repositories [["snapshots" :clojars]
