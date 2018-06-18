@@ -56,7 +56,7 @@ done
   (install-gpg)
   (actions/package-source "gopass"
     :aptitude
-    {:url "deb https://dl.bintray.com/gopasspw/gopass"
+    {:url "https://dl.bintray.com/gopasspw/gopass"
      :release "bionic"
      :scopes ["main"]
      :key-url "https://api.bintray.com/orgs/gopasspw/keys/gpg/public.key"})
