@@ -15,15 +15,26 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.basics
   (:require
+    [schema.core :as s]
     [pallet.actions :as actions]))
+
+(def Settings
+  "The basic settings"
+  (hash-set (s/enum :install-virtualbox-guest :remove-power-management
+                    :install-xfce-desktop  :install-os-analysis
+                    :install-keymgm)))
 
 (defn install-virtualbox-guest-additions
   "make virtual machine run properly sized on virtualbox"
   []
-  (actions/exec-checked-script
-   "install virtualbox guest utils"
-   ("apt-get" "install -y" "xserver-xorg-core xserver-xorg-input-vmmouse"
-     "xserver-xorg-input-all" "virtualbox-guest-dkms" "virtualbox-guest-x11")))
+  (actions/packages :aptitude ["virtualbox-guest-x11"]))
+
+(defn install-remove-power-management
+  "remove power management on vms"
+  []
+  (actions/package :action :remove "xfce4-power-manager")
+  (actions/package :action :remove "xfce4-power-manager-plugins")
+  (actions/package :action :remove "xfce4-power-manager-data"))
 
 (defn configure-virtualbox-guest-additions
   "configures virtual-box guest additions"
@@ -42,12 +53,9 @@
   []
   (actions/package "seahorse"))
 
-(defn install-analysis
+(defn install-os-analysis
   "Install analysis tools"
   []
-  (actions/package "bash-completion")
-  (actions/package "lsof")
-  (actions/package "strace")
-  (actions/package "htop")
-  (actions/package "iotop")
-  (actions/package "iftop"))
+  (actions/packages
+    :aptitude ["bash-completion" "lsof" "strace"
+               "htop" "iotop" "iftop"]))

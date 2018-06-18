@@ -39,11 +39,13 @@
    (s/optional-key :tightvnc-server) {:user-password s/Str}
    (s/optional-key :bookmarks) Bookmarks
    (s/optional-key :settings)
-   (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
-                     :install-spellchecking :install-open-jdk-8
-                     :install-xfce-desktop  :install-analysis
-                     :install-keymgm :install-git
-                     :install-password-store :install-desktop-wiki))})
+   (hash-set (apply s/enum
+                    (clojure.set/union
+                      basics/Settings
+                      #{:install-libreoffice
+                        :install-spellchecking :install-open-jdk-8
+                        :install-git
+                        :install-password-store :install-desktop-wiki})))})
 
 (s/defn init
   "init package management"
@@ -62,10 +64,10 @@
       :script-env {:HOME (str "/root")}}
      (actions/as-action
       (logging/info (str facility "-install system: create user " user-key)))
-     (when (contains? settings :install-analysis)
+     (when (contains? settings :install-os-analysis)
        (actions/as-action
-        (logging/info (str facility "-install system: analysis tools")))
-       (basics/install-analysis))
+        (logging/info (str facility "-install system: install-os-analysis")))
+       (basics/install-os-analysis))
      (when (contains? settings :install-keymgm)
        (actions/as-action
         (logging/info (str facility "-install system: key management tools")))
@@ -78,6 +80,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: virtualbox-guest")))
        (basics/install-virtualbox-guest-additions))
+     (when (contains? settings :install-remove-power-management)
+       (actions/as-action
+        (logging/info (str facility "-install system: install-remove-power-management")))
+       (basics/install-remove-power-management))
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-install system: tightvnc")))
