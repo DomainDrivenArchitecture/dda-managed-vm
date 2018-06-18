@@ -17,6 +17,7 @@
   (:require
     [schema.core :as s]
     [dda.config.commons.map-utils :as mu]
+    [dda.config.commons.user-home :as user-home]
     [dda.pallet.commons.secret :as secret]
     [dda.pallet.dda-managed-vm.domain.user :as user]
     [dda.pallet.dda-managed-vm.domain.git :as git]
@@ -82,14 +83,17 @@
   "Managed vm crate default configuration"
   [domain-config :- DdaVmDomainResolvedConfig]
   (let [{:keys [user]} domain-config
-        {:keys [name]} user]
+        {:keys [name]} user
+        user-home (user-home/user-home-dir name)]
     {:backup-name "dda-managed-vm"
      :script-path "/usr/local/lib/dda-backup/"
      :gens-stored-on-source-system 1
      :elements [{:type :file-compressed
                  :name "user-home"
-                 :root-dir (str "/home/" name)
-                 :subdir-to-save ".ssh .gnupg .mozilla"}]
+                 :backup-path [(str user-home ".ssh")
+                               (str user-home ".gnupg")
+                               (str user-home ".mozilla")
+                               (str user-home ".thunderbird")]}]
      :backup-user {:name "dataBackupSource"
                    :encrypted-passwd "WIwn6jIUt2Rbc"}}))
 
