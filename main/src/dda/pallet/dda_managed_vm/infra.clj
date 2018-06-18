@@ -42,10 +42,11 @@
    (hash-set (apply s/enum
                     (clojure.set/union
                       basics/Settings
+                      wiki/Settings
                       #{:install-libreoffice
                         :install-spellchecking :install-open-jdk-8
                         :install-git
-                        :install-password-store :install-desktop-wiki})))})
+                        :install-password-store})))})
 
 (s/defn init
   "init package management"

@@ -15,18 +15,19 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.desktop-wiki
   (:require
+    [schema.core :as s]
     [pallet.actions :as actions]))
+
+(def Settings
+  "The basic settings"
+  (hash-set (s/enum :install-virtualbox-guest :remove-power-management
+                    :install-xfce-desktop  :install-os-analysis
+                    :install-keymgm)))
 
 (defn install-desktop-wiki
   []
   ;TODO: add "GTK2_RC_FILES=/usr/share/themes/Raleigh/gtk-2.0/gtkrc" in .bashrc
-  (actions/package "zim")
-  (actions/package "graphviz")
-  (actions/package "ditaa")
-  (actions/package "scrot")
-  (actions/package "dvipng")
-  (actions/package "gnuplot")
-  (actions/package "r-base")
-  (actions/package "python-gtkspellcheck")
-  (actions/package "aspell")
-  (actions/package "aspell-de"))
+  (actions/packages
+    :aptitude ["zim" "graphviz" "ditaa" "scrot"
+               "dvipng" "gnuplot" "r-base" "python-gtkspellcheck"
+               "aspell" "aspell-de"]))
