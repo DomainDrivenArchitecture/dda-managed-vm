@@ -23,7 +23,7 @@
    [dda.pallet.dda-managed-vm.infra.basics :as basics]
    [dda.pallet.dda-managed-vm.infra.tightvnc :as tightvnc]
    [dda.pallet.dda-managed-vm.infra.office :as office]
-   [dda.pallet.dda-managed-vm.infra.passwordstore :as password-store]
+   [dda.pallet.dda-managed-vm.infra.credential-management :as cm]
    [dda.pallet.dda-managed-vm.infra.mozilla :as mozilla]
    [dda.pallet.dda-managed-vm.infra.desktop-wiki :as wiki]
    [dda.pallet.dda-managed-vm.infra.java :as java]))
@@ -45,8 +45,8 @@
                       wiki/Settings
                       java/Settings
                       office/Settings
-                      #{:install-git
-                        :install-password-store})))})
+                      cm/Settings
+                      #{:install-git})))})
 
 (s/defn init
   "init package management"
@@ -100,7 +100,11 @@
      (when (contains? settings :install-password-store)
        (actions/as-action
         (logging/info (str facility "-install system: password-store")))
-       (password-store/install-password-store))
+       (cm/install-password-store)))
+    (when (contains? settings :install-gopass)
+      (actions/as-action
+       (logging/info (str facility "-install system: install-gopass")))
+      (cm/install-gopass)
      (when (contains? settings :install-open-jdk-8)
        (actions/as-action
         (logging/info (str facility "-install system: openjdk 8")))
@@ -141,7 +145,7 @@
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
      (when (contains? settings :install-password-store)
-      (password-store/configure-password-store os-user-name))
+      (cm/configure-password-store os-user-name))
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-configure system: tightvnc")))
