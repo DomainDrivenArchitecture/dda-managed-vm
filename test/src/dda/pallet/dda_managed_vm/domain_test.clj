@@ -24,19 +24,29 @@
 (def config-1
   {:user {:name  "test"
           :password "pwd"}
-   :type :remote})
+   :target-type :remote-aws
+   :usage-type :desktop-base})
 
 (def config-2
   {:user {:name  "test"
           :password "pwd"}
-   :type :desktop-office})
+   :target-type :virtualbox
+   :usage-type :desktop-office})
 
 (def config-3
-  {:type :desktop-minimal
+  {:target-type :virtualbox
+   :usage-type :desktop-minimal
    :bookmarks [{:name "Bookmarks Toolbar"
                 :links [["url" "name"]]}]
    :user {:name  "test"
           :password "pwd"}})
+
+(deftest test-backup-config
+  (testing
+    "test the git config creation"
+    (is (thrown? Exception (sut/vm-backup-config {})))
+    (is (sut/vm-backup-config config-1))
+    (is (sut/vm-backup-config config-2))))
 
 (deftest test-git-config
   (testing

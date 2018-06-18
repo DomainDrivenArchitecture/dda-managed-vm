@@ -44,7 +44,8 @@
   (merge
     DdaVmUser
     DdaVmBookmarks
-    {:type (s/enum :desktop-minimal :desktop-office :desktop-novbox :remote)}))
+    {:target-type (s/enum :virtualbox :remote-aws :plain)
+     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)}))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
@@ -70,9 +71,9 @@
 (s/defn ^:always-validate vm-serverspec-config
  "serverspec for VM"
  [domain-config :- DdaVmDomainResolvedConfig]
- (let [{:keys [type user]} domain-config]
+ (let [{:keys [target-type user]} domain-config]
    (cond
-     (= type :remote)
+     (= target-type :remote-aws)
      {:package [{:name "xfce4" :installed? true}]
       :netstat [{:process-name "Xtightvnc" :port "5901"}]}
      :default {})))
@@ -92,34 +93,38 @@
      :backup-user {:name "dataBackupSource"
                    :encrypted-passwd "WIwn6jIUt2Rbc"}}))
 
+
+
 (s/defn ^:always-validate infra-configuration :- InfraResult
   "Managed vm crate default configuration"
   [domain-config :- DdaVmDomainResolvedConfig]
-  (let [{:keys [user type]} domain-config
+  (let [{:keys [user target-type usage-type]} domain-config
         {:keys [name]} user]
     {infra/facility
-      (merge
+      (mu/deep-merge
         {:vm-user (keyword name)
          :bookmarks (bookmark/bookmarks domain-config)}
         (cond
-          (= type :desktop-minimal)
+          (= usage-type :desktop-minimal)
           {:settings
-            #{:install-virtualbox-guest :install-analysis}}
-          (= type :desktop-novbox)
+            #{:install-os-analysis}}
+          (= usage-type :desktop-base)
           {:settings
-            #{:install-libreoffice :install-spellchecking
-              :install-open-jdk-8
-              :install-analysis :install-git :install-keymgm
-              :install-password-store :install-desktop-wiki}}
-          (= type :desktop-office)
+            #{:install-open-jdk-11 :install-os-analysis :install-git}}
+          (= usage-type :desktop-office)
           {:settings
-            #{:install-virtualbox-guest
-              :install-libreoffice :install-spellchecking
-              :install-open-jdk-8
-              :install-analysis :install-git :install-keymgm
-              :install-password-store :install-desktop-wiki}}
-          (= type :remote)
+            #{:install-libreoffice :install-spellchecking-de
+              :install-open-jdk-11 :install-os-analysis :install-git
+              :install-keymgm :install-gopass :install-desktop-wiki}})
+        (cond
+          (= target-type :virtualbox)
+          {:settings
+            #{:install-virtualbox-guest :remove-power-management
+              :configure-no-swappiness}}
+          (= target-type :remote-aws)
           {:tightvnc-server {:user-password "test"}
            :settings
-           #{:install-xfce-desktop :install-open-jdk-8 :install-analysis
-             :install-git}}))}))
+           #{:install-xfce-desktop :configure-no-swappiness}}
+          (= target-type :plain)
+          {:settings
+           #{}}))}))
