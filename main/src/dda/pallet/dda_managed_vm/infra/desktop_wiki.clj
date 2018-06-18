@@ -20,9 +20,7 @@
 
 (def Settings
   "The basic settings"
-  (hash-set (s/enum :install-virtualbox-guest :remove-power-management
-                    :install-xfce-desktop  :install-os-analysis
-                    :install-keymgm)))
+  (hash-set (s/enum :install-desktop-wiki)))
 
 (defn install-desktop-wiki
   []

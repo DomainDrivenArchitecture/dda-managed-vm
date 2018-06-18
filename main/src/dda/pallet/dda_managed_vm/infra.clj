@@ -43,8 +43,9 @@
                     (clojure.set/union
                       basics/Settings
                       wiki/Settings
+                      java/Settings
                       #{:install-libreoffice
-                        :install-spellchecking :install-open-jdk-8
+                        :install-spellchecking
                         :install-git
                         :install-password-store})))})
 
@@ -103,9 +104,13 @@
        (password-store/install-password-store))
      (when (contains? settings :install-open-jdk-8)
        (actions/as-action
-        (logging/info (str facility "-install system: openjdk")))
+        (logging/info (str facility "-install system: openjdk 8")))
        (java/install-open-jdk-8)))
-    (when (contains? settings :install-open-jdk-8)
+    (when (contains? settings :install-open-jdk-11)
+      (actions/as-action
+       (logging/info (str facility "-install system: openjdk 11")))
+      (java/install-open-jdk-11))
+    (when (contains? settings :install-desktop-wiki)
       (actions/as-action
        (logging/info (str facility "-install system: desktop-wiki")))
       (wiki/install-desktop-wiki))))
