@@ -18,11 +18,14 @@
     [schema.core :as s]
     [pallet.actions :as actions]))
 
+(def Settings
+  (hash-set (s/enum :install-libreoffice :install-spellchecking-de)))
+
 (defn install-libreoffice
   []
   (actions/package "libreoffice"))
 
-(defn install-spellchecking
+(defn install-spellchecking-de
   []
   (actions/package "hyphen-de")
   (actions/package "hunspell")

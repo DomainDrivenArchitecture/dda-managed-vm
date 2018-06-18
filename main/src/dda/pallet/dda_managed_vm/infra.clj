@@ -44,9 +44,8 @@
                       basics/Settings
                       wiki/Settings
                       java/Settings
-                      #{:install-libreoffice
-                        :install-spellchecking
-                        :install-git
+                      office/Settings
+                      #{:install-git
                         :install-password-store})))})
 
 (s/defn init
@@ -90,10 +89,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: tightvnc")))
        (tightvnc/install-system-tightvnc-server config))
-     (when (contains? settings :install-spellchecking)
+     (when (contains? settings :install-spellchecking-de)
        (actions/as-action
-        (logging/info (str facility "-install system: spellchecking")))
-       (office/install-spellchecking))
+        (logging/info (str facility "-install system: spellchecking-de")))
+       (office/install-spellchecking-de))
      (when (contains? settings :install-libreoffice)
        (actions/as-action
         (logging/info (str facility "-install system: libreoffice")))
