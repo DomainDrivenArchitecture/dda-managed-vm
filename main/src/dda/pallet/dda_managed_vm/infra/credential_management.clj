@@ -76,7 +76,7 @@ done
      :group user-name
      :link (str user-home "/repo/password-store/password-store-for-teams"))
     ;gopass init
-    ;gopass mounts add dem (str user-home "/repo/password-store/password-store-for-teams"))
+    ;gopass mounts add demo (str user-home "/repo/password-store/password-store-for-teams"))
     (actions/remote-file
      (str user-home "/.bashrc.d/gopass.sh")
      :literal true

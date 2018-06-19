@@ -18,12 +18,12 @@
 (defn vm-git-config
  "Git repos for VM"
  [domain-config]
- (let [{:keys [user type]} domain-config
+ (let [{:keys [user usage-type]} domain-config
        {:keys [name email]
         :or {email (str name "@mydomain")}} user]
    {:os-user (keyword name)
     :user-email email
-    :repos (if (= type :desktop-minimal)
+    :repos (if (= usage-type :desktop-minimal)
              {}
              {:book
               ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]

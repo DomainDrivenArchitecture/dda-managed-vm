@@ -103,7 +103,7 @@
 
 (defn configure-user-tightvnc-server-script
   "Install remote desktop viewing."
-  [config]
-  (let [os-user (name (-> config :vm-user))
+  [user-name config]
+  (let [os-user user-name
         password (-> config :tightvnc-server :user-password)]
     (set-user-password os-user password)))

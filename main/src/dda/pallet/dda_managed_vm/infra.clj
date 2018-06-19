@@ -19,6 +19,7 @@
    [clojure.tools.logging :as logging]
    [schema.core :as s]
    [pallet.actions :as actions]
+   [dda.config.commons.user-home :as user-home]
    [dda.pallet.core.infra :as core-infra]
    [dda.pallet.dda-managed-vm.infra.basics :as basics]
    [dda.pallet.dda-managed-vm.infra.tightvnc :as tightvnc]
@@ -123,29 +124,26 @@
   [config :- DdaVmConfig]
   (let [os-user-name (name (-> config :vm-user))
         settings (-> config :settings)]
-    (when (contains? config :tightvnc-server)
-      (actions/as-action
-       (logging/info (str facility "-install user: tightvnc")))
-      (tightvnc/install-user-tightvnc-server config)
-      (tightvnc/install-user-vnc-tab-workaround config))
-    (pallet.action/with-action-options
-     {:sudo-user os-user-name
-      :script-dir (str "/home/" os-user-name "/")
-      :script-env {:HOME (str "/home/" os-user-name "/")}}
-     (when (contains? config :tightvnc-server)
-       (tightvnc/configure-user-tightvnc-server-script config)))))
-
-(s/defn configure-system
-  "install the user space peaces in vm"
-  [config :- DdaVmConfig]
-  (let [os-user-name (name (-> config :vm-user))
-        settings (-> config :settings)]
     (pallet.action/with-action-options
      {:sudo-user "root"
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
-     (when (contains? settings :install-password-store)
-      (cm/configure-password-store os-user-name))
+     (when (contains? config :tightvnc-server)
+       (actions/as-action
+        (logging/info (str facility "-install user: tightvnc")))
+       (tightvnc/install-user-tightvnc-server config)
+       (tightvnc/install-user-vnc-tab-workaround config))
+     (when (contains? config :tightvnc-server)
+       (tightvnc/configure-user-tightvnc-server-script os-user-name config)))))
+
+(s/defn configure-system
+  "install the user space peaces in vm"
+  [config :- DdaVmConfig]
+  (let [settings (-> config :settings)]
+    (pallet.action/with-action-options
+     {:sudo-user "root"
+      :script-dir "/root/"
+      :script-env {:HOME (str "/root")}}
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-configure system: tightvnc")))
@@ -162,18 +160,26 @@
   [config :- DdaVmConfig]
   (let [{:keys [vm-user settings bookmarks]} config
         user-name (name vm-user)]
-    (when bookmarks
-      (actions/as-action
-       (logging/info (str facility "-configure user: bookmarks")))
-      (mozilla/configure-user-bookmarks user-name bookmarks))
     (pallet.action/with-action-options
-     {:sudo-user user-name
-      :script-dir (str "/home/" user-name "/")
-      :script-env {:HOME (str "/home/" user-name "/")}}
+     {:sudo-user "root"
+      :script-dir "/root/"
+      :script-env {:HOME (str "/root")}}
+     (when bookmarks
+       (actions/as-action
+        (logging/info (str facility "-configure user: bookmarks")))
+       (mozilla/configure-user-bookmarks user-name bookmarks))
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-configure user: tightvnc")))
-       (tightvnc/configure-user-tightvnc-server-script config)))))
+       (tightvnc/configure-user-tightvnc-server-script user-name config))
+     (when (contains? settings :install-password-store)
+       (actions/as-action
+        (logging/info (str facility "-configure user: passwordstore")))
+       (cm/configure-password-store user-name)))
+    (when (contains? settings :install-gopass)
+      (actions/as-action
+       (logging/info (str facility "-configure user: gopass")))
+      (cm/configure-gopass user-name))))
 
 (s/defmethod core-infra/dda-init facility
   [core-infra config]
