@@ -47,16 +47,19 @@ Some bookmarks are installed in `~/bookmark.html`, which you can import in your 
 You can install git repositories & servertrust.
 
 ### More Software
-* Java JRE 1.8
+* Java JRE 1.8 / 11
 * LibreOffice & SpellChecking
 * htop, iotop, iftop, strace, mtr in case of low level debugging.
+* virtualbox-guest, remove-power-management, swappiness
+* keymgm, password-store, gopass
+* zim desktop-wiki
 
 ## Usage documentation
 This crate installs and configures software on your virtual machine. You can provision pre-created virtual machines (see paragraph "Prepare vm" below) or cloud instances.
 
 ### Prepare vm
 If you want to use this crate, please ensure you meet the preconditions for the remote machine, i.e. xubuntu and openssh-server installed. If not yet installed, you may use the steps below:
-1. Install xubuntu16.04.02
+1. Install xubuntu18.04
 2. Login with your initial user and use:
 ```
 sudo apt-get update
@@ -65,14 +68,14 @@ sudo apt-get install openssh-server
 ```
 In case you want to install the software on the local machine rahter than remote, you wouldn't need openssh-server but only a Java runtime environment. If not yet available, you can install Java by:
 ```
-sudo apt-get install openjdk-7-jre-headless
+sudo apt-get install openjdk-11-jre-headless
 ```
 
 
 ### Usage Summary
 1. Download the jar-file from the releases page of this repository (e.g. dda-manage-vm-x.x.x-standalone.jar).
 2. Deploy the jar-file on the source machine
-3. Create the files `example-vm.edn` (Domain-Schema for your desktop) and `target.edn` (Schema for Targets to be provisioned) according to the reference and our example configurations. Please create them in the same folder where you've saved the jar-file. For more information about these files refer to the corresponding information below.
+3. Create the files `example-vm.edn` (Domain-Schema for your desktop) and `example-target.edn` (Schema for Targets to be provisioned) according to the reference and our example configurations. Please create them in the same folder where you've saved the jar-file. For more information about these files refer to the corresponding information below.
 4. Start the installation:
 ```bash
 java -jar dda-managed-vm-standalone.jar --targets example-targets.edn example-vm.edn
@@ -97,7 +100,8 @@ Example content of file `example-targets.edn`:
 #### VM config example
 Example content of file `example-vm.edn`:
 ```clojure
-{:type :desktop-office
+{:target-type :virtualbox
+ :usage-type :desktop-office
  :user {:name "test-user"
         :password {:plain "xxx"}
         :email "test-user@mydomain.org"
@@ -144,70 +148,10 @@ The schema for the targets config is:
 The "example-targets.edn" uses this schema.
 
 ### Domain API
-The schema for the vm configuration is:
-```clojure
-(def Secret                           ; see dda-pallet-commons
-  (either
-    {:plain Str}                      ;   as plain text
-    {:password-store-single Str}      ;   as password store key wo linebreaks & whitespaces
-    {:password-store-record           ;   as password store entry containing login (record :login)
-      {:path Str,                     ;      and password (no field or :password)
-       :element (enum :password :login)}}
-    {:password-store-multi Str}       ;   as password store key with linebreaks
-    {:pallet-secret {:key-id Str,
-                    :service-path [Keyword],
-                    :record-element (enum :secret :account)}})
-
-(def User                             ; see dda-user-crate
-  {:password Secret,
-   :name Str,
-   (optional-key :gpg) {:gpg-passphrase Secret
-                        :gpg-public-key Secret
-                        :gpg-private-key Secret}
-   (optional-key :ssh) {:ssh-private-key Secret
-                        :ssh-public-key Secret}})
-
-(def Bookmarks                        ; see dda-managed-vm
-  [{(optional-key :childs) [(recursive
-                           (var
-                            dda.pallet.dda-managed-vm.infra.mozilla/Folder))],
-  :name Str,
-  (optional-key :links) [[(one Str "url") (one Str "name")]]}])
-
-
-(def DdaVmDomainConfig
-   {:vm-type                          ; remote: all featured software, no vbox-guest-utils
-      (enum :remote :desktop),        ; desktop: vbox-guest utils, all featured software, no vnc
-    :dev-platform                     ; clojure-atom: full clojure and atom setup
-      (enum :clojure-atom             ; clojure-nightlight: full clojure and nightlight web server setup
-            :clojure-nightlight),
-    :user User                        ; user to create with his credentials
-    (optional-key :bookmarks) Bookmarks, ; initial bookmarks
-    (optional-key :email) Str         ; email for git config
-  }})
-```
-
-For `Secret` you can find more adapters in dda-palet-commons.
+[see domain reference](doc/reference_domain.md)
 
 ### Infra API
-The Infra configuration is a configuration on the infrastructure level of a crate. It contains the complete configuration options that are possible with the crate functions. You can find the details of the infra configurations at the other crates used:
-* [dda-user-crate](https://github.com/DomainDrivenArchitecture/dda-user-crate)
-* [dda-git-crate](https://github.com/DomainDrivenArchitecture/dda-git-crate)
-* [dda-serverspec-crate](https://github.com/DomainDrivenArchitecture/dda-serverspec-crate)
-
-For installation & configuration with the dda-managed-vm the schema is:
-```clojure
-(def DdaVmConfig {
-  {:vm-user s/Keyword                                           ; user-name
-   (s/optional-key :tightvnc-server) {:user-password s/Str}     ; install vnc?
-   (s/optional-key :bookmarks) Bookmarks
-   (s/optional-key :settings)
-   (hash-set (s/enum :install-virtualbox-guest :install-libreoffice
-                     :install-spellchecking :install-open-jdk-8
-                     :install-xfce-desktop  :install-analysis
-                     :install-keymgm :install-git
-                     :install-password-store))})
-```
+[see infra reference](doc/reference_infra.md)
 
 ## License
 Published under [apache2.0 license](LICENSE.md)
