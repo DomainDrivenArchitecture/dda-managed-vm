@@ -24,8 +24,7 @@
     [dda.pallet.dda-user-crate.app :as user]
     [dda.pallet.dda-serverspec-crate.app :as serverspec]
     [dda.pallet.dda-managed-vm.infra :as infra]
-    [dda.pallet.dda-managed-vm.domain :as domain]
-    [dda.pallet.commons.external-config :as ext-config]))
+    [dda.pallet.dda-managed-vm.domain :as domain]))
 
 (def with-dda-vm infra/with-dda-vm)
 
@@ -46,8 +45,7 @@
   app-configuration-resolved :- DdaVmAppConfig
   [resolved-domain-config :- DdaVmDomainResolvedConfig
    & options]
-  (let [{:keys [group-key] :or {group-key infra/facility}} options
-        {:keys [type]} resolved-domain-config]
+  (let [{:keys [group-key] :or {group-key infra/facility}} options]
     (mu/deep-merge
       (user/app-configuration-resolved (domain/user-config resolved-domain-config) :group-key group-key)
       (git/app-configuration (domain/vm-git-config resolved-domain-config) :group-key group-key)
@@ -78,4 +76,4 @@
                   :facility infra/facility
                   :domain-schema DdaVmDomainConfig
                   :domain-schema-resolved DdaVmDomainResolvedConfig
-                  :default-domain-file "vm.edn"))
+                  :default-domain-file "example-vm.edn"))
