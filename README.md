@@ -16,43 +16,27 @@ This crate works with:
 This crate automatically installs software on a Linux system. It can be a standalone system, but normally would be a virtual machine. For this reason we usually refer to the system as "virtual machine" in the text below.
 
 The following software/packages are installed by this dda-managed-vm:
-
-### VirtualBox Tools
-are installed by apt-get and will be updated automatically.
-
-### Gpg key & ssh key
-Optionally, you can install your gpg- and/or ssh keys.
-
-### Team-able passwordstore
-Store your passwords in the passwordstore, encrypted by gpg and versioned by git.
-For more details see: https://www.passwordstore.org/ and https://github.com/DomainDrivenArchitecture/password-store-for-teams.
-In order to test you can use:
-```
-demo-pass                       #see all passwords stored
-demo-pass testuser/demo-secret  #decrypt the demo-secret. Works, if you've installed the snakeoil key.
-```
-### Tightvnc-server (experimental)
-Tightvnc software allows you to connect to your vm and control it with a vnc tool (eg. gtk-vnc) using:
-```
- server: [ip]:5091
- account: [vm-user]
- vnc-password: test
-```
-You can find a configuration example here: `integration/resources/snakeoil-vm-remote.edn`
-
-### Browser & Bookmarks
-Some bookmarks are installed in `~/bookmark.html`, which you can import in your browser, e.g. Firefox or Google Chrome.
-
-### Git & git repos
-You can install git repositories & servertrust.
-
-### More Software
-* Java JRE 1.8 / 11
-* LibreOffice & SpellChecking
-* htop, iotop, iftop, strace, mtr in case of low level debugging.
-* virtualbox-guest, remove-power-management, swappiness
-* keymgm, password-store, gopass
-* zim desktop-wiki
+ * Teamable desktop-wiki: zim, a desktop wiki stores its content in plain text files and is backed by autosynchronized git repositories.
+ * Gpg key & ssh key: Optionally, you can install your gpg- and/or ssh keys.
+ * Team-able passwordstore: Store your passwords using gopass or passwordstore, encrypted by gpg and versioned by git. For more details see: https://www.passwordstore.org/ and https://github.com/DomainDrivenArchitecture/password-store-for-teams. In order to test you can use:
+   ```
+   demo-pass                       #see all passwords stored
+   demo-pass testuser/demo-secret  #decrypt the demo-secret. Works, if you've installed the snakeoil key.
+   ```
+ * Tightvnc-server (experimental): Allows you to connect to your vm and control it with a vnc tool (eg. gtk-vnc) using:
+   ```
+    server: [ip]:5091
+    account: [vm-user]
+    vnc-password: test
+   ```
+   You can find a configuration example here: `integration/resources/snakeoil-vm-remote.edn`
+ * Browser & Bookmarks: Some bookmarks are installed in `~/bookmark.html`, which you can import in your browser, e.g. Firefox or Google Chrome.
+ * Git & git repos: You can install git repositories & servertrust.
+ * Java JRE 1.8 / 11
+ * LibreOffice & SpellChecking
+ * htop, iotop, iftop, strace, mtr in case of low level debugging.
+ * VirtualBox Tools: Are installed by apt-get and will be updated automatically.
+ * power-management, swappiness
 
 ## Usage documentation
 This crate installs and configures software on your virtual machine. You can provision pre-created virtual machines (see paragraph "Prepare vm" below) or cloud instances.
