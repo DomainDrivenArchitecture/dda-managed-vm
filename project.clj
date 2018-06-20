@@ -22,8 +22,6 @@
                                     "test/resources"]
                    :dependencies
                    [[org.clojure/test.check "0.10.0-alpha2"]
-                    [org.domaindrivenarchitecture/pallet-aws "0.2.8.2"
-                     :exclusions [com.palletops/pallet]]
                     [dda/pallet "0.9.0" :classifier "tests"]
                     [dda/dda-pallet-commons "1.3.1" :classifier "tests"]
                     [ch.qos.logback/logback-classic "1.3.0-alpha4"]
