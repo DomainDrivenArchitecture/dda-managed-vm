@@ -30,7 +30,6 @@
    [dda.pallet.dda-managed-vm.infra.java :as java]))
 
 (def facility :dda-managed-vm)
-(def version  [0 0 0])
 
 (def Bookmarks mozilla/Bookmarks)
 
