@@ -16,7 +16,7 @@ This crate works with:
 This crate automatically installs software on a Linux system. It can be a standalone system, but normally would be a virtual machine. For this reason we usually refer to the system as "virtual machine" in the text below.
 
 The following software/packages are installed by this dda-managed-vm:
- * Teamable desktop-wiki: zim, a desktop wiki stores its content in plain text files and is backed by autosynchronized git repositories.
+ * Team-able desktop-wiki: zim, a desktop wiki stores its content in plain text files and is backed by autosynchronized git repositories.
  * Gpg key & ssh key: Optionally, you can install your gpg- and/or ssh keys.
  * Team-able passwordstore: Store your passwords using gopass or passwordstore, encrypted by gpg and versioned by git. For more details see: https://www.passwordstore.org/ and https://github.com/DomainDrivenArchitecture/password-store-for-teams. In order to test you can use:
    ```
