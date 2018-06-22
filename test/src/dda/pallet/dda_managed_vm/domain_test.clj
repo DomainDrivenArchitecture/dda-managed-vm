@@ -83,5 +83,23 @@
   (testing
     "test the serverspec config creation"
     (is (thrown? Exception (sut/infra-configuration {})))
-    (is (sut/infra-configuration config-1))
-    (is (sut/infra-configuration config-3))))
+    (is (=
+          {:dda-managed-vm
+           {:vm-user :test,
+            :bookmarks [{:name "Bookmarks Toolbar", :links [["https://domaindrivenarchitecture.org/" "dda"]], :childs [{:name "WebConf", :links [["https://meet.jit.si/dda-pallet" "jitsi dda-pallet"] ["http://meetingwords.com/" "MeetingWords"] ["https://web.telegram.org/" "Telegram"] ["http://www.meebl.de/" "meebl"]]}]}],
+            :settings #{:install-os-analysis :install-git
+                        :install-open-jdk-11 :configure-no-swappiness
+                        :install-xfce-desktop,}
+            :tightvnc-server {:user-password "test"}}}
+          (sut/infra-configuration config-1)))
+    (is (=
+          {:dda-managed-vm
+            {:vm-user :test,
+             :bookmarks [{:name "Bookmarks Toolbar", :links [["https://domaindrivenarchitecture.org/" "dda"]], :childs [{:name "WebConf", :links [["https://meet.jit.si/dda-pallet" "jitsi dda-pallet"] ["http://meetingwords.com/" "MeetingWords"] ["https://web.telegram.org/" "Telegram"] ["http://www.meebl.de/" "meebl"]]}]}],
+                    :settings #{:install-os-analysis :install-chromium :install-keymgm :install-git :install-open-jdk-11
+                                :install-spellchecking-de :install-telegram :configure-no-swappiness :install-inkscape
+                                :install-desktop-wiki :install-libreoffice :remove-power-management :install-pdf-chain
+                                :install-gopass :install-virtualbox-guest},
+                    :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb",
+                                :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}}}
+          (sut/infra-configuration config-2)))))

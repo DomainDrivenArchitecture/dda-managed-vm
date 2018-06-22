@@ -112,6 +112,8 @@
          :bookmarks (bookmark/bookmarks domain-config)}
         (when (contains? domain-config :desktop-wiki)
           {:settings #{:install-desktop-wiki}})
+        (when (contains? domain-config :credentials)
+          {:settings #{:install-gopass}})
         (cond
           (= usage-type :desktop-minimal)
           {:settings
@@ -125,7 +127,7 @@
            :settings
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-git
-              :install-keymgm :install-gopass
+              :install-keymgm
               :install-chromium :install-inkscape :install-pdf-chain
               :install-telegram}})
         (cond
