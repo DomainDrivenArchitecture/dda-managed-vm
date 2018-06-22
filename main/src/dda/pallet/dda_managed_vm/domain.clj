@@ -47,7 +47,8 @@
     DdaVmBookmarks
     {:target-type (s/enum :virtualbox :remote-aws :plain)
      :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)
-     (s/optional-key :desktop-wiki) [s/Str]}))
+     (s/optional-key :desktop-wiki) [s/Str]
+     (s/optional-key :credentials) [s/Str]}))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."

@@ -30,6 +30,8 @@
 (def config-2
   {:user {:name  "test"
           :password "pwd"}
+   :credentials ["credentials-repo"]
+   :desktop-wiki ["wiki-autosync-repo"]
    :target-type :virtualbox
    :usage-type :desktop-office})
 
@@ -52,8 +54,23 @@
   (testing
     "test the git config creation"
     (is (thrown? Exception (sut/vm-git-config {})))
-    (is (sut/vm-git-config config-1))
-    (is (sut/vm-git-config config-2))))
+    (is (=
+          {:os-user :test,
+           :user-email "test@mydomain",
+           :repos
+           {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
+            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}
+           :synced-repos {}}
+         (sut/vm-git-config config-1)))
+    (is (=
+          {:os-user :test,
+           :user-email "test@mydomain",
+           :repos
+           {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
+            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
+                          "credentials-repo",]}
+           :synced-repos {:wiki ["wiki-autosync-repo"]}}
+          (sut/vm-git-config config-2)))))
 
 (deftest test-serverspec-config
   (testing
