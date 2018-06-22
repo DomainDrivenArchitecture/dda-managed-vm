@@ -25,13 +25,13 @@
    [dda.pallet.dda-managed-vm.infra.tightvnc :as tightvnc]
    [dda.pallet.dda-managed-vm.infra.office :as office]
    [dda.pallet.dda-managed-vm.infra.credential-management :as cm]
-   [dda.pallet.dda-managed-vm.infra.mozilla :as mozilla]
+   [dda.pallet.dda-managed-vm.infra.browser :as browser]
    [dda.pallet.dda-managed-vm.infra.desktop-wiki :as wiki]
    [dda.pallet.dda-managed-vm.infra.java :as java]))
 
 (def facility :dda-managed-vm)
 
-(def Bookmarks mozilla/Bookmarks)
+(def Bookmarks browser/Bookmarks)
 
 (def DdaVmConfig
   "The configuration for managed vms crate."
@@ -166,7 +166,7 @@
      (when bookmarks
        (actions/as-action
         (logging/info (str facility "-configure user: bookmarks")))
-       (mozilla/configure-user-bookmarks user-name bookmarks))
+       (browser/configure-user-bookmarks user-name bookmarks))
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-configure user: tightvnc")))

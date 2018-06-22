@@ -15,11 +15,11 @@
 ; limitations under the License.
 
 
-(ns dda.pallet.dda-managed-vm.infra.mozilla-test
+(ns dda.pallet.dda-managed-vm.infra.browser-test
   (:require
     [clojure.test :refer :all]
     [schema.core :as s]
-    [dda.pallet.dda-managed-vm.infra.mozilla :as sut]))
+    [dda.pallet.dda-managed-vm.infra.browser :as sut]))
 
 
 (def expected-result
