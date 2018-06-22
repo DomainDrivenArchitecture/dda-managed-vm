@@ -104,6 +104,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: inkscape")))
        (office/install-inkscape))
+     (when (contains? settings :install-pdf-chain)
+       (actions/as-action
+        (logging/info (str facility "-install system: pdf-chain")))
+       (office/install-pdf-chain))
      (when (contains? settings :install-password-store)
        (actions/as-action
         (logging/info (str facility "-install system: password-store")))

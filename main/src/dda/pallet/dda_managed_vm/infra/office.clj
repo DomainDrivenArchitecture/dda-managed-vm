@@ -20,7 +20,7 @@
 
 (def Settings
   (hash-set :install-libreoffice :install-spellchecking-de
-            :install-inkscape))
+            :install-inkscape :install-pdf-chain))
 
 (defn install-libreoffice
   []
@@ -28,10 +28,12 @@
 
 (defn install-spellchecking-de
   []
-  (actions/package "hyphen-de")
-  (actions/package "hunspell")
-  (actions/package "hunspell-de-de"))
+  (actions/packages :aptitude ["hyphen-de" "hunspell" "hunspell-de-de"]))
 
 (defn install-inkscape
   []
   (actions/package "inkscape"))
+
+(defn install-pdf-chain
+  []
+  (actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer"]))
