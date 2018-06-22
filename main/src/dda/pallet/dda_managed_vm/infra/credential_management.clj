@@ -38,7 +38,7 @@
      (str user-home "/.demo-pass")
      :owner user-name
      :group user-name
-     :link (str user-home "/repo/password-store/password-store-for-teams"))
+     :link (str user-home "/repo/credentials/password-store-for-teams"))
     (actions/remote-file
      (str user-home "/.bashrc.d/team-pass.sh")
      :literal true
