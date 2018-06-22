@@ -116,7 +116,9 @@
           {:settings
             #{:install-open-jdk-11 :install-os-analysis :install-git}}
           (= usage-type :desktop-office)
-          {:settings
+          {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb"
+                       :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}
+           :settings
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-git
               :install-keymgm :install-gopass :install-desktop-wiki

@@ -39,6 +39,7 @@
   {:vm-user s/Keyword
    (s/optional-key :tightvnc-server) {:user-password s/Str}
    (s/optional-key :bookmarks) Bookmarks
+   (s/optional-key :fakturama) office/FakturamaConfig
    (s/optional-key :settings)
    (hash-set (apply s/enum
                     (clojure.set/union
@@ -110,6 +111,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: pdf-chain")))
        (office/install-pdf-chain))
+     (when (contains? config :fakturama)
+       (actions/as-action
+         (logging/info (str facility "-install system: fakturama")))
+       (office/install-fakturama (get-in config [:fakturama])))
      (when (contains? settings :install-telegram)
        (actions/as-action
         (logging/info (str facility "-install system: telegram")))
