@@ -119,7 +119,8 @@
           {:settings
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-git
-              :install-keymgm :install-gopass :install-desktop-wiki}})
+              :install-keymgm :install-gopass :install-desktop-wiki
+              :install-chromium}})
         (cond
           (= target-type :virtualbox)
           {:settings

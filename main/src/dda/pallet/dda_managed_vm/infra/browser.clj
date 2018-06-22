@@ -26,6 +26,14 @@
 
 (def Bookmarks [Folder])
 
+(def Settings
+  "The browser settings"
+  (hash-set
+    :install-chromium))
+
+(defn install-chromium []
+  (actions/package "chromium-browser"))
+
 (def header
   ["<!DOCTYPE NETSCAPE-Bookmark-file-1>"
    "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=UTF-8\">"

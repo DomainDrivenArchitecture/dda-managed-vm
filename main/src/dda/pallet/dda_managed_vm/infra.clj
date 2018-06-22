@@ -46,6 +46,7 @@
                       java/Settings
                       office/Settings
                       cm/Settings
+                      browser/Settings
                       #{:install-git})))})
 
 (s/defn init
@@ -63,8 +64,10 @@
      {:sudo-user "root"
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
-     (actions/as-action
-      (logging/info (str facility "-install system: create user " user-key)))
+     (when (contains? settings :install-chromium)
+       (actions/as-action
+         (logging/info (str facility "-install system: chromium")))
+       (browser/install-chromium))
      (when (contains? settings :install-os-analysis)
        (actions/as-action
         (logging/info (str facility "-install system: install-os-analysis")))
