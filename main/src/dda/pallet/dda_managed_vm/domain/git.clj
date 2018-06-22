@@ -18,7 +18,7 @@
 (defn vm-git-config
  "Git repos for VM"
  [domain-config]
- (let [{:keys [user usage-type]} domain-config
+ (let [{:keys [user usage-type desktop-wiki]} domain-config
        {:keys [name email]
         :or {email (str name "@mydomain")}} user]
    {:os-user (keyword name)
@@ -28,4 +28,7 @@
              {:book
               ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]
               :password-store
-              ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]})}))
+              ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]})
+    :synced-repos (if (contains? domain-config :desktop-wiki)
+                    {:wiki desktop-wiki}
+                    {})}))

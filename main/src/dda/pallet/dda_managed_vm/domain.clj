@@ -46,7 +46,8 @@
     DdaVmUser
     DdaVmBookmarks
     {:target-type (s/enum :virtualbox :remote-aws :plain)
-     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)}))
+     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)
+     (s/optional-key :desktop-wiki) [s/Str]}))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
@@ -108,6 +109,8 @@
       (mu/deep-merge
         {:vm-user (keyword name)
          :bookmarks (bookmark/bookmarks domain-config)}
+        (when (contains? domain-config :desktop-wiki)
+          {:settings #{:install-desktop-wiki}})
         (cond
           (= usage-type :desktop-minimal)
           {:settings
@@ -121,7 +124,7 @@
            :settings
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-git
-              :install-keymgm :install-gopass :install-desktop-wiki
+              :install-keymgm :install-gopass
               :install-chromium :install-inkscape :install-pdf-chain
               :install-telegram}})
         (cond
