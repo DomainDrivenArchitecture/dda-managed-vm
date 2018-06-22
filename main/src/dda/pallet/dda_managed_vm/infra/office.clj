@@ -19,7 +19,8 @@
     [pallet.actions :as actions]))
 
 (def Settings
-  (hash-set :install-libreoffice :install-spellchecking-de))
+  (hash-set :install-libreoffice :install-spellchecking-de
+            :install-inkscape))
 
 (defn install-libreoffice
   []
@@ -30,3 +31,7 @@
   (actions/package "hyphen-de")
   (actions/package "hunspell")
   (actions/package "hunspell-de-de"))
+
+(defn install-inkscape
+  []
+  (actions/package "inkscape"))

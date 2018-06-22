@@ -100,6 +100,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: libreoffice")))
        (office/install-libreoffice))
+     (when (contains? settings :install-inkscape)
+       (actions/as-action
+        (logging/info (str facility "-install system: inkscape")))
+       (office/install-inkscape))
      (when (contains? settings :install-password-store)
        (actions/as-action
         (logging/info (str facility "-install system: password-store")))
