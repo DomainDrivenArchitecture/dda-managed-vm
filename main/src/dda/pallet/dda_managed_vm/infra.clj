@@ -26,6 +26,7 @@
    [dda.pallet.dda-managed-vm.infra.office :as office]
    [dda.pallet.dda-managed-vm.infra.credential-management :as cm]
    [dda.pallet.dda-managed-vm.infra.browser :as browser]
+   [dda.pallet.dda-managed-vm.infra.communication :as communication]
    [dda.pallet.dda-managed-vm.infra.desktop-wiki :as wiki]
    [dda.pallet.dda-managed-vm.infra.java :as java]))
 
@@ -47,6 +48,7 @@
                       office/Settings
                       cm/Settings
                       browser/Settings
+                      communication/Settings
                       #{:install-git})))})
 
 (s/defn init
@@ -108,6 +110,10 @@
        (actions/as-action
         (logging/info (str facility "-install system: pdf-chain")))
        (office/install-pdf-chain))
+     (when (contains? settings :install-telegram)
+       (actions/as-action
+        (logging/info (str facility "-install system: telegram")))
+       (communication/install-telegram))
      (when (contains? settings :install-password-store)
        (actions/as-action
         (logging/info (str facility "-install system: password-store")))
