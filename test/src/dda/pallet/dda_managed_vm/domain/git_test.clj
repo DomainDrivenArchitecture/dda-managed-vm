@@ -15,11 +15,11 @@
 ; limitations under the License.
 
 
-(ns dda.pallet.dda-managed-vm.app-test
+(ns dda.pallet.dda-managed-vm.domain.git-test
   (:require
     [clojure.test :refer :all]
     [schema.core :as s]
-    [dda.pallet.dda-managed-vm.app :as sut]))
+    [dda.pallet.dda-managed-vm.domain.git :as sut]))
 
 (def config-full
   {:type :desktop-office

@@ -28,11 +28,14 @@
   {:user {:name s/Str
           :password secret/Secret
           (s/optional-key :email) s/Str
+          (s/optional-key :git-credentials) git/GitCredentials
           (s/optional-key :ssh) {:ssh-public-key secret/Secret
                                  :ssh-private-key secret/Secret}
           (s/optional-key :gpg) {:gpg-public-key secret/Secret
                                  :gpg-private-key secret/Secret
-                                 :gpg-passphrase secret/Secret}}})
+                                 :gpg-passphrase secret/Secret}
+          (s/optional-key :desktop-wiki) [s/Str]
+          (s/optional-key :credentials) [s/Str]}})
 
 (def DdaVmUserResolved
   (secret/create-resolved-schema DdaVmUser))
@@ -46,9 +49,7 @@
     DdaVmUser
     DdaVmBookmarks
     {:target-type (s/enum :virtualbox :remote-aws :plain)
-     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)
-     (s/optional-key :desktop-wiki) [s/Str]
-     (s/optional-key :credentials) [s/Str]}))
+     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)}))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
@@ -110,9 +111,9 @@
       (mu/deep-merge
         {:vm-user (keyword name)
          :bookmarks (bookmark/bookmarks domain-config)}
-        (when (contains? domain-config :desktop-wiki)
+        (when (contains? user :desktop-wiki)
           {:settings #{:install-desktop-wiki}})
-        (when (contains? domain-config :credentials)
+        (when (contains? user :credentials)
           {:settings #{:install-gopass}})
         (cond
           (= usage-type :desktop-minimal)

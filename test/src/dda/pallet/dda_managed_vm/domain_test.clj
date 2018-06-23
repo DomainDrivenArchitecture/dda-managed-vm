@@ -22,18 +22,18 @@
     [dda.pallet.dda-managed-vm.domain :as sut]))
 
 (def config-1
-  {:user {:name  "test"
-          :password "pwd"}
-   :target-type :remote-aws
-   :usage-type :desktop-base})
+  {:target-type :remote-aws
+   :usage-type :desktop-base
+   :user {:name  "test"
+          :password "pwd"}})
 
 (def config-2
-  {:user {:name  "test"
-          :password "pwd"}
-   :credentials ["credentials-repo"]
-   :desktop-wiki ["wiki-autosync-repo"]
-   :target-type :virtualbox
-   :usage-type :desktop-office})
+  {:target-type :virtualbox
+   :usage-type :desktop-office
+   :user {:name  "test"
+          :password "pwd"
+          :credentials ["credentials-repo"]
+          :desktop-wiki ["wiki-autosync-repo"]}})
 
 (def config-3
   {:target-type :virtualbox
@@ -42,6 +42,17 @@
                 :links [["url" "name"]]}]
    :user {:name  "test"
           :password "pwd"}})
+
+(def config-4
+  {:target-type :virtualbox
+   :usage-type :desktop-office
+   :user {:name  "test"
+          :password "pwd"
+          :git-credentials {:gitblit {:user "user-gb"}
+                            :github {:user "user-gh"
+                                     :password "pwd-gh"}}
+          :credentials ["credentials-repo"]
+          :desktop-wiki ["wiki-autosync-repo"]}})
 
 (deftest test-backup-config
   (testing
@@ -59,8 +70,7 @@
            :user-email "test@mydomain",
            :repos
            {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
-            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}
-           :synced-repos {}}
+            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}}
          (sut/vm-git-config config-1)))
     (is (=
           {:os-user :test,
@@ -70,7 +80,18 @@
             :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
                           "credentials-repo",]}
            :synced-repos {:wiki ["wiki-autosync-repo"]}}
-          (sut/vm-git-config config-2)))))
+          (sut/vm-git-config config-2)))
+    (is (=
+          {:os-user :test,
+           :user-email "test@mydomain",
+           :user-credentials {:gitblit {:user "user-gb"},
+                              :github {:user "user-gh", :password "pwd-gh"}},
+           :repos
+           {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
+            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
+                          "credentials-repo",]}
+           :synced-repos {:wiki ["wiki-autosync-repo"]}}
+          (sut/vm-git-config config-4)))))
 
 (deftest test-serverspec-config
   (testing
@@ -98,7 +119,7 @@
              :bookmarks [{:name "Bookmarks Toolbar", :links [["https://domaindrivenarchitecture.org/" "dda"]], :childs [{:name "WebConf", :links [["https://meet.jit.si/dda-pallet" "jitsi dda-pallet"] ["http://meetingwords.com/" "MeetingWords"] ["https://web.telegram.org/" "Telegram"] ["http://www.meebl.de/" "meebl"]]}]}],
                     :settings #{:install-os-analysis :install-chromium :install-keymgm :install-git :install-open-jdk-11
                                 :install-spellchecking-de :install-telegram :configure-no-swappiness :install-inkscape
-                                :install-desktop-wiki :install-libreoffice :remove-power-management :install-pdf-chain
+                                :install-desktop-wiki :install-libreoffice :remove-power-management
                                 :install-gopass :install-virtualbox-guest},
                     :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}}}

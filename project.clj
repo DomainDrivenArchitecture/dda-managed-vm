@@ -6,7 +6,7 @@
   :dependencies [[dda/dda-config-commons "1.4.0"]
                  [dda/dda-pallet "2.2.0"]
                  [dda/dda-user-crate "1.0.5"]
-                 [dda/dda-git-crate "1.1.4"]
+                 [dda/dda-git-crate "1.1.5"]
                  [dda/dda-backup-crate "1.0.4"]
                  [dda/dda-serverspec-crate "1.1.1"]]
   :source-paths ["main/src"]

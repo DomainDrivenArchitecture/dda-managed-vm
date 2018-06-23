@@ -1,12 +1,14 @@
 {:target-type :virtualbox
  :usage-type :desktop-office
- :credentials []
- :desktop-wiki []
  :user {:name "jem"
         :password {:password-store-single "jem/meissa/password"}
         :email "michael.jerger@meissa-gmbh.de"
+        :git-credentials {:gitblit {:user "jem"}
+                          :github {:user "jerger"}}
         :ssh {:ssh-public-key {:password-store-single "jem/meissa/ssh/id_rsa_pub"}
               :ssh-private-key {:password-store-multi "jem/meissa/ssh/id_rsa_priv"}}
         :gpg {:gpg-public-key {:password-store-multi "jem/meissa/gpg/key.pub"}
               :gpg-private-key {:password-store-multi "jem/meissa/gpg/key.priv"}
-              :gpg-passphrase {:password-store-single "jem/meissa/gpg/key.passphrase"}}}}
+              :gpg-passphrase {:password-store-single "jem/meissa/gpg/key.passphrase"}}
+        :credentials ["ssh://jem@repo.meissa-gmbh.de:29418/meissa/credentials.git"]
+        :desktop-wiki ["ssh://jem@repo.meissa-gmbh.de:29418/meissa/knowledge.git"]}}
