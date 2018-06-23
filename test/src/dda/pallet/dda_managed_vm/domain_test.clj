@@ -84,8 +84,8 @@
     (is (=
           {:os-user :test,
            :user-email "test@mydomain",
-           :user-credentials {:gitblit {:user "user-gb"},
-                              :github {:user "user-gh", :password "pwd-gh"}},
+           :credentials {:gitblit {:user "user-gb"},
+                         :github {:user "user-gh", :password "pwd-gh"}},
            :repos
            {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
             :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"

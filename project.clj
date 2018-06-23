@@ -1,4 +1,4 @@
-(defproject dda/dda-managed-vm "2.0.1-SNAPSHOT"
+(defproject dda/dda-managed-vm "2.1.0-SNAPSHOT"
   :description "The managed vm desktop crate"
   :url "https://www.domaindrivenarchitecture.org"
   :license {:name "Apache License, Version 2.0"
@@ -6,7 +6,7 @@
   :dependencies [[dda/dda-config-commons "1.4.0"]
                  [dda/dda-pallet "2.2.0"]
                  [dda/dda-user-crate "1.0.5"]
-                 [dda/dda-git-crate "1.1.5"]
+                 [dda/dda-git-crate "2.0.0-SNAPSHOT"]
                  [dda/dda-backup-crate "1.0.4"]
                  [dda/dda-serverspec-crate "1.1.1"]]
   :source-paths ["main/src"]
