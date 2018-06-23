@@ -128,8 +128,7 @@
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-git
               :install-keymgm
-              :install-chromium :install-inkscape :install-pdf-chain
-              :install-telegram}})
+              :install-chromium :install-inkscape :install-telegram}})
         (cond
           (= target-type :virtualbox)
           {:settings
