@@ -12,9 +12,21 @@ The schema for the vm configuration is:
                     :service-path [Keyword],
                     :record-element (enum :secret :account)}})
 
-(def User                             ; see dda-user-crate
+(def GitCredentials
+  {(enum :gitblit :github)
+   {:user s/Str
+    (optional-key :password) Secret}})
+
+(def User                             
   {:password Secret,
    :name Str,
+   (optional-key :email) Str                    ; email for git config
+   (optional-key :git-credentials)              ; credentials for git repositories
+   git/GitCredentials
+   (optional-key :desktop-wiki) [Str]           ; install zim desktop-wiki, Str to describe
+                                                ; used autosync git repositories
+   (optional-key :credentials) [Str]            ; install passwordstore or gopass, Str to describe
+                                                ; used git repositories
    (optional-key :gpg) {:gpg-passphrase Secret
                         :gpg-public-key Secret
                         :gpg-private-key Secret}
@@ -38,10 +50,10 @@ The schema for the vm configuration is:
     (s/enum :desktop-minimal          ; only some analysis tools are installed.
             :desktop-base             ; in addition java anfd git
       :desktop-office)                ; in addition key-mgm, credential-mgm, zim and libreoffice is installed.
+    (optional-key :bookmarks)
+    Bookmarks,                        ; initial bookmarks
     :user User                        ; user to create with his credentials
-    (optional-key :bookmarks) Bookmarks, ; initial bookmarks
-    (optional-key :email) Str         ; email for git config
-  }})
+  })
 ```
 
 For `Secret` you can find more adapters in dda-palet-commons.
