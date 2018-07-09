@@ -27,6 +27,7 @@
             :install-xfce-desktop
             :install-virtualbox-guest
             :install-bash-utils
+            :install-zip-utils
             :remove-power-management
             :remove-xubuntu-unused
             :remove-ubuntu-unused
@@ -63,12 +64,11 @@
   (actions/package "seahorse"))
 
 (defn install-bash-utils
-  "Install analysis tools"
   [facility]
   (actions/as-action
    (logging/info (str facility "-install system: install-bash-utils")))
   (actions/packages
-    :aptitude ["bash-completion"]))
+    :aptitude ["bash-completion" "screen"]))
 
 (defn install-os-analysis
   "Install analysis tools"
@@ -77,6 +77,14 @@
    (logging/info (str facility "-install system: install-os-analysis")))
   (actions/packages
     :aptitude ["lsof" "strace" "ncdu" "iptraf" "htop" "iotop" "iftop"]))
+
+(defn install-zip-utils
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-zip-utils")))
+  (actions/packages
+    :aptitude ["p7zip-rar" "p7zip-full" "unace" "unrar" "zip" "unzip"
+               "sharutils" "rar" "mpack" "arj" "cabextract" "file-roller"]))
 
 (defn configure-no-swappiness
   [facility]
@@ -117,6 +125,8 @@
     (install-os-analysis facility))
   (when (contains? settings :install-bash-utils)
     (install-bash-utils facility))
+  (when (contains? settings :install-zip-utils)
+    (install-zip-utils facility))
   (when (contains? settings :install-keymgm)
     (install-keymgm facility))
   (when (contains? settings :install-xfce-desktop)

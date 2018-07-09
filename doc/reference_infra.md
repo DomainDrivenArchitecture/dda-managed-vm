@@ -13,10 +13,12 @@ For installation & configuration with the dda-managed-vm the schema is:
    (hash-set (s/enum :install-virtualbox-guest
                      :install-xfce-desktop
                      :install-bash-utils
+                     :install-zip-utils
                      :install-os-analysis
                      :install-keymgm
                      :install-password-store
                      :install-gopass
+                     :install-diagram
                      :install-desktop-wiki
                      :install-open-jdk-8
                      :install-open-jdk-11

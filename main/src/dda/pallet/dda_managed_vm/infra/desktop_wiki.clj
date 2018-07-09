@@ -15,17 +15,36 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.desktop-wiki
   (:require
+    [clojure.tools.logging :as logging]
     [schema.core :as s]
     [pallet.actions :as actions]))
 
 (def Settings
   "The basic settings"
-  (hash-set :install-desktop-wiki))
+  (hash-set
+    :install-diagram
+    :install-desktop-wiki))
+
+(defn install-diagram
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-diagram")))
+  (actions/packages
+    :aptitude ["graphviz" "ditaa" "scrot" "dia"
+               "dvipng" "gnuplot" "r-base"]))
+
 
 (defn install-desktop-wiki
-  []
-  ;TODO: add "GTK2_RC_FILES=/usr/share/themes/Raleigh/gtk-2.0/gtkrc" in .bashrc
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-desktop-wiki")))
   (actions/packages
-    :aptitude ["zim" "graphviz" "ditaa" "scrot"
-               "dvipng" "gnuplot" "r-base" "python-gtkspellcheck"
-               "aspell" "aspell-de"]))
+    :aptitude ["zim" "python-gtkspellcheck" "aspell" "aspell-de"]))
+
+(s/defn install-system
+  "install common used packages for vm"
+  [facility settings]
+  (when (contains? settings :install-diagram)
+    (install-diagram facility))
+  (when (contains? settings :install-desktop-wiki)
+    (install-desktop-wiki facility)))

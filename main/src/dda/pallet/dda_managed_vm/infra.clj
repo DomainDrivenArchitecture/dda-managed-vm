@@ -70,6 +70,7 @@
      (basics/install-system facility settings)
      (office/install-system facility config)
      (communication/install-system facility settings)
+     (wiki/install-system facility settings)
      (when (contains? settings :install-chromium)
        (actions/as-action
          (logging/info (str facility "-install system: chromium")))
@@ -93,11 +94,7 @@
     (when (contains? settings :install-open-jdk-11)
       (actions/as-action
        (logging/info (str facility "-install system: openjdk 11")))
-      (java/install-open-jdk-11))
-    (when (contains? settings :install-desktop-wiki)
-      (actions/as-action
-       (logging/info (str facility "-install system: desktop-wiki")))
-      (wiki/install-desktop-wiki))))
+      (java/install-open-jdk-11))))
 
 (s/defn install-user
   "install the user space peaces in vm"
