@@ -53,7 +53,7 @@
   [facility]
   (actions/as-action
    (logging/info (str facility "-install system: pdf-chain")))
-  (actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer"]))
+  (actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"]))
 
 (defn install-audio
   [facility]
