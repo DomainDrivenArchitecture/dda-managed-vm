@@ -26,6 +26,8 @@ For installation & configuration with the dda-managed-vm the schema is:
                      :install-spellchecking-de
                      :install-audio
                      :install-enigmail
+                     :install-telegram
+                     :install-remina
                      :remove-power-management
                      :remove-xubuntu-unused
                      :remove-ubuntu-unused

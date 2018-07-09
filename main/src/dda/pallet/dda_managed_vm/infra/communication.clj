@@ -21,6 +21,7 @@
 
 (def Settings
   (hash-set :install-telegram
+            :install-remina
             :install-enigmail))
 
 (defn install-telegram
@@ -49,10 +50,19 @@ export PATH"))
    (logging/info (str facility "-install system: install-enigmail")))
   (actions/packages :aptitude ["enigmail"]))
 
+(defn install-remina
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-remina")))
+  (actions/packages :aptitude ["remmina"
+                               "remmina-plugin-rdp"]))
+
 (s/defn install-system
   "install common used packages for vm"
   [facility settings]
   (when (contains? settings :install-enigmail)
     (install-enigmail facility))
   (when (contains? settings :install-telegram)
-    (install-telegram facility)))
+    (install-telegram facility))
+  (when (contains? settings :install-remina)
+    (install-remina facility)))

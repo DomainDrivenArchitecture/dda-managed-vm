@@ -133,8 +133,8 @@
               :install-git :install-diagram :install-zip-utils
               :install-keymgm :install-audio
               :install-chromium :install-inkscape :install-telegram
-              :remove-xubuntu-unused :remove-ubuntu-unused
-              :install-enigmail}})
+              :install-remina :install-enigmail
+              :remove-xubuntu-unused :remove-ubuntu-unused}})
         (cond
           (= target-type :virtualbox)
           {:settings
