@@ -26,6 +26,7 @@
             :install-keymgm
             :install-xfce-desktop
             :install-virtualbox-guest
+            :install-bash-utils
             :remove-power-management
             :remove-xubuntu-unused
             :remove-ubuntu-unused
@@ -61,14 +62,21 @@
    (logging/info (str facility "-install system: key management tools")))
   (actions/package "seahorse"))
 
+(defn install-bash-utils
+  "Install analysis tools"
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-bash-utils")))
+  (actions/packages
+    :aptitude ["bash-completion"]))
+
 (defn install-os-analysis
   "Install analysis tools"
   [facility]
   (actions/as-action
    (logging/info (str facility "-install system: install-os-analysis")))
   (actions/packages
-    :aptitude ["bash-completion" "lsof" "strace"
-               "htop" "iotop" "iftop"]))
+    :aptitude ["lsof" "strace" "ncdu" "iptraf" "htop" "iotop" "iftop"]))
 
 (defn configure-no-swappiness
   [facility]
@@ -107,6 +115,8 @@
   [facility settings]
   (when (contains? settings :install-os-analysis)
     (install-os-analysis facility))
+  (when (contains? settings :install-bash-utils)
+    (install-bash-utils facility))
   (when (contains? settings :install-keymgm)
     (install-keymgm facility))
   (when (contains? settings :install-xfce-desktop)

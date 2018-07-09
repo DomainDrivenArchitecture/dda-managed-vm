@@ -118,20 +118,22 @@
         (cond
           (= usage-type :desktop-minimal)
           {:settings
-            #{:install-os-analysis :remove-xubuntu-unused :remove-ubuntu-unused}}
+            #{:install-os-analysis :install-bash-utils :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-base)
           {:settings
-            #{:install-open-jdk-11 :install-os-analysis :install-git
-              :remove-xubuntu-unused :remove-ubuntu-unused}}
+            #{:install-open-jdk-11 :install-os-analysis :install-bash-utils :install-git
+              :install-audio :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb"
                        :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}
            :settings
             #{:install-libreoffice :install-spellchecking-de
-              :install-open-jdk-11 :install-os-analysis :install-git
-              :install-keymgm
+              :install-open-jdk-11 :install-os-analysis :install-bash-utils
+              :install-git
+              :install-keymgm :install-audio
               :install-chromium :install-inkscape :install-telegram
-              :remove-xubuntu-unused :remove-ubuntu-unused}})
+              :remove-xubuntu-unused :remove-ubuntu-unused
+              :install-enigmail}})
         (cond
           (= target-type :virtualbox)
           {:settings

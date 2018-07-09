@@ -11,10 +11,8 @@ For installation & configuration with the dda-managed-vm the schema is:
    (s/optional-key :bookmarks) Bookmarks
    (s/optional-key :settings)
    (hash-set (s/enum :install-virtualbox-guest
-                     :remove-power-management
-                     :remove-xubuntu-unused
-                     :remove-ubuntu-unused
                      :install-xfce-desktop
+                     :install-bash-utils
                      :install-os-analysis
                      :install-keymgm
                      :install-password-store
@@ -24,5 +22,10 @@ For installation & configuration with the dda-managed-vm the schema is:
                      :install-open-jdk-11
                      :install-libreoffice
                      :install-spellchecking-de
+                     :install-audio
+                     :install-enigmail
+                     :remove-power-management
+                     :remove-xubuntu-unused
+                     :remove-ubuntu-unused
                      :configure-no-swappiness))})
 ```

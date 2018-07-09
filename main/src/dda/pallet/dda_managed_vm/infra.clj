@@ -68,6 +68,8 @@
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
      (basics/install-system facility settings)
+     (office/install-system facility config)
+     (communication/install-system facility settings)
      (when (contains? settings :install-chromium)
        (actions/as-action
          (logging/info (str facility "-install system: chromium")))
@@ -76,30 +78,6 @@
        (actions/as-action
         (logging/info (str facility "-install system: tightvnc")))
        (tightvnc/install-system-tightvnc-server config))
-     (when (contains? settings :install-spellchecking-de)
-       (actions/as-action
-        (logging/info (str facility "-install system: spellchecking-de")))
-       (office/install-spellchecking-de))
-     (when (contains? settings :install-libreoffice)
-       (actions/as-action
-        (logging/info (str facility "-install system: libreoffice")))
-       (office/install-libreoffice))
-     (when (contains? settings :install-inkscape)
-       (actions/as-action
-        (logging/info (str facility "-install system: inkscape")))
-       (office/install-inkscape))
-     (when (contains? settings :install-pdf-chain)
-       (actions/as-action
-        (logging/info (str facility "-install system: pdf-chain")))
-       (office/install-pdf-chain))
-     (when (contains? config :fakturama)
-       (actions/as-action
-         (logging/info (str facility "-install system: fakturama")))
-       (office/install-fakturama (get-in config [:fakturama])))
-     (when (contains? settings :install-telegram)
-       (actions/as-action
-        (logging/info (str facility "-install system: telegram")))
-       (communication/install-telegram))
      (when (contains? settings :install-password-store)
        (actions/as-action
         (logging/info (str facility "-install system: password-store")))

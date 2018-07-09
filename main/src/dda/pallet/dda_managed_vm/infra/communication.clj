@@ -15,15 +15,19 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.communication
   (:require
+    [clojure.tools.logging :as logging]
     [schema.core :as s]
     [pallet.actions :as actions]))
 
 (def Settings
-  (hash-set :install-telegram))
+  (hash-set :install-telegram
+            :install-enigmail))
 
 (defn install-telegram
-  []
+  [facility]
   "get and install telegram at /opt/telegram"
+  (actions/as-action
+   (logging/info (str facility "-install system: install-telegram")))
   (actions/remote-directory
     "/opt/telegram"
     :owner "root"
@@ -38,3 +42,17 @@
     :literal true
     :content "PATH=$PATH:/opt/telegram
 export PATH"))
+
+(defn install-enigmail
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-enigmail")))
+  (actions/packages :aptitude ["enigmail"]))
+
+(s/defn install-system
+  "install common used packages for vm"
+  [facility settings]
+  (when (contains? settings :install-enigmail)
+    (install-enigmail facility))
+  (when (contains? settings :install-telegram)
+    (install-telegram facility)))
