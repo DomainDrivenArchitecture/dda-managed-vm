@@ -10,11 +10,19 @@ For installation & configuration with the dda-managed-vm the schema is:
    (s/optional-key :tightvnc-server) {:user-password s/Str}     ; install vnc?
    (s/optional-key :bookmarks) Bookmarks
    (s/optional-key :settings)
-   (hash-set (s/enum :install-virtualbox-guest :remove-power-management
-                     :install-xfce-desktop  :install-os-analysis
-                     :install-keymgm :configure-no-swappiness
-                     :install-password-store :install-gopass
+   (hash-set (s/enum :install-virtualbox-guest
+                     :remove-power-management
+                     :remove-xubuntu-unused
+                     :remove-ubuntu-unused
+                     :install-xfce-desktop
+                     :install-os-analysis
+                     :install-keymgm
+                     :install-password-store
+                     :install-gopass
                      :install-desktop-wiki
-                     :install-open-jdk-8 :install-open-jdk-11
-                     :install-libreoffice :install-spellchecking-de))})
+                     :install-open-jdk-8
+                     :install-open-jdk-11
+                     :install-libreoffice
+                     :install-spellchecking-de
+                     :configure-no-swappiness))})
 ```

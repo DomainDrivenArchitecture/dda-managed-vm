@@ -15,54 +15,115 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.basics
   (:require
+    [clojure.tools.logging :as logging]
     [schema.core :as s]
     [pallet.actions :as actions]))
 
 (def Settings
   "The basic settings"
-  (hash-set :install-virtualbox-guest :remove-power-management
-            :install-xfce-desktop  :install-os-analysis
-            :install-keymgm :configure-no-swappiness))
+  (hash-set
+            :install-os-analysis
+            :install-keymgm
+            :install-xfce-desktop
+            :install-virtualbox-guest
+            :remove-power-management
+            :remove-xubuntu-unused
+            :remove-ubuntu-unused
+            :configure-no-swappiness))
 
 (defn install-virtualbox-guest-additions
   "make virtual machine run properly sized on virtualbox"
-  []
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: virtualbox-guest")))
   (actions/packages :aptitude ["virtualbox-guest-x11"]))
-
-(defn install-remove-power-management
-  "remove power management on vms"
-  []
-  (actions/package :action :remove "xfce4-power-manager")
-  (actions/package :action :remove "xfce4-power-manager-plugins")
-  (actions/package :action :remove "xfce4-power-manager-data"))
 
 (defn configure-virtualbox-guest-additions
   "configures virtual-box guest additions"
-  [config]
-  (let [os-user-name (name (-> config :vm-user))]
+  [facility vm-user]
+  (let [os-user-name (name vm-user)]
+    (actions/as-action
+      (logging/info (str facility "-configure system: configure-virtualbox-guest-additions")))
     (actions/exec-script ("usermod" "-G vboxsf" "-a" ~os-user-name))))
 
 (defn install-xfce-desktop
   "Install the xubuntu desktop."
-  []
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: xfce")))
   (actions/package "xfce4")
   (actions/package "xfce4-goodies"))
 
 (defn install-keymgm
   "Install keymanagement tools"
-  []
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: key management tools")))
   (actions/package "seahorse"))
 
 (defn install-os-analysis
   "Install analysis tools"
-  []
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-os-analysis")))
   (actions/packages
     :aptitude ["bash-completion" "lsof" "strace"
                "htop" "iotop" "iftop"]))
 
 (defn configure-no-swappiness
-  []
+  [facility]
+  (actions/as-action
+    (logging/info (str facility "-configure system: configure-no-swapiness")))
   (actions/exec-checked-script
     "set swappiness to 0"
-    ("echo \"vm.swappiness=0\"" ">>" "/etc/sysctl.conf")
+    ("echo" "\"vm.swappiness=0\"" ">>" "/etc/sysctl.conf")
     ("sysctl" "-p")))
+
+(defn remove-power-management
+  "remove power management on vms"
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: remove-power-management")))
+  (actions/package "xfce4-power-manager" :action :remove)
+  (actions/package "xfce4-power-manager-plugins" :action :remove)
+  (actions/package "xfce4-power-manager-data" :action :remove))
+
+(defn remove-xubuntu-unused
+  "remove unused packages"
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: remove-xubuntu-unused")))
+  (actions/package "abiword" :action :remove)
+  (actions/package "gnumeric" :action :remove))
+
+(defn remove-ubuntu-unused
+  "remove unused packages"
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: remove-ubuntu-unused")))
+  (actions/package "popularity-contest" :action :remove))
+
+(s/defn install-system
+  [facility settings]
+  (when (contains? settings :install-os-analysis)
+    (install-os-analysis facility))
+  (when (contains? settings :install-keymgm)
+    (install-keymgm facility))
+  (when (contains? settings :install-xfce-desktop)
+    (install-xfce-desktop facility))
+  (when (contains? settings :install-virtualbox-guest)
+    (install-virtualbox-guest-additions facility))
+  (when (contains? settings :remove-power-management)
+    (remove-power-management facility))
+  (when (contains? settings :remove-xubuntu-unused)
+    (remove-xubuntu-unused facility))
+  (when (contains? settings :remove-ubuntu-unused)
+    (remove-ubuntu-unused facility)))
+
+(s/defn configure-system
+  [facility config]
+  (let [{:keys [settings vm-user]} config]
+    (when (contains? settings :configure-no-swappiness)
+      (configure-no-swappiness facility))
+    (when (contains? settings :install-virtualbox-guest)
+      (configure-virtualbox-guest-additions facility vm-user))))

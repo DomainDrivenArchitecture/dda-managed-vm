@@ -118,10 +118,11 @@
         (cond
           (= usage-type :desktop-minimal)
           {:settings
-            #{:install-os-analysis}}
+            #{:install-os-analysis :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-base)
           {:settings
-            #{:install-open-jdk-11 :install-os-analysis :install-git}}
+            #{:install-open-jdk-11 :install-os-analysis :install-git
+              :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb"
                        :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}
@@ -129,11 +130,13 @@
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-git
               :install-keymgm
-              :install-chromium :install-inkscape :install-telegram}})
+              :install-chromium :install-inkscape :install-telegram
+              :remove-xubuntu-unused :remove-ubuntu-unused}})
         (cond
           (= target-type :virtualbox)
           {:settings
-            #{:install-virtualbox-guest :remove-power-management
+            #{:install-virtualbox-guest
+              :remove-power-management
               :configure-no-swappiness}}
           (= target-type :remote-aws)
           {:tightvnc-server {:user-password "test"}

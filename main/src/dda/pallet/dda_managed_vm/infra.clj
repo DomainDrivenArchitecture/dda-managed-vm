@@ -67,30 +67,11 @@
      {:sudo-user "root"
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
+     (basics/install-system facility settings)
      (when (contains? settings :install-chromium)
        (actions/as-action
          (logging/info (str facility "-install system: chromium")))
        (browser/install-chromium))
-     (when (contains? settings :install-os-analysis)
-       (actions/as-action
-        (logging/info (str facility "-install system: install-os-analysis")))
-       (basics/install-os-analysis))
-     (when (contains? settings :install-keymgm)
-       (actions/as-action
-        (logging/info (str facility "-install system: key management tools")))
-       (basics/install-keymgm))
-     (when (contains? settings :install-xfce-desktop)
-       (actions/as-action
-        (logging/info (str facility "-install system: xfce")))
-       (basics/install-xfce-desktop))
-     (when (contains? settings :install-virtualbox-guest)
-       (actions/as-action
-        (logging/info (str facility "-install system: virtualbox-guest")))
-       (basics/install-virtualbox-guest-additions))
-     (when (contains? settings :install-remove-power-management)
-       (actions/as-action
-        (logging/info (str facility "-install system: install-remove-power-management")))
-       (basics/install-remove-power-management))
      (when (contains? config :tightvnc-server)
        (actions/as-action
         (logging/info (str facility "-install system: tightvnc")))
@@ -169,12 +150,7 @@
        (actions/as-action
         (logging/info (str facility "-configure system: tightvnc")))
        (tightvnc/configure-system-tightvnc-server config))
-     (when (contains? settings :configure-no-swappiness)
-      (basics/configure-no-swappiness))
-     (when (contains? settings :install-virtualbox-guest)
-       (actions/as-action
-         (logging/info (str facility "-configure system: tightvnc")))
-       (basics/configure-virtualbox-guest-additions config)))))
+     (basics/configure-system facility config))))
 
 (s/defn configure-user
   "install the user space peaces in vm"
