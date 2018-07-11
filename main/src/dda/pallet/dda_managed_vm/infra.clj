@@ -51,6 +51,7 @@
                       cm/Settings
                       browser/Settings
                       communication/Settings
+                      vpn/Settings
                       #{:install-git})))})
 
 (s/defn init
