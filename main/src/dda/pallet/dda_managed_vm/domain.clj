@@ -123,6 +123,7 @@
           {:settings
             #{:install-open-jdk-11 :install-os-analysis :install-bash-utils :install-git
               :install-zip-utils :install-audio
+              :install-openvpn :install-openconnect :install-vpnc
               :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb"
@@ -134,6 +135,7 @@
               :install-keymgm :install-audio
               :install-chromium :install-inkscape :install-telegram
               :install-remina :install-enigmail
+              :install-openvpn :install-openconnect :install-vpnc
               :remove-xubuntu-unused :remove-ubuntu-unused}})
         (cond
           (= target-type :virtualbox)

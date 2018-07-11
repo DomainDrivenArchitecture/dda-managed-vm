@@ -28,7 +28,8 @@
    [dda.pallet.dda-managed-vm.infra.browser :as browser]
    [dda.pallet.dda-managed-vm.infra.communication :as communication]
    [dda.pallet.dda-managed-vm.infra.desktop-wiki :as wiki]
-   [dda.pallet.dda-managed-vm.infra.java :as java]))
+   [dda.pallet.dda-managed-vm.infra.java :as java]
+   [dda.pallet.dda-managed-vm.infra.vpn :as vpn]))
 
 (def facility :dda-managed-vm)
 
@@ -71,6 +72,7 @@
      (office/install-system facility config)
      (communication/install-system facility settings)
      (wiki/install-system facility settings)
+     (vpn/install-system facility settings)
      (when (contains? settings :install-chromium)
        (actions/as-action
          (logging/info (str facility "-install system: chromium")))

@@ -28,6 +28,9 @@ For installation & configuration with the dda-managed-vm the schema is:
                      :install-enigmail
                      :install-telegram
                      :install-remina
+                     :install-openvpn
+                     :install-openconnect
+                     :install-vpnc
                      :remove-power-management
                      :remove-xubuntu-unused
                      :remove-ubuntu-unused
