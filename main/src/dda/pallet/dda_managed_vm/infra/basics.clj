@@ -28,6 +28,7 @@
             :install-virtualbox-guest
             :install-bash-utils
             :install-zip-utils
+            :install-timesync
             :remove-power-management
             :remove-xubuntu-unused
             :remove-ubuntu-unused
@@ -85,6 +86,13 @@
   (actions/packages
     :aptitude ["p7zip-rar" "p7zip-full" "unace" "unrar" "zip" "unzip"
                "sharutils" "rar" "mpack" "arj" "cabextract" "file-roller"]))
+
+(defn install-timesync
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-timesync")))
+  (actions/packages
+    :aptitude ["timesyncd"]))
 
 (defn configure-no-swappiness
   [facility]

@@ -122,7 +122,7 @@
           (= usage-type :desktop-base)
           {:settings
             #{:install-open-jdk-11 :install-os-analysis :install-bash-utils :install-git
-              :install-zip-utils :install-audio
+              :install-zip-utils :install-audio :install-timesync
               :install-openvpn :install-openconnect :install-vpnc
               :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-office)
@@ -132,7 +132,7 @@
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-bash-utils
               :install-git :install-diagram :install-zip-utils
-              :install-keymgm :install-audio
+              :install-keymgm :install-audio :install-timesync
               :install-chromium :install-inkscape :install-telegram
               :install-remina :install-enigmail
               :install-openvpn :install-openconnect :install-vpnc

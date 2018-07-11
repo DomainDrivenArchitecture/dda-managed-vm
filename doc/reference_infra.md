@@ -15,6 +15,7 @@ For installation & configuration with the dda-managed-vm the schema is:
                      :install-bash-utils
                      :install-zip-utils
                      :install-os-analysis
+                     :install-timesync
                      :install-keymgm
                      :install-password-store
                      :install-gopass
