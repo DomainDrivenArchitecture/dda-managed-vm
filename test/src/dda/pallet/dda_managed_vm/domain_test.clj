@@ -108,19 +108,26 @@
           {:dda-managed-vm
            {:vm-user :test,
             :bookmarks [{:name "Bookmarks Toolbar", :links [["https://domaindrivenarchitecture.org/" "dda"]], :childs [{:name "WebConf", :links [["https://meet.jit.si/dda-pallet" "jitsi dda-pallet"] ["http://meetingwords.com/" "MeetingWords"] ["https://web.telegram.org/" "Telegram"] ["http://www.meebl.de/" "meebl"]]}]}],
-            :settings #{:install-os-analysis :install-git
-                        :install-open-jdk-11 :configure-no-swappiness
-                        :install-xfce-desktop,}
+            :settings
+            #{:install-os-analysis :install-zip-utils :install-git
+              :remove-ubuntu-unused :install-bash-utils :install-openconnect
+              :install-open-jdk-11 :remove-xubuntu-unused :install-vpnc
+              :configure-no-swappiness :install-xfce-desktop :install-audio
+              :install-openvpn :install-timesync}
             :tightvnc-server {:user-password "test"}}}
           (sut/infra-configuration config-1)))
     (is (=
           {:dda-managed-vm
             {:vm-user :test,
              :bookmarks [{:name "Bookmarks Toolbar", :links [["https://domaindrivenarchitecture.org/" "dda"]], :childs [{:name "WebConf", :links [["https://meet.jit.si/dda-pallet" "jitsi dda-pallet"] ["http://meetingwords.com/" "MeetingWords"] ["https://web.telegram.org/" "Telegram"] ["http://www.meebl.de/" "meebl"]]}]}],
-                    :settings #{:install-os-analysis :install-chromium :install-keymgm :install-git :install-open-jdk-11
-                                :install-spellchecking-de :install-telegram :configure-no-swappiness :install-inkscape
-                                :install-desktop-wiki :install-libreoffice :remove-power-management
-                                :install-gopass :install-virtualbox-guest},
+                    :settings
+                    #{:install-os-analysis :install-chromium :install-enigmail :install-keymgm
+                      :install-zip-utils :install-git :remove-ubuntu-unused :install-bash-utils
+                      :install-diagram :install-openconnect :install-open-jdk-11 :install-spellchecking-de
+                      :remove-xubuntu-unused :install-vpnc :install-telegram :configure-no-swappiness
+                      :install-inkscape :install-remina :install-audio :install-desktop-wiki
+                      :install-libreoffice :install-openvpn :remove-power-management :install-gopass
+                      :install-virtualbox-guest :install-timesync,}
                     :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}}}
           (sut/infra-configuration config-2)))))
