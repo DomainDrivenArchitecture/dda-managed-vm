@@ -37,6 +37,12 @@ The following software/packages are installed by this dda-managed-vm:
  * htop, iotop, iftop, strace, mtr in case of low level debugging.
  * VirtualBox Tools: Are installed by apt-get and will be updated automatically.
  * power-management, swappiness
+ * vpn clients (openvpn, vpnc, openconnect)
+ * pdf utils like a2ps
+ * diagrams & zip-utils
+ * audio & video codecs
+ * enigmail
+ * remove-option for some ubuntu & xubuntu packages 
 
 ## Usage documentation
 This crate installs and configures software on your virtual machine. You can provision pre-created virtual machines (see paragraph "Prepare vm" below) or cloud instances.
