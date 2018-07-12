@@ -16,10 +16,11 @@
 (ns dda.pallet.dda-managed-vm.infra.tightvnc
   (:require
     [pallet.actions :as actions]
-    [dda.pallet.crate.util :as util]))
+    [dda.pallet.crate.util :as util]
+    [dda.config.commons.user-home :as user-env]))
 
 (defn set-user-password [os-user password]
-   (let [vnc-path (str "/home/" os-user "/.vnc")]
+   (let [vnc-path (str (user-env/user-home-dir os-user) "/.vnc")]
      (actions/exec-checked-script
          "set-vnc-user-password"
          (pipe (println ~password) ("vncpasswd" -f > ~(str vnc-path "/passwd")))
@@ -36,7 +37,7 @@
   [config]
   (let [os-user (name (-> config :vm-user))
         password (-> config :tightvnc-server :user-password)
-        vnc-path (str "/home/" os-user "/.vnc")
+        vnc-path (str (user-env/user-home-dir os-user) "/.vnc")
         vnv-service-name (str "vncserver@" os-user ".service")]
     (actions/directory vnc-path :owner os-user :group os-user)
     (actions/remote-file
@@ -56,7 +57,7 @@
   "Install a small script to fix tab issue on vnc."
   [config]
   (let [os-user (name (-> config :vm-user))
-        script-path (str "/home/" os-user "/vnc-tab-workaround.sh")]
+        script-path (str (user-env/user-home-dir os-user) "/vnc-tab-workaround.sh")]
     (actions/remote-file
       script-path
       :owner os-user

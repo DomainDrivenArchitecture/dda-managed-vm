@@ -16,7 +16,8 @@
 (ns dda.pallet.dda-managed-vm.infra.browser
   (:require
    [schema.core :as s]
-   [pallet.actions :as actions]))
+   [pallet.actions :as actions]
+   [dda.config.commons.user-home :as user-env]))
 
 (def Link [(s/one s/Str "url")  (s/one s/Str "name")])
 
@@ -96,7 +97,7 @@
                   \newline
                   (generate-bookmarks folders))]
     (actions/remote-file
-      (str "/home/" user "/bookmarks.html")
+      (str (user-env/user-home-dir user) "/bookmarks.html")
       :literal true
       :owner user
       :group user

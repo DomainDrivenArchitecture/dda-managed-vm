@@ -171,8 +171,8 @@
 (s/defmethod core-infra/dda-configure facility
   [core-infra config]
   "dda managed vm: configure routine"
-  (configure-user config)
-  (configure-system config))
+  (configure-system config)
+  (configure-user config))
 
 (def dda-vm-crate
   (core-infra/make-dda-crate-infra
