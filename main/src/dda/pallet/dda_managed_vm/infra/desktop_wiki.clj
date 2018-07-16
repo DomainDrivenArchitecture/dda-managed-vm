@@ -38,6 +38,13 @@
   [facility]
   (actions/as-action
    (logging/info (str facility "-install system: install-desktop-wiki")))
+  (actions/package-source "zim"
+    :aptitude
+    {:url "http://ppa.launchpad.net/jaap.karssenberg/zim/ubuntu"
+     :release "bionic"
+     :scopes ["main"]
+     :key-url "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x7588B93F8F7DF243"})
+  (actions/package-manager :update)
   (actions/packages
     :aptitude ["zim" "python-gtkspellcheck" "aspell" "aspell-de"]))
 

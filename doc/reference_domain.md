@@ -17,7 +17,7 @@ The schema for the vm configuration is:
    {:user s/Str
     (optional-key :password) Secret}})
 
-(def User                             
+(def User
   {:password Secret,
    :name Str,
    (optional-key :email) Str                    ; email for git config
