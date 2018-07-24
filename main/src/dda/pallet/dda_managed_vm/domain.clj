@@ -52,7 +52,7 @@
     DdaVmUser
     DdaVmBookmarks
     DdaVmTargetType
-     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)))
+    {:usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)}))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
