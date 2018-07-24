@@ -43,13 +43,16 @@
 (def DdaVmBookmarks
   {(s/optional-key :bookmarks) infra/Bookmarks})
 
+(def DdaVmTargetType
+  {:target-type (s/enum :virtualbox :remote-aws :plain)})
+
 (def DdaVmDomainConfig
   "The convention configuration for managed vms crate."
   (merge
     DdaVmUser
     DdaVmBookmarks
-    {:target-type (s/enum :virtualbox :remote-aws :plain)
-     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)}))
+    DdaVmTargetType
+     :usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
