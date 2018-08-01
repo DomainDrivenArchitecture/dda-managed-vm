@@ -42,7 +42,7 @@ The following software/packages are installed by this dda-managed-vm:
  * diagrams & zip-utils
  * audio & video codecs
  * enigmail
- * remove-option for some ubuntu & xubuntu packages 
+ * remove-option for some ubuntu & xubuntu packages
 
 ## Usage documentation
 This crate installs and configures software on your virtual machine. You can provision pre-created virtual machines (see paragraph "Prepare vm" below) or cloud instances.
@@ -114,33 +114,14 @@ In case of problems you may want to have a look at the log-file:
 Some details about the architecture: We provide two levels of API. **Domain** is a high-level API with many build in conventions. If this conventions don't fit your needs, you can use our low-level **infra** API and realize your own conventions.
 
 ### Targets
-The schema for the targets config is:
-```clojure
-(def ExistingNode
-  "Represents a target node with ip and its name."
-  {:node-name s/Str   ; semantic name (keep the default or use a name that suits you)
-   :node-ip s/Str})   ; the ip4 address of the machine to be provisioned
-
-(def ExistingNodes
-  "A sequence of ExistingNodes."
-  {s/Keyword [ExistingNode]})
-
-(def ProvisioningUser
-  "User used for provisioning."
-  {:login s/Str                                ; user on the target machine, must have sudo rights
-   (s/optional-key :password) secret/Secret})  ; password can be ommited, if a ssh key is authorized
-
-(def Targets
-  "Targets to be used during provisioning."
-  {:existing [ExistingNode]                                ; one ore more target nodes.
-   (s/optional-key :provisioning-user) ProvisioningUser})  ; user can be ommited to execute on localhost with current user.
-```
-The "example-targets.edn" uses this schema.
+You can define provisioning targets using the [targets-schema](https://github.com/DomainDrivenArchitecture/dda-pallet-commons/blob/master/doc/existing_spec.md)
 
 ### Domain API
+You can use our conventions as a smooth starting point:
 [see domain reference](doc/reference_domain.md)
 
 ### Infra API
+Or you can build your own conventions using our low level infra API. We will keep this API backward compatible whenever that will be possible:
 [see infra reference](doc/reference_infra.md)
 
 ## License
