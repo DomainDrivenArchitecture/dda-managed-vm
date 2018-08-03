@@ -15,6 +15,7 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.java
   (:require
+    [clojure.tools.logging :as logging]
     [schema.core :as s]
     [pallet.actions :as actions]))
 
@@ -22,9 +23,22 @@
   "The basic settings"
   (hash-set :install-open-jdk-8 :install-open-jdk-11))
 
-
-(defn install-open-jdk-8 []
+(s/defn install-open-jdk-8
+  [facility :- s/Keyword]
+  (actions/as-action
+   (logging/info (str facility "-install system: openjdk 8")))
   (actions/package "openjdk-8-jdk"))
 
-(defn install-open-jdk-11 []
+(s/defn install-open-jdk-11
+  [facility :- s/Keyword]
+  (actions/as-action
+   (logging/info (str facility "-install system: openjdk 11")))
   (actions/package "openjdk-11-jdk"))
+
+(s/defn install-system
+  [facility :- s/Keyword
+   settings]
+  (when (contains? settings :install-open-jdk-8)
+    (install-open-jdk-8 facility))
+ (when (contains? settings :install-open-jdk-11)
+   (install-open-jdk-11 facility)))

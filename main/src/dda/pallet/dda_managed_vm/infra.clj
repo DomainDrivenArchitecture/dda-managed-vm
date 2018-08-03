@@ -38,8 +38,8 @@
 (def DdaVmConfig
   "The configuration for managed vms crate."
   {:vm-user s/Keyword
-   (s/optional-key :tightvnc-server) {:user-password s/Str}
-   (s/optional-key :bookmarks) Bookmarks
+   (s/optional-key :tightvnc-server) tightvnc/Tightvnc
+   (s/optional-key :bookmarks) browser/Bookmarks
    (s/optional-key :fakturama) office/FakturamaConfig
    (s/optional-key :settings)
    (hash-set (apply s/enum
@@ -56,123 +56,86 @@
 
 (s/defn init
   "init package management"
-  [app-name :- s/Str
+  [facility :- s/Keyword
    config :- DdaVmConfig]
-  (actions/package-manager :update))
+  (let [{:keys [settings]} config]
+    (cm/init-system facility settings)
+    (wiki/init-system facility settings)))
 
 (s/defn install-system
   "install common used packages for vm"
-  [config :- DdaVmConfig]
-  (let [settings (-> config :settings)
-        user-key (:vm-user config)]
+  [facility :- s/Keyword
+   config :- DdaVmConfig]
+  (let [{:keys [settings tightvnc-server]} config
+        contains-tightvnc? (contains? config :tightvnc-server)]
     (pallet.action/with-action-options
      {:sudo-user "root"
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
+     (actions/package-manager :update)
      (basics/install-system facility settings)
      (office/install-system facility config)
      (communication/install-system facility settings)
      (wiki/install-system facility settings)
      (vpn/install-system facility settings)
-     (when (contains? settings :install-chromium)
-       (actions/as-action
-         (logging/info (str facility "-install system: chromium")))
-       (browser/install-chromium))
-     (when (contains? config :tightvnc-server)
-       (actions/as-action
-        (logging/info (str facility "-install system: tightvnc")))
-       (tightvnc/install-system-tightvnc-server config))
-     (when (contains? settings :install-password-store)
-       (actions/as-action
-        (logging/info (str facility "-install system: password-store")))
-       (cm/install-password-store)))
-    (when (contains? settings :install-gopass)
-      (actions/as-action
-       (logging/info (str facility "-install system: install-gopass")))
-      (cm/install-gopass)
-     (when (contains? settings :install-open-jdk-8)
-       (actions/as-action
-        (logging/info (str facility "-install system: openjdk 8")))
-       (java/install-open-jdk-8)))
-    (when (contains? settings :install-open-jdk-11)
-      (actions/as-action
-       (logging/info (str facility "-install system: openjdk 11")))
-      (java/install-open-jdk-11))))
+     (cm/install-system facility settings)
+     (java/install-system facility settings)
+     (browser/install-system facility settings)
+     (tightvnc/install-system facility contains-tightvnc?))))
 
 (s/defn install-user
   "install the user space peaces in vm"
-  [config :- DdaVmConfig]
-  (let [os-user-name (name (-> config :vm-user))
-        settings (-> config :settings)]
+  [facility :- s/Keyword
+   config :- DdaVmConfig]
+  (let [{:keys [settings vm-user tightvnc-server]} config
+        user-name (name vm-user)
+        contains-tightvnc? (contains? config :tightvnc-server)]
     (pallet.action/with-action-options
      {:sudo-user "root"
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
-     (when (contains? config :tightvnc-server)
-       (actions/as-action
-        (logging/info (str facility "-install user: tightvnc")))
-       (tightvnc/install-user-tightvnc-server config)
-       (tightvnc/install-user-vnc-tab-workaround config))
-     (when (contains? config :tightvnc-server)
-       (tightvnc/configure-user-tightvnc-server-script os-user-name config)))))
+     (tightvnc/install-user facility user-name contains-tightvnc? tightvnc-server))))
 
 (s/defn configure-system
   "install the user space peaces in vm"
-  [config :- DdaVmConfig]
-  (let [settings (-> config :settings)]
-    (pallet.action/with-action-options
-     {:sudo-user "root"
-      :script-dir "/root/"
-      :script-env {:HOME (str "/root")}}
-     (when (contains? config :tightvnc-server)
-       (actions/as-action
-        (logging/info (str facility "-configure system: tightvnc")))
-       (tightvnc/configure-system-tightvnc-server config))
-     (basics/configure-system facility config))))
+  [facility :- s/Keyword
+   config :- DdaVmConfig]
+  (let [{:keys [settings]} config]
+   (basics/configure-system facility settings)))
 
 (s/defn configure-user
   "install the user space peaces in vm"
-  [config :- DdaVmConfig]
-  (let [{:keys [vm-user settings bookmarks]} config
+  [facility :- s/Keyword
+   config :- DdaVmConfig]
+  (let [{:keys [vm-user settings bookmarks tightvnc-server]} config
+        contains-bookmarks? (contains? config :bookmarks)
+        contains-tightvnc? (contains? config :tightvnc-server)
         user-name (name vm-user)]
     (pallet.action/with-action-options
      {:sudo-user "root"
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
-     (when bookmarks
-       (actions/as-action
-        (logging/info (str facility "-configure user: bookmarks")))
-       (browser/configure-user-bookmarks user-name bookmarks))
-     (when (contains? config :tightvnc-server)
-       (actions/as-action
-        (logging/info (str facility "-configure user: tightvnc")))
-       (tightvnc/configure-user-tightvnc-server-script user-name config))
-     (when (contains? settings :install-password-store)
-       (actions/as-action
-        (logging/info (str facility "-configure user: passwordstore")))
-       (cm/configure-password-store user-name)))
-    (when (contains? settings :install-gopass)
-      (actions/as-action
-       (logging/info (str facility "-configure user: gopass")))
-      (cm/configure-gopass user-name))))
+     (basics/configure-user facility user-name settings)
+     (cm/configure-user facility user-name settings)
+     (browser/configure-user facility user-name contains-bookmarks? bookmarks)
+     (tightvnc/configure-user facility user-name contains-tightvnc? tightvnc-server))))
 
 (s/defmethod core-infra/dda-init facility
   [core-infra config]
   "dda managed vm: init routine"
-  (let [app-name (name (:facility core-infra))]
-    (init app-name config)))
+  (init (:facility core-infra) config))
 
 (s/defmethod core-infra/dda-install facility
   [core-infra config]
   "dda managed vm: install routine"
-  (install-system config)
-  (install-user config))
+  (install-system (:facility core-infra) config)
+  (install-user (:facility core-infra) config))
 
 (s/defmethod core-infra/dda-configure facility
   [core-infra config]
   "dda managed vm: configure routine"
-  (configure-system config)
-  (configure-user config))
+  (configure-system (:facility core-infra) config)
+  (configure-user (:facility core-infra) config))
 
 (def dda-vm-crate
   (core-infra/make-dda-crate-infra

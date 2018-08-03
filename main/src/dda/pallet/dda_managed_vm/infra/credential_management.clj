@@ -15,6 +15,7 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.credential-management
   (:require
+    [clojure.tools.logging :as logging]
     [schema.core :as s]
     [pallet.actions :as actions]
     [dda.config.commons.user-home :as user-env]))
@@ -26,14 +27,19 @@
   []
   (actions/packages :aptitude ["rng-tools" "gnupg2"]))
 
-(defn install-password-store
-  []
+(s/defn install-password-store
+  [facility :- s/Keyword]
+  (actions/as-action
+   (logging/info (str facility "-install system: password-store")))
   (install-gpg)
   (actions/packages :aptitude ["pass"]))
 
-(defn configure-password-store
-  [user-name]
+(s/defn configure-password-store
+  [facility :- s/Keyword
+   user-name]
   (let [user-home (user-env/user-home-dir user-name)]
+    (actions/as-action
+     (logging/info (str facility "-configure user: configure-password-store")))
     (actions/remote-file
      (str user-home "/.demo-pass")
      :owner user-name
@@ -51,23 +57,32 @@ done
      :owner user-name
      :group user-name)))
 
-(defn install-gopass
-  []
-  (install-gpg)
+(s/defn init-gopass
+  [facility :- s/Keyword]
+  (actions/as-action
+   (logging/info (str facility "-init system: init-gopass")))
   (actions/package-source "gopass"
     :aptitude
     {:url "https://dl.bintray.com/gopasspw/gopass"
      :release "bionic"
      :scopes ["main"]
-     :key-url "https://api.bintray.com/orgs/gopasspw/keys/gpg/public.key"})
-  (actions/package-manager :update)
+     :key-url "https://api.bintray.com/orgs/gopasspw/keys/gpg/public.key"}))
+
+(s/defn install-gopass
+  [facility :- s/Keyword]
+  (actions/as-action
+   (logging/info (str facility "-install system: init-gopass")))
+  (install-gpg)
   (actions/packages :aptitude ["gopass"]))
   ;au BufNewFile,BufRead /dev/shm/gopass.* setlocal noswapfile nobackup noundofile
   ;ln -s $GOPATH/bin/gopass $HOME/bin/pass
 
-(defn configure-gopass
-  [user-name]
+(s/defn configure-gopass
+  [facility :- s/Keyword
+   user-name]
   (let [user-home (user-env/user-home-dir user-name)]
+    (actions/as-action
+     (logging/info (str facility "-configure user: configure-gopass")))
     (actions/directory (str user-home "/.password-store")
       :owner user-name :group user-name)
     (actions/remote-file
@@ -86,3 +101,26 @@ source <(gopass completion bash)
      :mode "644"
      :owner user-name
      :group user-name)))
+
+(s/defn init-system
+  [facility :- s/Keyword
+   settings]
+  (when (contains? settings :install-gopass)
+    (install-gopass facility)))
+
+(s/defn install-system
+  [facility :- s/Keyword
+   settings]
+  (when (contains? settings :install-password-store)
+    (install-password-store facility))
+  (when (contains? settings :install-gopass)
+    (install-gopass facility)))
+
+(s/defn configure-user
+  [facility :- s/Keyword
+   user-name :- s/Str
+   settings]
+  (when (contains? settings :install-password-store)
+    (configure-password-store facility user-name))
+  (when (contains? settings :install-gopass)
+    (configure-gopass facility user-name)))

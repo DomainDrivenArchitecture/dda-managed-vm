@@ -15,9 +15,13 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.tightvnc
   (:require
+    [clojure.tools.logging :as logging]
+    [schema.core :as s]
     [pallet.actions :as actions]
     [dda.pallet.crate.util :as util]
     [dda.config.commons.user-home :as user-env]))
+
+(def Tightvnc {:user-password s/Str})
 
 (defn set-user-password [os-user password]
    (let [vnc-path (str (user-env/user-home-dir os-user) "/.vnc")]
@@ -27,23 +31,28 @@
          ("chown" "-R" ~(str os-user ":" os-user) ~vnc-path)
          ("chmod" "0600" ~(str vnc-path "/passwd")))))
 
-(defn install-system-tightvnc-server
+(s/defn install-system-tightvnc-server
   "Install remote desktop viewing."
-  [config]
+  [facility :- s/Keyword]
+  (actions/as-action
+   (logging/info (str facility "-install system: tightvnc")))
   (actions/package "tightvncserver"))
 
-(defn install-user-tightvnc-server
+(s/defn install-user-tightvnc-server
   "Install remote desktop viewing."
-  [config]
-  (let [os-user (name (-> config :vm-user))
-        password (-> config :tightvnc-server :user-password)
-        vnc-path (str (user-env/user-home-dir os-user) "/.vnc")
-        vnv-service-name (str "vncserver@" os-user ".service")]
-    (actions/directory vnc-path :owner os-user :group os-user)
+  [facility :- s/Keyword
+   user-name :- s/Str
+   config :- Tightvnc]
+  (let [{:keys [user-password]} config
+        vnc-path (str (user-env/user-home-dir user-name) "/.vnc")
+        vnv-service-name (str "vncserver@" user-name ".service")]
+    (actions/as-action
+     (logging/info (str facility "-install user: install-user-tightvnc-server")))
+    (actions/directory vnc-path :owner user-name :group user-name)
     (actions/remote-file
       (str vnc-path "/xstartup")
-      :owner os-user
-      :group os-user
+      :owner user-name
+      :group user-name
       :mode "0700"
       :literal true
       :content (util/create-file-content
@@ -53,26 +62,30 @@
                   "startxfce4 &"
                   "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))))
 
-(defn install-user-vnc-tab-workaround
+(s/defn install-user-vnc-tab-workaround
   "Install a small script to fix tab issue on vnc."
-  [config]
-  (let [os-user (name (-> config :vm-user))
-        script-path (str (user-env/user-home-dir os-user) "/vnc-tab-workaround.sh")]
+  [facility :- s/Keyword
+   user-name :- s/Str]
+  (let [script-path (str (user-env/user-home-dir user-name) "/vnc-tab-workaround.sh")]
+    (actions/as-action
+     (logging/info (str facility "-install user: install-user-vnc-tab-workaround")))
     (actions/remote-file
       script-path
-      :owner os-user
-      :group os-user
+      :owner user-name
+      :group user-name
       :mode "0700"
       :literal true
       :content (util/create-file-content
                  ["#!/bin/bash"
                   "xfconf-query -c xfce4-keyboard-shortcuts -p /xfwm4/custom/'<'Super'>'Tab -r"]))))
 
-(defn configure-system-tightvnc-server
+(s/defn configure-system-tightvnc-server
   "Install remote desktop viewing."
-  [config]
-  (let [os-user (name (-> config :vm-user))
-        vnv-service-name (str "vncserver@1" ".service")]
+  [facility :- s/Keyword
+   user-name :- s/Str]
+  (let [vnv-service-name (str "vncserver@1" ".service")]
+    (actions/as-action
+     (logging/info (str facility "-configure system: tightvnc")))
     (actions/remote-file
       (str "/etc/systemd/system/" vnv-service-name)
       :owner "root"
@@ -86,9 +99,9 @@
                   ""
                   "[Service]"
                   "Type=forking"
-                  (str "User=" os-user)
+                  (str "User=" user-name)
                   "PAMName=login"
-                  (str "PIDFile=/home/" os-user "/.vnc/%H:%i.pid")
+                  (str "PIDFile=/home/" user-name "/.vnc/%H:%i.pid")
                   "ExecStartPre=-/usr/bin/vncserver -kill :%i > /dev/null 2>&1"
                   "ExecStart=/usr/bin/vncserver -depth 24 -geometry 1280x800 :%i"
                   "ExecStop=/usr/bin/vncserver -kill :%i"
@@ -102,9 +115,38 @@
       ("systemctl" "enable" ~vnv-service-name)
       ("systemctl" "start" ~vnv-service-name))))
 
-(defn configure-user-tightvnc-server-script
+(s/defn configure-user-tightvnc-server-script
   "Install remote desktop viewing."
-  [user-name config]
-  (let [os-user user-name
-        password (-> config :tightvnc-server :user-password)]
-    (set-user-password os-user password)))
+  [facility :- s/Keyword
+   user-name :- s/Str
+   tightvnc :- Tightvnc]
+  (let [{:keys [user-password]} tightvnc]
+    (actions/as-action
+     (logging/info (str facility "-configure user: tightvnc")))
+    (set-user-password user-name user-password)))
+
+(s/defn install-system
+  [facility :- s/Keyword
+   contains-tightvnc?]
+  (when contains-tightvnc?
+    (install-system-tightvnc-server facility)))
+
+(s/defn install-user
+  [facility :- s/Keyword
+   user-name :- s/Str
+   contains-tightvnc? :- s/Bool
+   tightvnc :- Tightvnc]
+  (when contains-tightvnc?
+    (actions/as-action
+     (logging/info (str facility "-install user: tightvnc")))
+    (install-user-tightvnc-server facility user-name tightvnc)
+    (install-user-vnc-tab-workaround facility user-name)))
+
+(s/defn configure-user
+  [facility :- s/Keyword
+   user-name :- s/Str
+   contains-tightvnc? :- s/Bool
+   tightvnc :- Tightvnc]
+  (when contains-tightvnc?
+    (configure-system-tightvnc-server facility user-name)
+    (configure-user-tightvnc-server-script facility user-name tightvnc)))

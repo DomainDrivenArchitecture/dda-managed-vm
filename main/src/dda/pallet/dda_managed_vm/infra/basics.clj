@@ -149,9 +149,11 @@
     (remove-ubuntu-unused facility)))
 
 (s/defn configure-system
-  [facility config]
-  (let [{:keys [settings vm-user]} config]
-    (when (contains? settings :configure-no-swappiness)
-      (configure-no-swappiness facility))
-    (when (contains? settings :install-virtualbox-guest)
-      (configure-virtualbox-guest-additions facility vm-user))))
+  [facility settings]
+  (when (contains? settings :configure-no-swappiness)
+    (configure-no-swappiness facility)))
+
+(s/defn configure-user
+  [facility user-name settings]
+  (when (contains? settings :install-virtualbox-guest)
+    (configure-virtualbox-guest-additions facility user-name)))

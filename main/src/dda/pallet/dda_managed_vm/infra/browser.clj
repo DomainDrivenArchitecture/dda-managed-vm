@@ -15,6 +15,7 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.infra.browser
   (:require
+   [clojure.tools.logging :as logging]
    [schema.core :as s]
    [pallet.actions :as actions]
    [dda.config.commons.user-home :as user-env]))
@@ -32,7 +33,10 @@
   (hash-set
     :install-chromium))
 
-(defn install-chromium []
+(s/defn install-chromium
+  [facility :- s/Keyword]
+  (actions/as-action
+    (logging/info (str facility "-install system: chromium")))
   (actions/package "chromium-browser"))
 
 (def header
@@ -91,14 +95,31 @@
 
 (s/defn configure-user-bookmarks
   ""
-  [user :- s/Str
+  [facility :- s/Keyword
+   user-name :- s/Str
    folders :- Bookmarks]
   (let [content (clojure.string/join
                   \newline
                   (generate-bookmarks folders))]
+    (actions/as-action
+     (logging/info (str facility "-configure user: bookmarks")))
     (actions/remote-file
-      (str (user-env/user-home-dir user) "/bookmarks.html")
+      (str (user-env/user-home-dir user-name) "/bookmarks.html")
       :literal true
-      :owner user
-      :group user
+      :owner user-name
+      :group user-name
       :content content)))
+
+(s/defn install-system
+  [facility :- s/Keyword
+   settings]
+  (when (contains? settings :install-chromium)
+    (install-chromium facility)))
+
+(s/defn configure-user
+  [facility :- s/Keyword
+   user-name :- s/Str
+   contains-bookmarks?
+   bookmarks]
+  (when contains-bookmarks?
+    (configure-user-bookmarks facility user-name bookmarks)))

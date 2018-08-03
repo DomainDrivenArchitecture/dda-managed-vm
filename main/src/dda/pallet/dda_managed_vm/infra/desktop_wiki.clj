@@ -33,23 +33,30 @@
     :aptitude ["graphviz" "ditaa" "scrot" "dia"
                "dvipng" "gnuplot" "r-base"]))
 
-
-(defn install-desktop-wiki
+(defn init-desktop-wiki
   [facility]
   (actions/as-action
-   (logging/info (str facility "-install system: install-desktop-wiki")))
+   (logging/info (str facility "-init system: init-desktop-wiki")))
   (actions/package-source "zim"
     :aptitude
     {:url "http://ppa.launchpad.net/jaap.karssenberg/zim/ubuntu"
      :release "bionic"
      :scopes ["main"]
-     :key-url "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x7588B93F8F7DF243"})
-  (actions/package-manager :update)
+     :key-url "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x7588B93F8F7DF243"}))
+
+(defn install-desktop-wiki
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-desktop-wiki")))
   (actions/packages
     :aptitude ["zim" "python-gtkspellcheck" "aspell" "aspell-de"]))
 
+(s/defn init-system
+  [facility settings]
+  (when (contains? settings :install-desktop-wiki)
+    (init-desktop-wiki facility)))
+
 (s/defn install-system
-  "install common used packages for vm"
   [facility settings]
   (when (contains? settings :install-diagram)
     (install-diagram facility))
