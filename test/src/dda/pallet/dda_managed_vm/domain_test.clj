@@ -54,6 +54,49 @@
           :credentials ["credentials-repo"]
           :desktop-wiki ["wiki-autosync-repo"]}})
 
+(def config-set-ide
+  {:domain-input {:target-type :virtualbox
+                  :usage-type :desktop-ide
+                  :user {:name  "test"
+                         :password "pwd"
+                         :credentials ["credentials-repo"]
+                         :desktop-wiki ["wiki-autosync-repo"]}}
+   :git-domain {:os-user :test,
+                :user-email "test@mydomain",
+                :repos
+                {:book
+                 ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
+                 :credentials
+                 ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
+                  "credentials-repo"]},
+                :synced-repos {:wiki ["wiki-autosync-repo"]}}
+   :infra {:dda-managed-vm {:settings
+                            #{:install-os-analysis :install-chromium
+                              :install-enigmail :install-keymgm :install-open-jdk-8
+                              :install-zip-utils :install-git :remove-ubuntu-unused
+                              :install-bash-utils :install-diagram
+                              :install-openconnect
+                              :install-spellchecking-de :remove-xubuntu-unused
+                              :install-vpnc :install-telegram
+                              :configure-no-swappiness :install-inkscape
+                              :install-remina :install-desktop-wiki
+                              :install-libreoffice :install-openvpn
+                              :remove-power-management :install-gopass
+                              :install-virtualbox-guest :install-timesync},
+                            :bookmarks
+                            [{:name "Bookmarks Toolbar",
+                              :links
+                              [["https://domaindrivenarchitecture.org/" "dda"]],
+                              :childs
+                              [{:name "WebConf",
+                                :links
+                                [["https://meet.jit.si/dda-pallet"
+                                  "jitsi dda-pallet"]
+                                 ["http://meetingwords.com/" "MeetingWords"]
+                                 ["https://web.telegram.org/" "Telegram"]
+                                 ["http://www.meebl.de/" "meebl"]]}]}],
+                            :vm-user :test}}})
+
 (deftest test-backup-config
   (testing
     "test the git config creation"
@@ -91,7 +134,9 @@
             :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
                           "credentials-repo",]}
            :synced-repos {:wiki ["wiki-autosync-repo"]}}
-          (sut/vm-git-config config-4)))))
+          (sut/vm-git-config config-4)))
+    (is (= (:git-domain config-set-ide)
+           (sut/vm-git-config (:domain-input config-set-ide))))))
 
 (deftest test-serverspec-config
   (testing
@@ -130,4 +175,6 @@
                       :install-virtualbox-guest :install-timesync,}
                     :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}}}
-          (sut/infra-configuration config-2)))))
+          (sut/infra-configuration config-2)))
+    (is (= (:infra config-set-ide)
+           (sut/infra-configuration (:domain-input config-set-ide))))))

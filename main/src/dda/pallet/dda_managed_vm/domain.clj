@@ -52,7 +52,7 @@
     DdaVmUser
     DdaVmBookmarks
     DdaVmTargetType
-    {:usage-type (s/enum :desktop-minimal :desktop-base :desktop-office)}))
+    {:usage-type (s/enum :desktop-minimal :desktop-ide :desktop-base :desktop-office)}))
 
 (def DdaVmDomainResolvedConfig
   "The convention configuration for managed vms crate."
@@ -128,6 +128,17 @@
               :install-zip-utils :install-audio :install-timesync
               :install-openvpn :install-openconnect :install-vpnc
               :remove-xubuntu-unused :remove-ubuntu-unused}}
+          (= usage-type :desktop-ide)
+          {:settings
+           #{:install-libreoffice :install-spellchecking-de
+             :install-open-jdk-8
+             :install-os-analysis :install-bash-utils
+             :install-git :install-diagram :install-zip-utils
+             :install-keymgm :install-timesync
+             :install-chromium :install-inkscape :install-telegram
+             :install-remina :install-enigmail
+             :install-openvpn :install-openconnect :install-vpnc
+             :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb"
                        :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}

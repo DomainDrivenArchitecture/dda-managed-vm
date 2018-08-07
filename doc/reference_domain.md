@@ -48,8 +48,9 @@ The schema for the vm configuration is:
             :plain)                   ; for non vm-installations
     :usage-type
     (s/enum :desktop-minimal          ; only some analysis tools are installed.
-            :desktop-base             ; in addition java anfd git
-      :desktop-office)                ; in addition key-mgm, credential-mgm, zim and libreoffice is installed.
+            :desktop-base             ; in addition java-11 anfd git
+            :desktop-ide             ; in addition key-mgm, credential-mgm, zim, java-8 and libreoffice is installed.
+            :desktop-office)         ; in addition fakturama and audio is installed.
     (optional-key :bookmarks)
     Bookmarks,                        ; initial bookmarks
     :user User                        ; user to create with his credentials
