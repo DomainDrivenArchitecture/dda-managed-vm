@@ -131,7 +131,7 @@
           (= usage-type :desktop-ide)
           {:settings
            #{:install-libreoffice :install-spellchecking-de
-             :install-open-jdk-8
+             :install-open-jdk-11 :install-open-jdk-8
              :install-os-analysis :install-bash-utils
              :install-git :install-diagram :install-zip-utils
              :install-keymgm :install-timesync

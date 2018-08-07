@@ -72,7 +72,8 @@
                 :synced-repos {:wiki ["wiki-autosync-repo"]}}
    :infra {:dda-managed-vm {:settings
                             #{:install-os-analysis :install-chromium
-                              :install-enigmail :install-keymgm :install-open-jdk-8
+                              :install-enigmail :install-keymgm
+                              :install-open-jdk-11 :install-open-jdk-8
                               :install-zip-utils :install-git :remove-ubuntu-unused
                               :install-bash-utils :install-diagram
                               :install-openconnect
@@ -82,7 +83,7 @@
                               :install-remina :install-desktop-wiki
                               :install-libreoffice :install-openvpn
                               :remove-power-management :install-gopass
-                              :install-virtualbox-guest :install-timesync},
+                              :install-virtualbox-guest :install-timesync,}
                             :bookmarks
                             [{:name "Bookmarks Toolbar",
                               :links
