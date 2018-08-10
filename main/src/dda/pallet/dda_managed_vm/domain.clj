@@ -40,7 +40,9 @@
 (def DdaVmUserResolved
   (secret/create-resolved-schema DdaVmUser))
 
-(def DdaVmBookmarks
+(def Bookmarks infra/Bookmarks)
+
+(def DdaVmDomainBookmarks
   {(s/optional-key :bookmarks) infra/Bookmarks})
 
 (def DdaVmTargetType
@@ -50,7 +52,7 @@
   "The convention configuration for managed vms crate."
   (merge
     DdaVmUser
-    DdaVmBookmarks
+    DdaVmDomainBookmarks
     DdaVmTargetType
     {:usage-type (s/enum :desktop-minimal :desktop-ide :desktop-base :desktop-office)}))
 
