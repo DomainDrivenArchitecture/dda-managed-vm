@@ -40,7 +40,11 @@
  [domain-config]
  (let [{:keys [user usage-type]} domain-config
        {:keys [name email git-credentials desktop-wiki credentials]
-        :or {email (str name "@mydomain")}} user]
+        :or {email (str name "@mydomain")}} user
+       github-ssh (for [x git-credentials] (and (= (:host x) "github.com") (= (:protocol x) :ssh)))
+       protocol-type (if (and (contains? user :git-credentials)
+                              (some true? github-ssh))
+                        :ssh :https)]
    {(keyword name)
     (merge
       {:user-email email}
@@ -50,12 +54,12 @@
               [{:host "github.com"
                 :orga-path "DomainDrivenArchitecture"
                 :repo-name "ddaArchitecture"
-                :protocol (if (contains? user :ssh) :ssh :https)
+                :protocol protocol-type
                 :server-type :github}]}}
       {:synced-repo  {:password-store
                       [{:host "github.com"
                         :orga-path "DomainDrivenArchitecture"
                         :repo-name "password-store-for-teams"
-                        :protocol (if (contains? user :ssh) :ssh :https)
+                        :protocol protocol-type
                         :server-type :github}]}}
       {})}))
