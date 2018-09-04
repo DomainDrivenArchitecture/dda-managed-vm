@@ -24,6 +24,13 @@
    (s/optional-key :port) s/Num                ;identifyer for repo matching, defaults to 22 or 443 based on protocol
    :protocol (s/enum :ssh :https)})
 
+(def Repository
+  (merge
+    ServerIdentity
+    {(s/optional-key :orga-path) s/Str
+     :repo-name s/Str
+     :server-type (s/enum :gitblit :github :gitlab)}))
+
 (def GitCredential
   (merge
      ServerIdentity
@@ -56,10 +63,14 @@
                 :repo-name "ddaArchitecture"
                 :protocol protocol-type
                 :server-type :github}]}}
-      {:synced-repo  {:password-store
-                      [{:host "github.com"
-                        :orga-path "DomainDrivenArchitecture"
-                        :repo-name "password-store-for-teams"
-                        :protocol protocol-type
-                        :server-type :github}]}}
+      {:synced-repo
+       (merge
+         {:password-store
+          [{:host "github.com"
+            :orga-path "DomainDrivenArchitecture"
+            :repo-name "password-store-for-teams"
+            :protocol protocol-type
+            :server-type :github}]}
+         (when (contains? user :desktop-wiki)
+          {:wiki desktop-wiki}))}
       {})}))
