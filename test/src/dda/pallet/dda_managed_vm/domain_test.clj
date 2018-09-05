@@ -32,8 +32,9 @@
    :usage-type :desktop-office
    :user {:name  "test"
           :password "pwd"
-          :credentials ["credentials-repo"]
-          :desktop-wiki ["wiki-autosync-repo"]}})
+          :git-credentials [{:host "github.com"
+                             :protocol :ssh
+                             :user-name "test"}]}})
 
 (def config-3
   {:target-type :virtualbox
@@ -48,11 +49,14 @@
    :usage-type :desktop-office
    :user {:name  "test"
           :password "pwd"
-          :git-credentials {:gitblit {:user "user-gb"}
-                            :github {:user "user-gh"
-                                     :password "pwd-gh"}}
-          :credentials ["credentials-repo"]
-          :desktop-wiki ["wiki-autosync-repo"]}})
+          :git-credentials [{:host "github.com"
+                             :protocol :ssh
+                             :user-name "test"}]
+          :desktop-wiki [{:host "github.com"
+                          :orga-path "mypath"
+                          :repo-name "mywiki"
+                          :protocol :ssh
+                          :server-type :github}]}})
 
 (def config-set-ide
   {:domain-input {:target-type :virtualbox
@@ -60,16 +64,31 @@
                   :user {:name  "test"
                          :password "pwd"
                          :credentials ["credentials-repo"]
-                         :desktop-wiki ["wiki-autosync-repo"]}}
-   :git-domain {:os-user :test,
-                :user-email "test@mydomain",
-                :repos
-                {:book
-                 ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
-                 :credentials
-                 ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
-                  "credentials-repo"]},
-                :synced-repos {:wiki ["wiki-autosync-repo"]}}
+                         :desktop-wiki [{:host "github.com"
+                                         :orga-path "mypath"
+                                         :repo-name "mywiki"
+                                         :protocol :ssh
+                                         :server-type :github}]}}
+   :git-domain {:test
+                {:user-email "test@mydomain"
+                 :repo {:books
+                        [{:host "github.com"
+                          :orga-path "DomainDrivenArchitecture"
+                          :repo-name "ddaArchitecture"
+                          :protocol :https
+                          :server-type :github}]}
+                 :synced-repo  {:password-store
+                                [{:host "github.com"
+                                  :orga-path "DomainDrivenArchitecture"
+                                  :repo-name "password-store-for-teams"
+                                  :protocol :https
+                                  :server-type :github}]
+                                :wiki
+                                  [{:host "github.com"
+                                    :orga-path "mypath"
+                                    :repo-name "mywiki"
+                                    :protocol :ssh
+                                    :server-type :github}]}}}
    :infra {:dda-managed-vm {:settings
                             #{:install-os-analysis :install-chromium
                               :install-enigmail :install-keymgm
@@ -105,37 +124,73 @@
     (is (sut/vm-backup-config config-1))
     (is (sut/vm-backup-config config-2))))
 
+(def gitconfig-result1
+  {:test
+     {:user-email "test@mydomain"
+      :repo {:books
+             [{:host "github.com"
+               :orga-path "DomainDrivenArchitecture"
+               :repo-name "ddaArchitecture"
+               :protocol :https
+               :server-type :github}]}
+      :synced-repo  {:password-store
+                     [{:host "github.com"
+                       :orga-path "DomainDrivenArchitecture"
+                       :repo-name "password-store-for-teams"
+                       :protocol :https
+                       :server-type :github}]}}})
+
+(def gitconfig-result2
+  {:test
+    {:user-email "test@mydomain"
+     :credential [{:host "github.com"
+                   :protocol :ssh
+                   :user-name "test"}]
+     :repo {:books
+            [{:host "github.com"
+              :orga-path "DomainDrivenArchitecture"
+              :repo-name "ddaArchitecture"
+              :protocol :ssh
+              :server-type :github}]}
+     :synced-repo  {:password-store
+                    [{:host "github.com"
+                      :orga-path "DomainDrivenArchitecture"
+                      :repo-name "password-store-for-teams"
+                      :protocol :ssh
+                      :server-type :github}]}}})
+
+(def gitconfig-result4
+  {:test
+    {:user-email "test@mydomain"
+     :credential [{:host "github.com"
+                   :protocol :ssh
+                   :user-name "test"}]
+     :repo {:books
+            [{:host "github.com"
+              :orga-path "DomainDrivenArchitecture"
+              :repo-name "ddaArchitecture"
+              :protocol :ssh
+              :server-type :github}]}
+     :synced-repo {:password-store
+                    [{:host "github.com"
+                      :orga-path "DomainDrivenArchitecture"
+                      :repo-name "password-store-for-teams"
+                      :protocol :ssh
+                      :server-type :github}]
+                    :wiki
+                     [{:host "github.com"
+                       :orga-path "mypath"
+                       :repo-name "mywiki"
+                       :protocol :ssh
+                       :server-type :github}]}}})
+
 (deftest test-git-config
   (testing
     "test the git config creation"
     (is (thrown? Exception (sut/vm-git-config {})))
-    (is (=
-          {:os-user :test,
-           :user-email "test@mydomain",
-           :repos
-           {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
-            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}}
-         (sut/vm-git-config config-1)))
-    (is (=
-          {:os-user :test,
-           :user-email "test@mydomain",
-           :repos
-           {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
-            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
-                          "credentials-repo",]}
-           :synced-repos {:wiki ["wiki-autosync-repo"]}}
-          (sut/vm-git-config config-2)))
-    (is (=
-          {:os-user :test,
-           :user-email "test@mydomain",
-           :credentials {:gitblit {:user "user-gb"},
-                         :github {:user "user-gh", :password "pwd-gh"}},
-           :repos
-           {:book ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"],
-            :credentials ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"
-                          "credentials-repo",]}
-           :synced-repos {:wiki ["wiki-autosync-repo"]}}
-          (sut/vm-git-config config-4)))
+    (is (= gitconfig-result1 (sut/vm-git-config config-1)))
+    (is (= gitconfig-result2 (sut/vm-git-config config-2)))
+    (is (= gitconfig-result4 (sut/vm-git-config config-4)))
     (is (= (:git-domain config-set-ide)
            (sut/vm-git-config (:domain-input config-set-ide))))))
 
@@ -171,8 +226,8 @@
                       :install-zip-utils :install-git :remove-ubuntu-unused :install-bash-utils
                       :install-diagram :install-openconnect :install-open-jdk-11 :install-spellchecking-de
                       :remove-xubuntu-unused :install-vpnc :install-telegram :configure-no-swappiness
-                      :install-inkscape :install-remina :install-audio :install-desktop-wiki
-                      :install-libreoffice :install-openvpn :remove-power-management :install-gopass
+                      :install-inkscape :install-remina :install-audio
+                      :install-libreoffice :install-openvpn :remove-power-management 
                       :install-virtualbox-guest :install-timesync,}
                     :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}}}

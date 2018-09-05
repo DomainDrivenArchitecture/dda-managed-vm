@@ -19,31 +19,58 @@
     [dda.config.commons.map-utils :as mu]
     [dda.pallet.commons.secret :as secret]))
 
-(def GitCredentials
-  {(s/enum :gitblit :github) {:user s/Str
-                              (s/optional-key :password) secret/Secret}})
+(def ServerIdentity
+  {:host s/Str                                 ;identifyer for repo matching
+   (s/optional-key :port) s/Num                ;identifyer for repo matching, defaults to 22 or 443 based on protocol
+   :protocol (s/enum :ssh :https)})
+
+(def Repository
+  (merge
+    ServerIdentity
+    {(s/optional-key :orga-path) s/Str
+     :repo-name s/Str
+     :server-type (s/enum :gitblit :github :gitlab)}))
+
+(def GitCredential
+  (merge
+     ServerIdentity
+     {:user-name secret/Secret                     ;needed for none-public access
+      (s/optional-key :password) secret/Secret}))  ;needed for none-public & none-key access
+
+(def GitCredentials [GitCredential])
 
 (def GitCredentialsResolved
-  (secret/create-resolved-schema GitCredentials))
+  (secret/create-resolved-schema GitCredential))
 
 (s/defn vm-git-config
  "Git repos for VM"
  [domain-config]
  (let [{:keys [user usage-type]} domain-config
        {:keys [name email git-credentials desktop-wiki credentials]
-        :or {email (str name "@mydomain")}} user]
-   (mu/deep-merge
-     {:os-user (keyword name)
-      :user-email email
-      :repos {}}
-     (when (contains? user :git-credentials)
-       {:credentials git-credentials})
-     (when (not (= usage-type :desktop-minimal))
-       {:repos {:book
-                ["https://github.com/DomainDrivenArchitecture/ddaArchitecture.git"]
-                :credentials
-                ["https://github.com/DomainDrivenArchitecture/password-store-for-teams.git"]}})
-     (when (contains? user :credentials)
-       {:repos {:credentials credentials}})
-     (when (contains? user :desktop-wiki)
-       {:synced-repos {:wiki desktop-wiki}}))))
+        :or {email (str name "@mydomain")}} user
+       github-ssh (for [x git-credentials] (and (= (:host x) "github.com") (= (:protocol x) :ssh)))
+       protocol-type (if (and (contains? user :git-credentials)
+                              (some true? github-ssh))
+                        :ssh :https)]
+   {(keyword name)
+    (merge
+      {:user-email email}
+      (when (contains? user :git-credentials)
+        {:credential git-credentials})
+      {:repo {:books
+              [{:host "github.com"
+                :orga-path "DomainDrivenArchitecture"
+                :repo-name "ddaArchitecture"
+                :protocol protocol-type
+                :server-type :github}]}}
+      {:synced-repo
+       (merge
+         {:password-store
+          [{:host "github.com"
+            :orga-path "DomainDrivenArchitecture"
+            :repo-name "password-store-for-teams"
+            :protocol protocol-type
+            :server-type :github}]}
+         (when (contains? user :desktop-wiki)
+          {:wiki desktop-wiki}))}
+      {})}))

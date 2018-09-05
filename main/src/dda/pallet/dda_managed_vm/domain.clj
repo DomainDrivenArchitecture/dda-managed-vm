@@ -34,7 +34,7 @@
           (s/optional-key :gpg) {:gpg-public-key secret/Secret
                                  :gpg-private-key secret/Secret
                                  :gpg-passphrase secret/Secret}
-          (s/optional-key :desktop-wiki) [s/Str]
+          (s/optional-key :desktop-wiki) [git/Repository]
           (s/optional-key :credentials) [s/Str]}})
 
 (def DdaVmUserResolved
