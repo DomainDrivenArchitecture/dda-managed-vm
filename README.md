@@ -45,9 +45,11 @@ The following software/packages are installed by this dda-managed-vm:
  * remove-option for some ubuntu & xubuntu packages
 
 ## Usage documentation
+
 This crate installs and configures software on your virtual machine. You can provision pre-created virtual machines (see paragraph "Prepare vm" below) or cloud instances.
 
 ### Prepare vm
+
 If you want to use this crate, please ensure you meet the preconditions for the remote machine, i.e. xubuntu and openssh-server installed. If not yet installed, you may use the steps below:
 1. Install xubuntu18.04
 2. Login with your initial user and use:
@@ -61,8 +63,8 @@ In case you want to install the software on the local machine rahter than remote
 sudo apt-get install openjdk-11-jre-headless
 ```
 
-
 ### Usage Summary
+
 1. Download the jar-file from the releases page of this repository (e.g. dda-manage-vm-x.x.x-standalone.jar).
 2. Deploy the jar-file on the source machine
 3. Create the files `example-vm.edn` (Domain-Schema for your desktop) and `example-target.edn` (Schema for Targets to be provisioned) according to the reference and our example configurations. Please create them in the same folder where you've saved the jar-file. For more information about these files refer to the corresponding information below.
@@ -72,6 +74,7 @@ java -jar dda-managed-vm-standalone.jar --targets example-targets.edn example-vm
 ```
 
 ### Configuration
+
 The configuration consists of two files defining both WHERE to install the software and WHAT to install.
 * `example-targets.edn`: describes on which target system(s) the software will be installed
 * `example-vm.edn`: describes which software/packages will be installed
@@ -88,6 +91,7 @@ Example content of file `example-targets.edn`:
 ```
 
 #### VM config example
+
 Example content of file `example-vm.edn`:
 ```clojure
 {:target-type :virtualbox
@@ -107,23 +111,30 @@ Example content of file `example-vm.edn`:
 The vm config defines the software/packages and user credentials of the newly created user to be installed.
 
 ### Watch log for debug reasons
+
 In case of problems you may want to have a look at the log-file:
 `less logs/pallet.log`
 
 ## Reference
+
 Some details about the architecture: We provide two levels of API. **Domain** is a high-level API with many build in conventions. If this conventions don't fit your needs, you can use our low-level **infra** API and realize your own conventions.
 
 ### Targets
+
 You can define provisioning targets using the [targets-schema](https://github.com/DomainDrivenArchitecture/dda-pallet-commons/blob/master/doc/existing_spec.md)
 
 ### Domain API
+
 You can use our conventions as a smooth starting point:
 [see domain reference](doc/reference_domain.md)
 
 ### Infra API
+
 Or you can build your own conventions using our low level infra API. We will keep this API backward compatible whenever that will be possible:
 [see infra reference](doc/reference_infra.md)
 
 ## License
+
 Copyright © 2015, 2016, 2017, 2018 meissa GmbH
-Published under [apache2.0 license](LICENSE.md)
+Licensed under the [Apache License, Version 2.0](LICENSE) (the "License")
+Pls. find licenses of our subcomponents [here](doc/SUBCOMPONENT_LICENSE)
