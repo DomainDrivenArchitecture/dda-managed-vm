@@ -20,6 +20,8 @@
     [pallet.actions :as actions]
     [dda.config.commons.user-home :as user-env]))
 
+;todo: rename to credential-store
+
 (def Settings
   (hash-set :install-password-store :install-gopass))
 
@@ -44,7 +46,7 @@
      (str user-home "/.demo-pass")
      :owner user-name
      :group user-name
-     :link (str user-home "/repo/credentials/password-store-for-teams"))
+     :link (str user-home "/repo/credential-store/password-store-for-teams"))
     (actions/remote-file
      (str user-home "/.bashrc.d/team-pass.sh")
      :literal true
@@ -89,7 +91,7 @@ done
      (str user-home "/.password-store/demo")
      :owner user-name
      :group user-name
-     :link (str user-home "/repo/password-store/password-store-for-teams"))
+     :link (str user-home "/repo/credential-store/password-store-for-teams"))
     ;gopass init
     ;gopass mounts add demo (str user-home "/repo/password-store/password-store-for-teams"))
     (actions/remote-file
