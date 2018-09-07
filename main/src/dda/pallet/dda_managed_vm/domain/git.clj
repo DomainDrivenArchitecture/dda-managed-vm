@@ -31,6 +31,8 @@
      :repo-name s/Str
      :server-type (s/enum :gitblit :github :gitlab)}))
 
+(def Repositories [Repository])
+
 (def GitCredential ;TODO von gitcrate von domain
   (merge
      ServerIdentity
@@ -44,16 +46,18 @@
 
 (s/defn vm-git-config
  "Git repos for VM"
- [domain-config]
- (let [{:keys [user usage-type]} domain-config
-       {:keys [name email git-credentials desktop-wiki credentials]
-        :or {email (str name "@mydomain")}} user
+ [name :- s/Str
+  email :- s/Str
+  git-credentials :- GitCredentials
+  desktop-wiki :- Repositories
+  credential-store :- Repositories]
+ (let [email (if (some? email) email (str name "@mydomain"))
        github-ssh (for [x git-credentials] (and (= (:host x) "github.com") (= (:protocol x) :ssh)))
        protocol-type (if github-ssh :ssh :https)]
    {(keyword name)
     (merge
       {:user-email email}
-      (when (contains? user :git-credentials)
+      (when (some? git-credentials)
         {:credential git-credentials})
       {:repo {:books
               [{:host "github.com"
@@ -63,12 +67,12 @@
                 :server-type :github}]}}
       {:synced-repo
        (merge
-         {:credentials
+         {:credential-store
           [{:host "github.com"
             :orga-path "DomainDrivenArchitecture"
             :repo-name "password-store-for-teams"
             :protocol protocol-type
             :server-type :github}]} ;TODO add credentials
-         (when (contains? user :desktop-wiki)
+         (when (some? desktop-wiki)
           {:wiki desktop-wiki}))}
       {})}))

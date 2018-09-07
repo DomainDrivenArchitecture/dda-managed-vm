@@ -34,8 +34,8 @@
           (s/optional-key :gpg) {:gpg-public-key secret/Secret
                                  :gpg-private-key secret/Secret
                                  :gpg-passphrase secret/Secret}
-          (s/optional-key :desktop-wiki) [git/Repository]
-          (s/optional-key :credentials) [git/Repository]}})
+          (s/optional-key :desktop-wiki) git/Repositories
+          (s/optional-key :credential-store) git/Repositories}})
 
 (def DdaVmUserResolved
   (secret/create-resolved-schema DdaVmUser))
@@ -75,7 +75,9 @@
 (s/defn ^:always-validate vm-git-config
  "Git repos for VM"
  [domain-config :- DdaVmDomainResolvedConfig]
- (git/vm-git-config domain-config))
+ (let [{:keys [user]} domain-config
+       {:keys [name email git-credentials desktop-wiki credential-store]} user]
+   (git/vm-git-config name email git-credentials desktop-wiki credential-store)))
 
 (s/defn ^:always-validate vm-serverspec-config
  "serverspec for VM"
