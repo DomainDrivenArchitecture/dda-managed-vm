@@ -35,7 +35,7 @@
                                  :gpg-private-key secret/Secret
                                  :gpg-passphrase secret/Secret}
           (s/optional-key :desktop-wiki) [git/Repository]
-          (s/optional-key :credentials) [s/Str]}})
+          (s/optional-key :credentials) [git/Repository]}})
 
 (def DdaVmUserResolved
   (secret/create-resolved-schema DdaVmUser))

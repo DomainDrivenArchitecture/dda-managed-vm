@@ -17,29 +17,29 @@
   (:require
     [schema.core :as s]
     [dda.config.commons.map-utils :as mu]
-    [dda.pallet.commons.secret :as secret]))
+    [dda.pallet.commons.secret :as secret])) ;TODO
 
-(def ServerIdentity
+(def ServerIdentity ;TODO von gitcrate von domain
   {:host s/Str                                 ;identifyer for repo matching
    (s/optional-key :port) s/Num                ;identifyer for repo matching, defaults to 22 or 443 based on protocol
    :protocol (s/enum :ssh :https)})
 
-(def Repository
+(def Repository ;TODO von gitcrate von domain
   (merge
     ServerIdentity
     {(s/optional-key :orga-path) s/Str
      :repo-name s/Str
      :server-type (s/enum :gitblit :github :gitlab)}))
 
-(def GitCredential
+(def GitCredential ;TODO von gitcrate von domain
   (merge
      ServerIdentity
      {:user-name secret/Secret                     ;needed for none-public access
       (s/optional-key :password) secret/Secret}))  ;needed for none-public & none-key access
 
-(def GitCredentials [GitCredential])
+(def GitCredentials [GitCredential]) ;TODO von gitcrate von domain
 
-(def GitCredentialsResolved
+(def GitCredentialsResolved ;TODO von gitcrate von domain
   (secret/create-resolved-schema GitCredential))
 
 (s/defn vm-git-config
@@ -49,9 +49,7 @@
        {:keys [name email git-credentials desktop-wiki credentials]
         :or {email (str name "@mydomain")}} user
        github-ssh (for [x git-credentials] (and (= (:host x) "github.com") (= (:protocol x) :ssh)))
-       protocol-type (if (and (contains? user :git-credentials)
-                              (some true? github-ssh))
-                        :ssh :https)]
+       protocol-type (if github-ssh :ssh :https)]
    {(keyword name)
     (merge
       {:user-email email}
@@ -61,16 +59,16 @@
               [{:host "github.com"
                 :orga-path "DomainDrivenArchitecture"
                 :repo-name "ddaArchitecture"
-                :protocol protocol-type
+                :protocol protocol-type ;TODO own fkt
                 :server-type :github}]}}
       {:synced-repo
        (merge
-         {:password-store
+         {:credentials
           [{:host "github.com"
             :orga-path "DomainDrivenArchitecture"
             :repo-name "password-store-for-teams"
             :protocol protocol-type
-            :server-type :github}]}
+            :server-type :github}]} ;TODO add credentials
          (when (contains? user :desktop-wiki)
           {:wiki desktop-wiki}))}
       {})}))
