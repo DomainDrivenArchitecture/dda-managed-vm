@@ -21,22 +21,106 @@
     [schema.core :as s]
     [dda.pallet.dda-managed-vm.domain.git :as sut]))
 
-(def config-full
-  {:type :desktop-office
-   :user {:name "test-user"
-          :password {:plain "xxx"}
-          :email "test-user@mydomain.org"
-          :ssh {:ssh-public-key {:plain "rsa-ssh kfjri5r8irohgn...test.key comment"}
-                :ssh-private-key {:plain "123Test"}}
-          :gpg {:gpg-public-key
-                {:plain "-----BEGIN PGP PUBLIC KEY BLOCK-----
-  ..."}
-                :gpg-private-key
-                {:plain "-----BEGIN PGP PRIVATE KEY BLOCK-----
-  ..."}
-                :gpg-passphrase {:plain "passphrase"}}}})
+(def min-config
+  {:infra-out
+   {:test-user
+    {:user-email "test-user@mydomain",
+     :repo
+     {:books
+      [{:host "github.com",
+        :orga-path "DomainDrivenArchitecture",
+        :repo-name "ddaArchitecture",
+        :protocol :https,
+        :server-type :github}]},
+     :synced-repo
+     {:credential-store
+      [{:host "github.com",
+        :orga-path "DomainDrivenArchitecture",
+        :repo-name "password-store-for-teams",
+        :protocol :https,
+        :server-type :github}]}}}})
 
-(def config-min
-  {:type :remote
-   :user {:name "test-user"
-          :password {:plain "xxx"}}})
+(deftest test-min-config
+  (testing
+    (is (= (:infra-out min-config)
+           (sut/vm-git-config "test-user" nil nil nil nil)))))
+
+(def github-ssh-config
+  {:git-credentials-in {:user-name "git-test-user"
+                        :host "github.com"
+                        :protocol :ssh}
+   :infra-out
+   {:test-user
+    {:user-email "test-user@mydomain",
+     :credential
+     {:user-name "git-test-user",
+      :host "github.com",
+      :protocol :ssh}
+     :repo
+     {:books
+      [{:host "github.com",
+        :orga-path "DomainDrivenArchitecture",
+        :repo-name "ddaArchitecture",
+        :protocol :ssh,
+        :server-type :github}]},
+     :synced-repo
+     {:credential-store
+      [{:host "github.com",
+        :orga-path "DomainDrivenArchitecture",
+        :repo-name "password-store-for-teams",
+        :protocol :ssh,
+        :server-type :github}]}}}})
+
+(deftest test-github-ssh-config
+  (testing
+    (is (= (:infra-out github-ssh-config)
+           (sut/vm-git-config
+             "test-user" nil
+             (:git-credentials-in github-ssh-config) nil nil)))))
+
+
+(def github-ssh-with-credential-store-config
+  {:git-credentials-in {:user-name "git-test-user"
+                        :host "github.com"
+                        :protocol :ssh}
+   :credential-store-in [{:host "github.com",
+                          :orga-path "DomainDrivenArchitecture",
+                          :repo-name "additional-password-store",
+                          :protocol :https,
+                          :server-type :github}]
+   :infra-out
+   {:test-user
+    {:user-email "test-user@mydomain",
+     :credential
+     {:user-name "git-test-user",
+      :host "github.com",
+      :protocol :ssh}
+     :repo
+     {:books
+      [{:host "github.com",
+        :orga-path "DomainDrivenArchitecture",
+        :repo-name "ddaArchitecture",
+        :protocol :ssh,
+        :server-type :github}]},
+     :synced-repo
+     {:credential-store
+      [{:host "github.com",
+        :orga-path "DomainDrivenArchitecture",
+        :repo-name "password-store-for-teams",
+        :protocol :ssh,
+        :server-type :github}
+       {:host "github.com",
+        :orga-path "DomainDrivenArchitecture",
+        :repo-name "additional-password-store",
+        :protocol :https,
+        :server-type :github,}]
+      :wiki []}}}})
+
+(deftest test-github-ssh-config
+  (testing
+    (is (= (:infra-out github-ssh-with-credential-store-config)
+           (sut/vm-git-config
+             "test-user" nil
+             (:git-credentials-in github-ssh-with-credential-store-config)
+             []
+             (:credential-store-in github-ssh-with-credential-store-config))))))
