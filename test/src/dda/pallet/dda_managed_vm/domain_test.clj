@@ -63,7 +63,11 @@
                   :usage-type :desktop-ide
                   :user {:name  "test"
                          :password "pwd"
-                         :credentials ["credentials-repo"]
+                         :credential-store [{:host "github.com",
+                                             :orga-path "DomainDrivenArchitecture",
+                                             :repo-name "additional-password-store",
+                                             :protocol :https,
+                                             :server-type :github,}]
                          :desktop-wiki [{:host "github.com"
                                          :orga-path "mypath"
                                          :repo-name "mywiki"
@@ -77,18 +81,23 @@
                           :repo-name "ddaArchitecture"
                           :protocol :https
                           :server-type :github}]}
-                 :synced-repo  {:password-store
+                 :synced-repo  {:credential-store
                                 [{:host "github.com"
                                   :orga-path "DomainDrivenArchitecture"
                                   :repo-name "password-store-for-teams"
                                   :protocol :https
-                                  :server-type :github}]
-                                :wiki
-                                  [{:host "github.com"
-                                    :orga-path "mypath"
-                                    :repo-name "mywiki"
-                                    :protocol :ssh
-                                    :server-type :github}]}}}
+                                  :server-type :github}
+                                 {:host "github.com",
+                                  :orga-path "DomainDrivenArchitecture",
+                                  :repo-name "additional-password-store",
+                                  :protocol :https,
+                                  :server-type :github,}]
+                                :desktop-wiki
+                                [{:host "github.com"
+                                  :orga-path "mypath"
+                                  :repo-name "mywiki"
+                                  :protocol :ssh
+                                  :server-type :github}]}}}
    :infra {:dda-managed-vm {:settings
                             #{:install-os-analysis :install-chromium
                               :install-enigmail :install-keymgm
@@ -133,7 +142,7 @@
                :repo-name "ddaArchitecture"
                :protocol :https
                :server-type :github}]}
-      :synced-repo  {:password-store
+      :synced-repo  {:credential-store
                      [{:host "github.com"
                        :orga-path "DomainDrivenArchitecture"
                        :repo-name "password-store-for-teams"
@@ -152,7 +161,7 @@
               :repo-name "ddaArchitecture"
               :protocol :ssh
               :server-type :github}]}
-     :synced-repo  {:password-store
+     :synced-repo  {:credential-store
                     [{:host "github.com"
                       :orga-path "DomainDrivenArchitecture"
                       :repo-name "password-store-for-teams"
@@ -171,18 +180,18 @@
               :repo-name "ddaArchitecture"
               :protocol :ssh
               :server-type :github}]}
-     :synced-repo {:password-store
+     :synced-repo {:credential-store
                     [{:host "github.com"
                       :orga-path "DomainDrivenArchitecture"
                       :repo-name "password-store-for-teams"
                       :protocol :ssh
                       :server-type :github}]
-                    :wiki
-                     [{:host "github.com"
-                       :orga-path "mypath"
-                       :repo-name "mywiki"
-                       :protocol :ssh
-                       :server-type :github}]}}})
+                    :desktop-wiki
+                    [{:host "github.com"
+                      :orga-path "mypath"
+                      :repo-name "mywiki"
+                      :protocol :ssh
+                      :server-type :github}]}}})
 
 (deftest test-git-config
   (testing
@@ -227,7 +236,7 @@
                       :install-diagram :install-openconnect :install-open-jdk-11 :install-spellchecking-de
                       :remove-xubuntu-unused :install-vpnc :install-telegram :configure-no-swappiness
                       :install-inkscape :install-remina :install-audio
-                      :install-libreoffice :install-openvpn :remove-power-management 
+                      :install-libreoffice :install-openvpn :remove-power-management
                       :install-virtualbox-guest :install-timesync,}
                     :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}}}

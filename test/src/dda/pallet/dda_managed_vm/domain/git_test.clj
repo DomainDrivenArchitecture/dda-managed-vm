@@ -80,9 +80,9 @@
 
 
 (def github-ssh-with-credential-store-config
-  {:git-credentials-in {:user-name "git-test-user"
-                        :host "github.com"
-                        :protocol :ssh}
+  {:git-credentials-in [{:user-name "git-test-user"
+                         :host "github.com"
+                         :protocol :ssh}]
    :credential-store-in [{:host "github.com",
                           :orga-path "DomainDrivenArchitecture",
                           :repo-name "additional-password-store",
@@ -92,9 +92,9 @@
    {:test-user
     {:user-email "test-user@mydomain",
      :credential
-     {:user-name "git-test-user",
-      :host "github.com",
-      :protocol :ssh}
+     [{:user-name "git-test-user",
+       :host "github.com",
+       :protocol :ssh}]
      :repo
      {:books
       [{:host "github.com",
@@ -114,7 +114,7 @@
         :repo-name "additional-password-store",
         :protocol :https,
         :server-type :github,}]
-      :wiki []}}}})
+      :desktop-wiki []}}}})
 
 (deftest test-github-ssh-config
   (testing
@@ -124,3 +124,18 @@
              (:git-credentials-in github-ssh-with-credential-store-config)
              []
              (:credential-store-in github-ssh-with-credential-store-config))))))
+
+(def git-credentials-1
+  [{:user-name "git-test-user",
+    :host "github.com",
+    :protocol :ssh}])
+
+(def git-credentials-2
+  [{:user-name "git-test-user",
+    :host "gitlab.com",
+    :protocol :ssh}])
+
+(deftest test-protocol-type
+  (testing
+    (is (= (sut/protocol-type git-credentials-1) :ssh))
+    (is (= (sut/protocol-type git-credentials-2) :https))))
