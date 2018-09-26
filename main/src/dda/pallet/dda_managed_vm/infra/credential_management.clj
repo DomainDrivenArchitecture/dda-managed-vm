@@ -20,8 +20,6 @@
     [pallet.actions :as actions]
     [dda.config.commons.user-home :as user-env]))
 
-;todo: rename to credential-store
-
 (def Settings
   (hash-set :install-password-store :install-gopass))
 

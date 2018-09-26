@@ -120,7 +120,7 @@
          :bookmarks (bookmark/bookmarks domain-config)}
         (when (contains? user :desktop-wiki)
           {:settings #{:install-desktop-wiki :install-diagram}})
-        (when (contains? user :credentials)
+        (when (contains? user :credential-store)
           {:settings #{:install-gopass}})
         (cond
           (= usage-type :desktop-minimal)
