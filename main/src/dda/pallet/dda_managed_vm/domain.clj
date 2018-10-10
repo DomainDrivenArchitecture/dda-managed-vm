@@ -144,8 +144,8 @@
              :install-openvpn :install-openconnect :install-vpnc
              :remove-xubuntu-unused :remove-ubuntu-unused}}
           (= usage-type :desktop-office)
-          {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.2/Fakturama_linux_x64_2.0.2.1.deb"
-                       :doc-download-url "https://files.fakturama.info/release/v2.0.2/Handbuch-Fakturama_2.0.2.pdf"}
+          {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.3/Fakturama_linux_x64_2.0.3.deb"
+                       :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}
            :settings
             #{:install-libreoffice :install-spellchecking-de
               :install-open-jdk-11 :install-os-analysis :install-bash-utils
