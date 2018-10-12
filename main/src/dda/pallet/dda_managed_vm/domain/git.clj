@@ -27,6 +27,7 @@
 (def GitCredentials git-domain/GitCredentials)
 (def GitCredentialsResolved git-domain/GitCredentialsResolved)
 
+;; TODO: only github protocoltype is returned here ... either make name more specific or change logik to be more general
 (s/defn protocol-type
   [git-credentials :- GitCredentials]
   (let [github-ssh (for [x git-credentials] (and (= (:host x) "github.com") (= (:protocol x) :ssh)))]
