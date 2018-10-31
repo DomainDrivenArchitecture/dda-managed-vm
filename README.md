@@ -72,6 +72,10 @@ sudo apt-get install openjdk-11-jre-headless
 ```bash
 java -jar dda-managed-vm-standalone.jar --targets example-targets.edn example-vm.edn
 ```
+If you want to install the dda-managed-vm on your localhost you don't need a target config.
+```bash
+java -jar dda-managed-vm-standalone.jar.jar example-vm.edn
+```
 
 ### Configuration
 
