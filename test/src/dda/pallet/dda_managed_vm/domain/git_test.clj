@@ -137,5 +137,5 @@
 
 (deftest test-protocol-type
   (testing
-    (is (= (sut/protocol-type git-credentials-1) :ssh))
-    (is (= (sut/protocol-type git-credentials-2) :https))))
+    (is (= (sut/github-protocol-type git-credentials-1) :ssh))
+    (is (= (sut/github-protocol-type git-credentials-2) :https))))
