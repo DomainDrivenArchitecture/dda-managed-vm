@@ -79,7 +79,9 @@ The configuration consists of two files defining both WHERE to install the softw
 * `example-targets.edn`: describes on which target system(s) the software will be installed
 * `example-vm.edn`: describes which software/packages will be installed
 
-You can download examples of these configuration files from [https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/example-targets.edn](https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/example-targets.edn) and [https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/example-vm.edn](https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/development/example-vm.edn) respectively.
+You can download examples of these configuration files from  
+[example-targets.edn](https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/master/example-targets.edn) and  
+[example-vm.edn](https://github.com/DomainDrivenArchitecture/dda-managed-vm/blob/master/example-vm.edn), respectively.
 
 #### Targets config example
 Example content of file `example-targets.edn`:
