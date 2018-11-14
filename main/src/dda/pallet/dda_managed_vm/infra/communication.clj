@@ -37,7 +37,7 @@
     :unpack :tar
     :tar-options "x"
     :url
-    "https://tdesktop.com/linux")
+    "https://telegram.org/dl/desktop/linux")
   (actions/remote-file
     "/etc/profile.d/telegram.sh"
     :literal true
