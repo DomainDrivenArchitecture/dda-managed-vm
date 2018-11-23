@@ -73,7 +73,6 @@ done
   (actions/as-action
    (logging/info (str facility "-install system: init-gopass")))
   (install-gpg)
-  (init-gopass facility)
   (actions/packages :aptitude ["gopass"]))
   ;au BufNewFile,BufRead /dev/shm/gopass.* setlocal noswapfile nobackup noundofile
   ;ln -s $GOPATH/bin/gopass $HOME/bin/pass
@@ -107,7 +106,7 @@ source <(gopass completion bash)
   [facility :- s/Keyword
    settings]
   (when (contains? settings :install-gopass)
-    (install-gopass facility)))
+    (init-gopass facility)))
 
 (s/defn install-system
   [facility :- s/Keyword
