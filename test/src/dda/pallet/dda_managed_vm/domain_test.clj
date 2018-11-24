@@ -111,7 +111,8 @@
                               :install-remina :install-desktop-wiki
                               :install-libreoffice :install-openvpn
                               :remove-power-management :install-gopass
-                              :install-virtualbox-guest :install-timesync,}
+                              :install-virtualbox-guest :install-timesync,
+                              :install-lightning}
                             :bookmarks
                             [{:name "Bookmarks Toolbar",
                               :links
@@ -222,8 +223,8 @@
             #{:install-os-analysis :install-zip-utils :install-git
               :remove-ubuntu-unused :install-bash-utils :install-openconnect
               :install-open-jdk-11 :remove-xubuntu-unused :install-vpnc
-              :configure-no-swappiness :install-xfce-desktop :install-audio
-              :install-openvpn :install-timesync}
+              :install-lightning :configure-no-swappiness :install-xfce-desktop
+              :install-audio :install-openvpn :install-timesync}
             :tightvnc-server {:user-password "test"}}}
           (sut/infra-configuration config-1)))
     (is (=
@@ -234,8 +235,8 @@
                     #{:install-os-analysis :install-chromium :install-enigmail :install-keymgm
                       :install-zip-utils :install-git :remove-ubuntu-unused :install-bash-utils
                       :install-diagram :install-openconnect :install-open-jdk-11 :install-spellchecking-de
-                      :remove-xubuntu-unused :install-vpnc :install-telegram :configure-no-swappiness
-                      :install-inkscape :install-remina :install-audio
+                      :remove-xubuntu-unused :install-vpnc :install-telegram :install-lightning
+                      :configure-no-swappiness :install-inkscape :install-remina :install-audio
                       :install-libreoffice :install-openvpn :remove-power-management
                       :install-virtualbox-guest :install-timesync,}
                     :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.3/Fakturama_linux_x64_2.0.3.deb",

@@ -29,7 +29,8 @@
             :install-spellchecking-de
             :install-inkscape
             :install-pdf-chain
-            :install-audio))
+            :install-audio
+            :install-lightning))
 
 (defn install-libreoffice
   [facility]
@@ -89,6 +90,12 @@
     :mode "755"
     :url (get-in fakturama-config [:doc-download-url])))
 
+(defn install-lightning
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-lightning")))
+  (actions/packages :aptitude ["xul-ext-lightning"]))
+
 (s/defn install-system
   "install common used packages for vm"
   [facility config]
@@ -104,4 +111,6 @@
     (when (contains? settings :install-audio)
       (install-audio facility))
     (when (contains? config :fakturama)
-      (install-fakturama facility (get-in config [:fakturama])))))
+      (install-fakturama facility (get-in config [:fakturama])))
+    (when (contains? settings :install-lightning)
+      (install-lightning facility))))
