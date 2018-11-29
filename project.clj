@@ -1,12 +1,12 @@
-(defproject dda/dda-managed-vm "2.2.4-SNAPSHOT"
+(defproject dda/dda-managed-vm "2.3.0-SNAPSHOT"
   :description "The managed vm desktop crate"
   :url "https://www.domaindrivenarchitecture.org"
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
-  :dependencies [[dda/dda-pallet "2.2.1"]
+  :dependencies [[dda/dda-pallet "2.2.2"]
                  [dda/dda-serverspec-crate "1.2.2"]
                  [dda/dda-user-crate "1.0.5"]
-                 [dda/dda-git-crate "2.1.0"]
+                 [dda/dda-git-crate "2.1.1"]
                  [dda/dda-backup-crate "1.0.5"]]
   :source-paths ["main/src"]
   :resource-paths ["main/resources"]
@@ -22,7 +22,7 @@
                    :dependencies
                    [[org.clojure/test.check "0.10.0-alpha3"]
                     [dda/pallet "0.9.0" :classifier "tests"]
-                    [dda/dda-pallet-commons "1.4.0" :classifier "tests"]
+                    [dda/dda-pallet-commons "1.4.1" :classifier "tests"]
                     [ch.qos.logback/logback-classic "1.3.0-alpha4"]
                     [org.slf4j/jcl-over-slf4j "1.8.0-beta2"]]
                    :plugins

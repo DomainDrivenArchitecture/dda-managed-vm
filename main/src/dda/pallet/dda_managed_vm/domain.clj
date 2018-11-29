@@ -29,6 +29,7 @@
           :password secret/Secret
           (s/optional-key :email) s/Str
           (s/optional-key :git-credentials) git/GitCredentials
+          (s/optional-key :git-signing-key) s/Str
           (s/optional-key :ssh) {:ssh-public-key secret/Secret
                                  :ssh-private-key secret/Secret}
           (s/optional-key :gpg) {:gpg-public-key secret/Secret
@@ -76,8 +77,8 @@
  "Git repos for VM"
  [domain-config :- DdaVmDomainResolvedConfig]
  (let [{:keys [user]} domain-config
-       {:keys [name email git-credentials desktop-wiki credential-store]} user]
-   (git/vm-git-config name email git-credentials desktop-wiki credential-store)))
+       {:keys [name email git-credentials git-signing-key desktop-wiki credential-store]} user]
+   (git/vm-git-config name email git-credentials git-signing-key desktop-wiki credential-store)))
 
 (s/defn ^:always-validate vm-serverspec-config
  "serverspec for VM"

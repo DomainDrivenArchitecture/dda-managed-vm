@@ -39,6 +39,7 @@
  [name :- s/Str
   email :- s/Str
   git-credentials :- GitCredentials
+  git-signing-key :- s/Str
   desktop-wiki :- Repositories
   credential-store :- Repositories]
  (let [email (if (some? email) email (str name "@mydomain"))
@@ -48,6 +49,8 @@
       {:user-email email}
       (when (some? git-credentials)
         {:credential git-credentials})
+      (when (some? git-signing-key)
+        {:signing-key git-signing-key})
       {:repo {:books
               [{:host "github.com"
                 :orga-path "DomainDrivenArchitecture"

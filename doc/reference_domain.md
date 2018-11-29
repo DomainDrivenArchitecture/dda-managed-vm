@@ -23,6 +23,7 @@ The schema for the vm configuration is:
    (optional-key :email) Str                    ; email for git config
    (optional-key :git-credentials)              ; credentials for git repositories
    git/GitCredentials
+   (s/optional-key :git-signing-key) s/Str      ; key used for sign git commits or tags
    (optional-key :desktop-wiki) [Str]           ; install zim desktop-wiki, Str to describe
                                                 ; used autosync git repositories
    (optional-key :credentials) [Str]            ; install passwordstore or gopass, Str to describe

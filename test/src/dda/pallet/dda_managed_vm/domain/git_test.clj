@@ -43,7 +43,7 @@
 (deftest test-min-config
   (testing
     (is (= (:infra-out min-config)
-           (sut/vm-git-config "test-user" nil nil nil nil)))))
+           (sut/vm-git-config "test-user" nil nil nil nil nil)))))
 
 (def github-ssh-config
   {:git-credentials-in {:user-name "git-test-user"
@@ -76,7 +76,7 @@
     (is (= (:infra-out github-ssh-config)
            (sut/vm-git-config
              "test-user" nil
-             (:git-credentials-in github-ssh-config) nil nil)))))
+             (:git-credentials-in github-ssh-config) nil nil nil)))))
 
 
 (def github-ssh-with-credential-store-config
@@ -122,6 +122,7 @@
            (sut/vm-git-config
              "test-user" nil
              (:git-credentials-in github-ssh-with-credential-store-config)
+             nil
              []
              (:credential-store-in github-ssh-with-credential-store-config))))))
 
