@@ -7,4 +7,8 @@ RUN apt-get install curl gnupg2 apt-utils sudo -y
 COPY target/dda-managed-vm-standalone.jar /app/dda-managed-vm-standalone.jar
 COPY integration/docker/image/vm.edn /app/vm.edn
 
+# check prerequisits
+RUN java -jar /app/dda-managed-vm-standalone.jar --serverspec /app/vm.edn
+
+# provision
 RUN java -jar /app/dda-managed-vm-standalone.jar /app/vm.edn

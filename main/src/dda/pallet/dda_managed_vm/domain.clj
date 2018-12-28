@@ -21,6 +21,7 @@
     [dda.pallet.commons.secret :as secret]
     [dda.pallet.dda-managed-vm.domain.user :as user]
     [dda.pallet.dda-managed-vm.domain.git :as git]
+    [dda.pallet.dda-managed-vm.domain.serverspec :as serverspec]
     [dda.pallet.dda-managed-vm.domain.bookmark :as bookmark]
     [dda.pallet.dda-managed-vm.infra :as infra]))
 
@@ -83,12 +84,8 @@
 (s/defn ^:always-validate vm-serverspec-config
  "serverspec for VM"
  [domain-config :- DdaVmDomainResolvedConfig]
- (let [{:keys [target-type user]} domain-config]
-   (cond
-     (= target-type :remote-aws)
-     {:package [{:name "xfce4" :installed? true}]
-      :netstat [{:process-name "Xtightvnc" :port "5901"}]}
-     :default {})))
+ (serverspec/serverspec-prerequisits))
+
 
 (s/defn ^:always-validate vm-backup-config
   "Managed vm crate default configuration"
