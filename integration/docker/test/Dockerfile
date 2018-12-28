@@ -1,6 +1,7 @@
 FROM dda-managed-vm
 
 RUN apt-get install curl -y
+RUN update-java-alternatives --set java-1.8.0-openjdk-amd64
 
 RUN curl -L -o /app/serverspec.jar https://github.com/DomainDrivenArchitecture/dda-serverspec-crate/releases/download/1.2.2/dda-serverspec-crate-1.2.2-standalone.jar
 
