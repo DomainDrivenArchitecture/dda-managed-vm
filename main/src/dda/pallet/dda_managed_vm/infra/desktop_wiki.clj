@@ -25,14 +25,6 @@
     :install-diagram
     :install-desktop-wiki))
 
-(defn install-diagram
-  [facility]
-  (actions/as-action
-   (logging/info (str facility "-install system: install-diagram")))
-  (actions/packages
-    :aptitude ["graphviz" "ditaa" "scrot" "dia"
-               "dvipng" "gnuplot" "r-base"]))
-
 (defn init-desktop-wiki
   [facility]
   (actions/as-action
@@ -43,6 +35,15 @@
      :release "bionic"
      :scopes ["main"]
      :key-url "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x7588B93F8F7DF243"}))
+
+(defn install-diagram
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-diagram")))
+  (actions/package-manager :update)
+  (actions/packages
+    :aptitude ["graphviz" "ditaa" "scrot" "dia"
+               "dvipng" "gnuplot" "r-base"]))
 
 (defn install-desktop-wiki
   [facility]
