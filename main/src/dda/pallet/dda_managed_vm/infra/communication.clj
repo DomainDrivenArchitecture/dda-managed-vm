@@ -22,7 +22,8 @@
 (def Settings
   (hash-set :install-telegram
             :install-remina
-            :install-enigmail))
+            :install-enigmail
+            :install-lightning))
 
 (defn install-telegram
   [facility]
@@ -50,6 +51,12 @@ export PATH"))
    (logging/info (str facility "-install system: install-enigmail")))
   (actions/packages :aptitude ["enigmail"]))
 
+(defn install-lightning
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-lightning")))
+  (actions/packages :aptitude ["xul-ext-lightning"]))
+
 (defn install-remina
   [facility]
   (actions/as-action
@@ -62,7 +69,9 @@ export PATH"))
   [facility settings]
   (when (contains? settings :install-enigmail)
     (install-enigmail facility))
+  (when (contains? settings :install-lightning)
+    (install-lightning facility)))
   (when (contains? settings :install-telegram)
     (install-telegram facility))
   (when (contains? settings :install-remina)
-    (install-remina facility)))
+    (install-remina facility))
