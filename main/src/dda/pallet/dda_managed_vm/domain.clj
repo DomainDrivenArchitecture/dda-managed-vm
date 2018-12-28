@@ -140,7 +140,8 @@
              :install-chromium :install-inkscape :install-telegram
              :install-remina :install-enigmail
              :install-openvpn :install-openconnect :install-vpnc
-             :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning}}
+             :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning
+             :install-redshift}}
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.3/Fakturama_linux_x64_2.0.3.deb"
                        :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}
@@ -152,7 +153,8 @@
               :install-chromium :install-inkscape :install-telegram
               :install-remina :install-enigmail
               :install-openvpn :install-openconnect :install-vpnc
-              :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning}})
+              :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning
+              :install-redshift}})
         (cond
           (= target-type :virtualbox)
           {:settings

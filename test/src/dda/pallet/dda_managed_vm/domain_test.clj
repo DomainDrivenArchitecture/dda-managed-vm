@@ -21,7 +21,7 @@
     [schema.core :as s]
     [dda.pallet.dda-managed-vm.domain :as sut]))
 
-(def config-1
+(def config-aws-base
   {:target-type :remote-aws
    :usage-type :desktop-base
    :user {:name  "test"
@@ -112,7 +112,8 @@
                               :install-libreoffice :install-openvpn
                               :remove-power-management :install-gopass
                               :install-virtualbox-guest :install-timesync,
-                              :install-lightning}
+                              :install-lightning
+                              :install-redshift}
                             :bookmarks
                             [{:name "Bookmarks Toolbar",
                               :links
@@ -131,7 +132,7 @@
   (testing
     "test the git config creation"
     (is (thrown? Exception (sut/vm-backup-config {})))
-    (is (sut/vm-backup-config config-1))
+    (is (sut/vm-backup-config config-aws-base))
     (is (sut/vm-backup-config config-2))))
 
 (def gitconfig-result1
@@ -198,7 +199,7 @@
   (testing
     "test the git config creation"
     (is (thrown? Exception (sut/vm-git-config {})))
-    (is (= gitconfig-result1 (sut/vm-git-config config-1)))
+    (is (= gitconfig-result1 (sut/vm-git-config config-aws-base)))
     (is (= gitconfig-result2 (sut/vm-git-config config-2)))
     (is (= gitconfig-result4 (sut/vm-git-config config-4)))
     (is (= (:git-domain config-set-ide)
@@ -208,7 +209,7 @@
   (testing
     "test the serverspec config creation"
     (is (thrown? Exception (sut/vm-serverspec-config {})))
-    (is (sut/vm-serverspec-config config-1))
+    (is (sut/vm-serverspec-config config-aws-base))
     (is (sut/vm-serverspec-config config-2))))
 
 (deftest test-infra-configuration
@@ -226,7 +227,7 @@
               :install-lightning :configure-no-swappiness :install-xfce-desktop
               :install-audio :install-openvpn :install-timesync}
             :tightvnc-server {:user-password "test"}}}
-          (sut/infra-configuration config-1)))
+          (sut/infra-configuration config-aws-base)))
     (is (=
           {:dda-managed-vm
             {:vm-user :test,
@@ -237,7 +238,7 @@
                       :install-diagram :install-openconnect :install-open-jdk-11 :install-spellchecking-de
                       :remove-xubuntu-unused :install-vpnc :install-telegram :install-lightning
                       :configure-no-swappiness :install-inkscape :install-remina :install-audio
-                      :install-libreoffice :install-openvpn :remove-power-management
+                      :install-libreoffice :install-openvpn :remove-power-management :install-redshift
                       :install-virtualbox-guest :install-timesync,}
                     :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.3/Fakturama_linux_x64_2.0.3.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}}}

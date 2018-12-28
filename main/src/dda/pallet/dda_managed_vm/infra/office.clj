@@ -17,6 +17,7 @@
   (:require
     [clojure.tools.logging :as logging]
     [schema.core :as s]
+    [selmer.parser :as selmer]
     [pallet.actions :as actions]))
 
 (def FakturamaConfig
@@ -29,7 +30,8 @@
             :install-spellchecking-de
             :install-inkscape
             :install-pdf-chain
-            :install-audio))
+            :install-audio
+            :install-redshift))
 
 (defn install-libreoffice
   [facility]
@@ -89,6 +91,19 @@
     :mode "755"
     :url (get-in fakturama-config [:doc-download-url])))
 
+(defn install-redshift
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: install-redshift")))
+  (actions/packages :aptitude ["redshift" "redshift-gtk"])
+  (actions/remote-file
+    "/etc/geoclue/geoclue.conf"
+    :literal true
+    :owner "root"
+    :group "root"
+    :mode "644"
+    :url (selmer/render-file "geoclue.conf.templ" {})))
+
 (s/defn install-system
   "install common used packages for vm"
   [facility config]
@@ -104,4 +119,6 @@
     (when (contains? settings :install-audio)
       (install-audio facility))
     (when (contains? config :fakturama)
-      (install-fakturama facility (get-in config [:fakturama])))))
+      (install-fakturama facility (get-in config [:fakturama])))
+    (when (contains? config :install-redshift)
+      (install-redshift facility))))
