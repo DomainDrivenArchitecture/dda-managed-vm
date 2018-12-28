@@ -25,13 +25,13 @@ jobs:
         - docker build -t dda-managed-vm-test --file integration/docker/test/Dockerfile .
       deploy:
         skip_cleanup: true
-        provider: releases
-        overwrite: true
-        draft: true
-        api_key:
-          secure: "m86pn7NJtpPuC8wdD53KvShCSEtcWUVUIgWYlqQh4TT17Rs8LI6AwoQ4oZlPVr5ZITsD01vvT05BMp8TSFa9L2fvMoAgNX2d9Rlnh7CwjQr8BU40HjaslLozyxIBCerjehaufzBpEHaoPKtjQR0/p2DNACt1d504Uv6JlCZ8UIkUwDJl6CjO/L5wtk2IEFKen8wk+/B9Oa7UB0V4mrxzzwjFQWJQsud/lV+Ti71aZISSrxnLSAx6oAe727oU9/WP94d2hbZ9FmnHyzXLYrD+G6coHh/mm3+VVyhjq8KR6BgrfhJmoR7DjSXgCsV/FxSCByu/pc1O8CGLx5V/iMf4DnF0Mcrt9MNijsV0QqZ3pFBq1S2PkCa1F+StZY3khkfVW1AlHGQJdiZezst1FfJZs7rfiSqC96E+5QAyUV57IlJoRWRfFXU38Gt5zsT+bd2Eu1lIVBx71wcEF0prZJkYkyyUbayZTFC9XTe9x3uIZVI6VbBwL/biOXz7RBbXFg69mmwZLXbQymUMDs58XlUvps1PWwdDF7wlU1ANBxHZ9SxrU4N2/5BnSXNGdA5hKM8viuh6hMl4nCRCgMJKsvhD/dAvdU1HbvQkAEs6WRlo03gk6bCb5xxfAzcSf+UQTYmmttVvkFft8mih2w9xZDVIvFvzZkydLeTe/zOuq/3iTOg="
-        file:
-          - target/dda-managed-vm-standalone.jar
-          - target/dda-managed-vm-standalone.jar.md5
-        provider: script
-        script: bash integration/docker/publish.sh dda-managed-vm
+        - provider: releases
+          overwrite: true
+          draft: true
+          api_key:
+            secure: "m86pn7NJtpPuC8wdD53KvShCSEtcWUVUIgWYlqQh4TT17Rs8LI6AwoQ4oZlPVr5ZITsD01vvT05BMp8TSFa9L2fvMoAgNX2d9Rlnh7CwjQr8BU40HjaslLozyxIBCerjehaufzBpEHaoPKtjQR0/p2DNACt1d504Uv6JlCZ8UIkUwDJl6CjO/L5wtk2IEFKen8wk+/B9Oa7UB0V4mrxzzwjFQWJQsud/lV+Ti71aZISSrxnLSAx6oAe727oU9/WP94d2hbZ9FmnHyzXLYrD+G6coHh/mm3+VVyhjq8KR6BgrfhJmoR7DjSXgCsV/FxSCByu/pc1O8CGLx5V/iMf4DnF0Mcrt9MNijsV0QqZ3pFBq1S2PkCa1F+StZY3khkfVW1AlHGQJdiZezst1FfJZs7rfiSqC96E+5QAyUV57IlJoRWRfFXU38Gt5zsT+bd2Eu1lIVBx71wcEF0prZJkYkyyUbayZTFC9XTe9x3uIZVI6VbBwL/biOXz7RBbXFg69mmwZLXbQymUMDs58XlUvps1PWwdDF7wlU1ANBxHZ9SxrU4N2/5BnSXNGdA5hKM8viuh6hMl4nCRCgMJKsvhD/dAvdU1HbvQkAEs6WRlo03gk6bCb5xxfAzcSf+UQTYmmttVvkFft8mih2w9xZDVIvFvzZkydLeTe/zOuq/3iTOg="
+          file:
+            - target/dda-managed-vm-standalone.jar
+            - target/dda-managed-vm-standalone.jar.md5
+        - provider: script
+          script: bash integration/docker/publish.sh dda-managed-vm
