@@ -26,6 +26,7 @@ For installation & configuration with the dda-managed-vm the schema is:
                      :install-libreoffice
                      :install-spellchecking-de
                      :install-audio
+                     :install-redshift
                      :install-enigmail
                      :install-telegram
                      :install-remina
