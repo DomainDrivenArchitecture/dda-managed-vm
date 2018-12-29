@@ -40,7 +40,8 @@
                        :main dda.pallet.dda-managed-vm.main
                        :uberjar-name "dda-managed-vm-standalone.jar"
                        :dependencies [[org.clojure/tools.cli "0.4.1"]
-                                      [ch.qos.logback/logback-classic "1.3.0-alpha4"]
+                                      [ch.qos.logback/logback-classic "1.3.0-alpha4"
+                                       :exclusions [com.sun.mail/javax.mail]]
                                       [org.slf4j/jcl-over-slf4j "1.8.0-beta2"]]}}
   :release-tasks [["vcs" "assert-committed"]
                   ["change" "version" "leiningen.release/bump-version" "release"]
