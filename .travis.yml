@@ -26,8 +26,8 @@ jobs:
       deploy:
         - provider: releases
           skip_cleanup: true
-          overwrite: true
-          draft: true
+          on:
+            tags: true
           api_key:
             secure: "OPJNxigck57hyJMYm97Z9X0dOlYHvGo3uYDMaDx+TuDcyg44DRy//xNmtEWSlc6mDMfn3x1k/7mv2dgBo+072lDbXhxzTGQWODNP5r0krV4P5/pv/OFoBgnASv7A/kPkmjl8WFhBMYVi/NbezXNwza4igx7VfzC+Iv+igJZZcXM2cUQbu/lRnCZEOOkM8OKFSMMB0d4Tb4mknzYeZRNYPsWvi5mIt6B3qT1ScTV8Ow9xDVxfQ64o+F1AUd5wsyTm2no71v2aeresQaH8uzuNfGwlx/ACIrV6JLXN6y3a5wmMTgvElnghs2LCA4i2k1Pvkg8Pg8tpRGBqkf1EVr2lHi8LVCfrESC2aT6tzxBM0lVAkxK6fPnjd/wDnEWUu8OK5mkjNuK1OFh8FAD8dTlVAW2Sg6h8igWI6OVvr9ZvURcnRQ22HoLUTB43rt9OKeBPHRsaPpI6fdalVMs2qz+hBgM837JGVy6dZHfl2Su9Q6L0edQ2UQjtrt/zvex0i1SHZ+62CmMbTlwnTRA9HLXOJodhmuY30J0qvdSWdAnBbJx80Ik2oHcEEQYCBYLdmiJzQv6NjwZ/Wb+CuoSzesW2i0BCj1Nd/h/S6iew/hRQGTkdI+jAneKanbJIDhaTOYlqqylaH0HF3KnxXwZ1ievWkacS03e0wBy+m0R7OFNVDRY="
           file:
@@ -35,4 +35,6 @@ jobs:
             - target/dda-managed-vm-standalone.jar.md5
         - provider: script
           skip_cleanup: true
+          on:
+            tags: true
           script: bash integration/docker/publish.sh dda-managed-vm
