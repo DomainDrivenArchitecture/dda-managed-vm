@@ -1,4 +1,4 @@
-{:target-type :plain
+{:target-type :virtualbox
  :usage-type :desktop-office
  :user {:name "test-user"
         :password {:plain "xxx"}
