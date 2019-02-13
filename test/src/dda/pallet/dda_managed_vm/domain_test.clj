@@ -240,7 +240,7 @@
                       :configure-no-swappiness :install-inkscape :install-remina :install-audio
                       :install-libreoffice :install-openvpn :remove-power-management :install-redshift
                       :install-virtualbox-guest :install-timesync,}
-                    :fakturama {:app-download-url "https://files.fakturama.info/release/v2.0.3/Fakturama_linux_x64_2.0.3.deb",
+                    :fakturama {:app-download-url "https://bitbucket.org/fakturamadev/fakturama-2/downloads/Fakturama_linux_x64_2.0.3.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}}}
           (sut/infra-configuration config-2)))
     (is (= (:infra config-set-ide)
