@@ -23,7 +23,7 @@
 (defn install
   [& options]
   (let [{:keys [domain targets summarize-session]
-         :or {domain "integration/resources/jem-vm.edn"
+         :or {domain "example-vm.edn"
               targets "example-targets.edn"
               summarize-session true}} options]
     (core-app/existing-install app/crate-app
@@ -33,7 +33,7 @@
 (defn configure
  [& options]
  (let [{:keys [domain targets summarize-session]
-        :or {domain "integration/resources/jem-vm.edn"
+        :or {domain "example-vm.edn"
              targets "example-targets.edn"
              summarize-session true}} options]
   (core-app/existing-configure app/crate-app
@@ -43,7 +43,7 @@
 (defn serverspec
   [& options]
   (let [{:keys [domain targets summarize-session]
-         :or {domain "integration/resources/jem-vm.edn"
+         :or {domain "example-vm.edn"
               targets "example-targets.edn"
               summarize-session true}} options]
     (core-app/existing-serverspec app/crate-app

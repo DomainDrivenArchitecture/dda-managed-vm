@@ -154,7 +154,7 @@
               :install-remina :install-enigmail
               :install-openvpn :install-openconnect :install-vpnc
               :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning
-              :install-redshift}})
+              :install-redshift :install-pdf-chain}})
         (cond
           (= target-type :virtualbox)
           {:settings

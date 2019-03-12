@@ -51,11 +51,13 @@
    (logging/info (str facility "-install system: inkscape")))
   (actions/package "inkscape"))
 
+; only gprename and a2ps are existant on ubuntu 18.04
 (defn install-pdf-chain
   [facility]
   (actions/as-action
    (logging/info (str facility "-install system: pdf-chain")))
-  (actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"]))
+  ;(actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"])
+  (actions/exec-script ("snap install pdftk")))
 
 (defn install-audio
   [facility]
