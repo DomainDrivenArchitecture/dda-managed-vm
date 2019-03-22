@@ -141,7 +141,7 @@
              :install-remina :install-enigmail
              :install-openvpn :install-openconnect :install-vpnc
              :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning
-             :install-redshift}}
+             :install-redshift :install-pdf-chain}}
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://bitbucket.org/fakturamadev/fakturama-2/downloads/Fakturama_linux_x64_2.0.3.deb"
                        :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}

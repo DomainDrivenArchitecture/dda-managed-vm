@@ -113,7 +113,8 @@
                               :remove-power-management :install-gopass
                               :install-virtualbox-guest :install-timesync,
                               :install-lightning
-                              :install-redshift}
+                              :install-redshift
+                              :install-pdf-chain}
                             :bookmarks
                             [{:name "Bookmarks Toolbar",
                               :links
@@ -239,7 +240,7 @@
                       :remove-xubuntu-unused :install-vpnc :install-telegram :install-lightning
                       :configure-no-swappiness :install-inkscape :install-remina :install-audio
                       :install-libreoffice :install-openvpn :remove-power-management :install-redshift
-                      :install-virtualbox-guest :install-timesync,}
+                      :install-virtualbox-guest :install-timesync :install-pdf-chain}
                     :fakturama {:app-download-url "https://bitbucket.org/fakturamadev/fakturama-2/downloads/Fakturama_linux_x64_2.0.3.deb",
                                 :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}}}
           (sut/infra-configuration config-2)))
