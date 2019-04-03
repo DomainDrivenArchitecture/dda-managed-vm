@@ -1,8 +1,8 @@
 FROM ubuntu
 
-RUN apt-get update && apt-get upgrade -y && apt-get install openjdk-8-jre -y
-
-RUN apt-get install curl gnupg2 apt-utils sudo -y
+RUN apt update -y
+RUN apt upgrade -y
+RUN apt install curl gnupg2 apt-utils sudo openjdk-11-jdk -y
 
 COPY target/dda-managed-vm-standalone.jar /app/dda-managed-vm-standalone.jar
 COPY integration/docker/image/vm.edn /app/vm.edn
