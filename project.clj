@@ -3,8 +3,7 @@
   :url "https://www.domaindrivenarchitecture.org"
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
-  :dependencies [[dda/pallet "0.9.1"]
-                 [dda/dda-pallet "2.2.2"]
+  :dependencies [[dda/dda-pallet "2.2.3"]
                  [dda/dda-serverspec-crate "1.3.1"]
                  [dda/dda-user-crate "1.0.6"]
                  [dda/dda-git-crate "2.2.0"]
@@ -24,7 +23,7 @@
                    :dependencies
                    [[org.clojure/test.check "0.10.0-alpha4"]
                     [dda/pallet "0.9.1" :classifier "tests"]
-                    [dda/dda-pallet-commons "1.4.1" :classifier "tests"]
+                    [dda/dda-pallet-commons "1.4.2" :classifier "tests"]
                     [ch.qos.logback/logback-classic "1.3.0-alpha4"]
                     [org.slf4j/jcl-over-slf4j "1.8.0-beta4"]]
                    :plugins
