@@ -226,7 +226,7 @@
               :remove-ubuntu-unused :install-bash-utils :install-openconnect
               :install-open-jdk-11 :remove-xubuntu-unused :install-vpnc
               :install-lightning :configure-no-swappiness :install-xfce-desktop
-              :install-audio :install-openvpn :install-timesync}
+              :install-openvpn :install-timesync}
             :tightvnc-server {:user-password "test"}}}
           (sut/infra-configuration config-aws-base)))
     (is (=

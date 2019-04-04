@@ -18,7 +18,8 @@
     [clojure.tools.logging :as logging]
     [schema.core :as s]
     [selmer.parser :as selmer]
-    [pallet.actions :as actions]))
+    [pallet.actions :as actions]
+    [dda.config.commons.user-home :as user-env]))
 
 (def FakturamaConfig
   "The configuration for managed vms crate."
@@ -57,7 +58,7 @@
   (actions/as-action
    (logging/info (str facility "-install system: pdf-chain")))
   ;(actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"])
-  (actions/exec-script ("snap install pdftk")))
+  (actions/exec-script ("snap" "install" "pdftk")))
 
 (defn install-audio
   [facility]
@@ -104,7 +105,26 @@
     :owner "root"
     :group "root"
     :mode "644"
-    :url (selmer/render-file "geoclue.conf.templ" {})))
+    :content (selmer/render-file "geoclue.conf.templ" {})))
+
+(s/defn configure-user-redshift
+  [facility :- s/Keyword
+   user-name :- s/Str]
+  (actions/as-action
+   (logging/info (str facility "-configure user: configure-user-redshift")))
+  (let [user-home (user-env/user-home-dir user-name)]
+    (actions/directory
+      (str user-home "/.config")
+      :owner user-name
+      :group user-name
+      :mode "755")
+    (actions/remote-file
+      (str user-home "/.config/redshift.conf")
+      :literal true
+      :owner user-name
+      :group user-name
+      :mode "644"
+      :content (selmer/render-file "redshift.conf.templ" {}))))
 
 (s/defn install-system
   "install common used packages for vm"
@@ -124,3 +144,10 @@
       (install-fakturama facility (get-in config [:fakturama])))
     (when (contains? config :install-redshift)
       (install-redshift facility))))
+
+(s/defn configure-user
+  [facility :- s/Keyword
+   user-name :- s/Str
+   config]
+  (when (contains? config :install-redshift)
+    (configure-user-redshift facility user-name)))

@@ -117,6 +117,7 @@
       :script-env {:HOME (str "/root")}}
      (basics/configure-user facility user-name settings)
      (cm/configure-user facility user-name settings)
+     (office/configure-user facility user-name settings)
      (browser/configure-user facility user-name contains-bookmarks? bookmarks)
      (tightvnc/configure-user facility user-name contains-tightvnc? tightvnc-server))))
 

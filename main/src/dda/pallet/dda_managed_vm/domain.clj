@@ -15,6 +15,7 @@
 ; limitations under the License.
 (ns dda.pallet.dda-managed-vm.domain
   (:require
+    [clojure.set :as set]
     [schema.core :as s]
     [dda.config.commons.map-utils :as mu]
     [dda.config.commons.user-home :as user-home]
@@ -105,6 +106,34 @@
      :backup-user {:name "dataBackupSource"
                    :encrypted-passwd "WIwn6jIUt2Rbc"}}))
 
+(def desktop-minimal-settings
+  #{:install-os-analysis :install-bash-utils :remove-xubuntu-unused :remove-ubuntu-unused})
+
+(def desktop-base-settings
+  (set/union
+    desktop-minimal-settings
+    #{:install-open-jdk-11 :install-git :install-zip-utils :install-timesync
+      :install-openvpn :install-openconnect :install-vpnc :install-lightning}))
+
+(def desktop-office-settings
+  (set/union
+    desktop-base-settings
+    #{:install-libreoffice
+      :install-spellchecking-de
+      :install-diagram
+      :install-keymgm
+      :install-chromium
+      :install-inkscape
+      :install-telegram
+      :install-remina
+      :install-enigmail
+      :install-redshift
+      :install-pdf-chain}))
+
+(def desktop-ide-settings
+  (set/union
+    desktop-office-settings
+    #{:install-open-jdk-8}))
 
 
 (s/defn ^:always-validate infra-configuration :- InfraResult
@@ -122,39 +151,17 @@
           {:settings #{:install-gopass}})
         (cond
           (= usage-type :desktop-minimal)
-          {:settings
-            #{:install-os-analysis :install-bash-utils :remove-xubuntu-unused :remove-ubuntu-unused}}
+          {:settings desktop-minimal-settings}
           (= usage-type :desktop-base)
-          {:settings
-            #{:install-open-jdk-11 :install-os-analysis :install-bash-utils :install-git
-              :install-zip-utils :install-audio :install-timesync
-              :install-openvpn :install-openconnect :install-vpnc
-              :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning}}
+          {:settings desktop-base-settings}
           (= usage-type :desktop-ide)
-          {:settings
-           #{:install-libreoffice :install-spellchecking-de
-             :install-open-jdk-11 :install-open-jdk-8
-             :install-os-analysis :install-bash-utils
-             :install-git :install-diagram :install-zip-utils
-             :install-keymgm :install-timesync
-             :install-chromium :install-inkscape :install-telegram
-             :install-remina :install-enigmail
-             :install-openvpn :install-openconnect :install-vpnc
-             :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning
-             :install-redshift :install-pdf-chain}}
+          {:settings desktop-ide-settings}
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://bitbucket.org/fakturamadev/fakturama-2/downloads/Fakturama_linux_x64_2.0.3.deb"
                        :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}
-           :settings
-            #{:install-libreoffice :install-spellchecking-de
-              :install-open-jdk-11 :install-os-analysis :install-bash-utils
-              :install-git :install-diagram :install-zip-utils
-              :install-keymgm :install-audio :install-timesync
-              :install-chromium :install-inkscape :install-telegram
-              :install-remina :install-enigmail
-              :install-openvpn :install-openconnect :install-vpnc
-              :remove-xubuntu-unused :remove-ubuntu-unused :install-lightning
-              :install-redshift :install-pdf-chain}})
+           :settings (set/union
+                       desktop-office-settings
+                       #{:install-audio})})
         (cond
           (= target-type :virtualbox)
           {:settings
