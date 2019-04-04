@@ -148,7 +148,8 @@
         (when (contains? user :desktop-wiki)
           {:settings #{:install-desktop-wiki :install-diagram}})
         (when (contains? user :credential-store)
-          {:settings #{:install-gopass}})
+          {:credential-store (:credential-store user)
+           :settings #{:install-gopass}})
         (cond
           (= usage-type :desktop-minimal)
           {:settings desktop-minimal-settings}

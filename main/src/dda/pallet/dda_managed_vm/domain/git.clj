@@ -34,6 +34,17 @@
               (some true? github-ssh))
         :ssh :https)))
 
+(defn credential-store-setup
+  [credential-store
+   protocol-type]
+  (if (empty? credential-store)
+    [{:host "github.com"
+      :orga-path "DomainDrivenArchitecture"
+      :repo-name "password-store-for-teams"
+      :protocol protocol-type
+      :server-type :github}]
+    credential-store))
+
 (s/defn vm-git-config
  "Git repos for VM"
  [name :- s/Str
@@ -59,15 +70,7 @@
                 :server-type :github}]}}
       {:synced-repo
        (merge
-         {:credential-store
-          (into [] (concat
-                     [{:host "github.com"
-                       :orga-path "DomainDrivenArchitecture"
-                       :repo-name "password-store-for-teams"
-                       :protocol protocol-type
-                       :server-type :github}]
-                     (when (some? credential-store)
-                       credential-store)))}
+         {:credential-store (credential-store-setup credential-store protocol-type)}
          (when (some? desktop-wiki)
           {:desktop-wiki desktop-wiki}))}
       {})}))

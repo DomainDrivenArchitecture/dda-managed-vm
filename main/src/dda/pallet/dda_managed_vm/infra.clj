@@ -41,6 +41,7 @@
    (s/optional-key :tightvnc-server) tightvnc/Tightvnc
    (s/optional-key :bookmarks) browser/Bookmarks
    (s/optional-key :fakturama) office/FakturamaConfig
+   (s/optional-key :credential-store) s/Any
    (s/optional-key :settings)
    (hash-set (apply s/enum
                     (clojure.set/union
@@ -107,7 +108,7 @@
   "install the user space peaces in vm"
   [facility :- s/Keyword
    config :- DdaVmConfig]
-  (let [{:keys [vm-user settings bookmarks tightvnc-server]} config
+  (let [{:keys [vm-user settings bookmarks tightvnc-server credential-store]} config
         contains-bookmarks? (contains? config :bookmarks)
         contains-tightvnc? (contains? config :tightvnc-server)
         user-name (name vm-user)]
@@ -116,7 +117,7 @@
       :script-dir "/root/"
       :script-env {:HOME (str "/root")}}
      (basics/configure-user facility user-name settings)
-     (cm/configure-user facility user-name settings)
+     (cm/configure-user facility user-name credential-store settings)
      (office/configure-user facility user-name settings)
      (browser/configure-user facility user-name contains-bookmarks? bookmarks)
      (tightvnc/configure-user facility user-name contains-tightvnc? tightvnc-server))))
