@@ -8,9 +8,9 @@
                  [dda/dda-user-crate "1.0.6"]
                  [dda/dda-git-crate "2.2.0"]
                  [dda/dda-backup-crate "1.0.5"]]
-  :target-path "target/%s/"
   :source-paths ["main/src"]
   :resource-paths ["main/resources"]
+  :target-path "target/%s/"
   :repositories [["snapshots" :clojars]
                  ["releases" :clojars]]
   :deploy-repositories [["snapshots" :clojars]
