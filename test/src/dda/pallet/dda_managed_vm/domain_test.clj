@@ -63,11 +63,11 @@
                   :usage-type :desktop-ide
                   :user {:name  "test"
                          :password "pwd"
-                         :credential-store [{:host "github.com",
-                                             :orga-path "DomainDrivenArchitecture",
-                                             :repo-name "additional-password-store",
-                                             :protocol :https,
-                                             :server-type :github,}]
+                         :credential-store [{:host "github.com"
+                                             :orga-path "DomainDrivenArchitecture"
+                                             :repo-name "additional-password-store"
+                                             :protocol :https
+                                             :server-type :github}]
                          :desktop-wiki [{:host "github.com"
                                          :orga-path "mypath"
                                          :repo-name "mywiki"
@@ -84,14 +84,9 @@
                  :synced-repo  {:credential-store
                                 [{:host "github.com"
                                   :orga-path "DomainDrivenArchitecture"
-                                  :repo-name "password-store-for-teams"
+                                  :repo-name "additional-password-store"
                                   :protocol :https
-                                  :server-type :github}
-                                 {:host "github.com",
-                                  :orga-path "DomainDrivenArchitecture",
-                                  :repo-name "additional-password-store",
-                                  :protocol :https,
-                                  :server-type :github,}]
+                                  :server-type :github}]
                                 :desktop-wiki
                                 [{:host "github.com"
                                   :orga-path "mypath"
@@ -115,6 +110,11 @@
                               :install-lightning
                               :install-redshift
                               :install-pdf-chain}
+                            :credential-store [{:host "github.com"
+                                                :orga-path "DomainDrivenArchitecture"
+                                                :repo-name "additional-password-store"
+                                                :protocol :https
+                                                :server-type :github}]
                             :bookmarks
                             [{:name "Bookmarks Toolbar",
                               :links

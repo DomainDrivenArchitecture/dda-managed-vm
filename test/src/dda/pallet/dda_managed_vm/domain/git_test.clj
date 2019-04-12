@@ -104,16 +104,11 @@
         :server-type :github}]},
      :synced-repo
      {:credential-store
-      [{:host "github.com",
-        :orga-path "DomainDrivenArchitecture",
-        :repo-name "password-store-for-teams",
-        :protocol :ssh,
-        :server-type :github}
-       {:host "github.com",
-        :orga-path "DomainDrivenArchitecture",
-        :repo-name "additional-password-store",
-        :protocol :https,
-        :server-type :github,}]
+      [{:host "github.com"
+        :orga-path "DomainDrivenArchitecture"
+        :repo-name "additional-password-store"
+        :protocol :https
+        :server-type :github}]
       :desktop-wiki []}}}})
 
 (deftest test-github-ssh-config
