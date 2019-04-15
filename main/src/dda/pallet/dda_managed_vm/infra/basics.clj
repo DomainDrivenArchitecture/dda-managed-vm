@@ -39,7 +39,7 @@
   [facility]
   (actions/as-action
    (logging/info (str facility "-install system: virtualbox-guest")))
-  (actions/packages :aptitude ["virtualbox-guest-x11"]))
+  (actions/packages :aptitude ["virtualbox-guest-x11-hwe"]))
 
 (defn configure-virtualbox-guest-additions
   "configures virtual-box guest additions"
