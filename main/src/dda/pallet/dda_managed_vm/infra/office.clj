@@ -56,9 +56,11 @@
 (defn install-pdf-chain
   [facility]
   (actions/as-action
-   (logging/info (str facility "-install system: pdf-chain")))
+    (logging/info (str facility "-install system: pdf-chain")))
   ;(actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"])
-  (actions/exec-script ("snap" "install" "pdftk")))
+  ;(actions/exec-script ("snap" "install" "pdftk"))
+  (actions/packages :aptitude ["pdftk-java"])
+  )
 
 (defn install-audio
   [facility]
