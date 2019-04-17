@@ -53,10 +53,10 @@
   (actions/package "inkscape"))
 
 ; only gprename and a2ps are existant on ubuntu 18.04
-(defn install-pdf-chain
+(defn init-pdftk
   [facility]
   (actions/as-action
-    (logging/info (str facility "-install system: pdf-chain")))
+    (logging/info (str facility "-init system: pdf-chain")))
   ;(actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"])
   ;(actions/exec-script ("snap" "install" "pdftk"))
   (actions/package-source "pdftk-java"
@@ -64,9 +64,13 @@
                           {:url "http://ppa.launchpad.net/malteworld/ppa/ubuntu"
                            :scopes ["main"]
                            :release "bionic"
-                           :key-url "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x20D0BB61B700CE29"})
-  (actions/package "pdftk-java")
-  )
+                           :key-url "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x20D0BB61B700CE29"}))
+
+(defn install-pdftk
+  [facility]
+  (actions/as-action
+    (logging/info (str facility "-install system: pdf-chain")))
+  (actions/package "pdftk-java"))
 
 (defn install-audio
   [facility]
@@ -134,6 +138,14 @@
       :mode "644"
       :content (selmer/render-file "redshift.conf.templ" {}))))
 
+(s/defn init-system
+  "install common used packages for vm"
+  [facility config]
+  (let [{:keys [settings fakturama]} config]
+    (when (contains? settings :install-pdf-chain)
+      (init-pdftk facility))
+    ))
+
 (s/defn install-system
   "install common used packages for vm"
   [facility config]
@@ -145,7 +157,7 @@
     (when (contains? settings :install-inkscape)
       (install-inkscape facility))
     (when (contains? settings :install-pdf-chain)
-      (install-pdf-chain facility))
+      (install-pdftk facility))
     (when (contains? settings :install-audio)
       (install-audio facility))
     (when (contains? config :fakturama)

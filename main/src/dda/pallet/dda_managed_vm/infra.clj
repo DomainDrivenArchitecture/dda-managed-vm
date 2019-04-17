@@ -61,7 +61,8 @@
    config :- DdaVmConfig]
   (let [{:keys [settings]} config]
     (cm/init-system facility settings)
-    (wiki/init-system facility settings)))
+    (wiki/init-system facility settings)
+    (office/init-system facility settings)))
 
 (s/defn install-system
   "install common used packages for vm"
