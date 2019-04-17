@@ -59,6 +59,8 @@
   "init package management"
   [facility :- s/Keyword
    config :- DdaVmConfig]
+  (actions/as-action
+    (logging/info (str facility "-init phase")))
   (let [{:keys [settings]} config]
     (cm/init-system facility settings)
     (wiki/init-system facility settings)
