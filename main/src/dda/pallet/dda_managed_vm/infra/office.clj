@@ -59,7 +59,13 @@
     (logging/info (str facility "-install system: pdf-chain")))
   ;(actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"])
   ;(actions/exec-script ("snap" "install" "pdftk"))
-  (actions/packages :aptitude ["pdftk-java"])
+  (actions/package-source "pdftk-java"
+                          :aptitude
+                          {:url "http://ppa.launchpad.net/malteworld/ppa/ubuntu"
+                           :scopes ["main"]
+                           :release "bionic"
+                           :key-url "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x20D0BB61B700CE29"})
+  (actions/package "pdftk-java")
   )
 
 (defn install-audio
