@@ -140,13 +140,10 @@
 
 (s/defn init-system
   "install common used packages for vm"
-  [facility config]
-  (actions/as-action
-    (logging/info (str facility "-office: init system")))
-  (let [{:keys [settings fakturama]} config]
-    (when (contains? settings :install-pdf-chain)
-      (init-pdftk facility))
-    ))
+  [facility settings]
+  (when (contains? settings :install-pdf-chain)
+    (init-pdftk facility))
+    )
 
 (s/defn install-system
   "install common used packages for vm"
