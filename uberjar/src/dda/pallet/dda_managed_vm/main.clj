@@ -78,9 +78,11 @@
                                   :targets (:targets options)})
                                (success)
                                (error))
-      :default (if (core-app/existing-install
-                     app/crate-app
-                     {:domain (first arguments)
-                      :targets (:targets options)})
-                 (success)
-                 (error)))))
+      :default (let [session (core-app/existing-install
+                              app/crate-app
+                              {:domain (first arguments)
+                               :targets (:targets options)})]
+                 (spit "out.edn" session)
+                 (if session
+                   (success)
+                   (error))))))
