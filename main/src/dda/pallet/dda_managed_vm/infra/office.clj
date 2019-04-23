@@ -57,8 +57,6 @@
   [facility]
   (actions/as-action
     (logging/info (str facility "-init system: pdf-chain")))
-  ;(actions/packages :aptitude ["pdfchain" "pdftk" "gprename" "pyrenamer" "a2ps"])
-  ;(actions/exec-script ("snap" "install" "pdftk"))
   (actions/package-source "pdftk-java"
                           :aptitude
                           {:url "http://ppa.launchpad.net/malteworld/ppa/ubuntu"
@@ -69,7 +67,8 @@
 (defn install-pdftk
   [facility]
   (actions/as-action
-    (logging/info (str facility "-install system: pdf-chain")))
+   (logging/info (str facility "-install system: pdf-chain")))
+  (actions/package-manager :update)
   (actions/package "pdftk-java"))
 
 (defn install-audio

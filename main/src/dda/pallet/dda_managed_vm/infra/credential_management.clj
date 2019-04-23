@@ -73,6 +73,7 @@ done
   [facility :- s/Keyword]
   (actions/as-action
    (logging/info (str facility "-install system: init-gopass")))
+  (actions/package-manager :update)
   (install-gpg)
   (actions/packages :aptitude ["gopass"]))
   ;au BufNewFile,BufRead /dev/shm/gopass.* setlocal noswapfile nobackup noundofile
