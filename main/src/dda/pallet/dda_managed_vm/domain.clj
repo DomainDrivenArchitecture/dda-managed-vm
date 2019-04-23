@@ -160,9 +160,9 @@
           (= usage-type :desktop-office)
           {:fakturama {:app-download-url "https://bitbucket.org/fakturamadev/fakturama-2/downloads/Fakturama_linux_x64_2.0.3.deb"
                        :doc-download-url "https://files.fakturama.info/release/v2.0.3/Handbuch-Fakturama_2.0.3.pdf"}
-           :settings (set/union
-                       desktop-office-settings
-                       #{:install-audio})})
+           :settings ;(set/union
+                       desktop-office-settings})
+                       ;#{:install-audio})})
         (cond
           (= target-type :virtualbox)
           {:settings
