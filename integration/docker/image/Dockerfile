@@ -11,4 +11,4 @@ COPY integration/docker/image/vm.edn /app/vm.edn
 RUN java -jar /app/dda-managed-vm-standalone.jar --serverspec /app/vm.edn
 
 # provision
-#RUN java -jar /app/dda-managed-vm-standalone.jar /app/vm.edn
+RUN java -jar /app/dda-managed-vm-standalone.jar /app/vm.edn

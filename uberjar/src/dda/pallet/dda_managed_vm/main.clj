@@ -20,7 +20,7 @@
   (:require
     [clojure.string :as str]
     [clojure.tools.cli :as cli]
-    [dda.config.commons.styled-output :as styled]
+    [dda.pallet.core.main-helper :as mh]
     [dda.pallet.core.app :as core-app]
     [dda.pallet.dda-managed-vm.app :as app]))
 
@@ -46,43 +46,28 @@
     "  - has to be a valid DdaVmDomainConfig (see: https://github.com/DomainDrivenArchitecture/dda-managed-vm)"
     ""]))
 
-(defn error-msg [errors]
-  (str "The following errors occurred while parsing your command:\n\n"
-       (str/join \newline errors)))
-
-(defn exit [status msg]
-  (println msg)
-  (System/exit status))
-
-(defn success []
-  (exit 0 "Successfull executed"))
-
-(defn error []
-  (exit 2 "ERROR"))
-
 (defn -main [& args]
   (let [{:keys [options arguments errors summary help]} (cli/parse-opts args cli-options)]
     (cond
-      help (exit 0 (usage summary))
-      errors (exit 1 (error-msg errors))
-      (not= (count arguments) 1) (exit 1 (usage summary))
+      help (mh/exit 0 (usage summary))
+      errors (mh/exit 1 (mh/error-msg errors))
+      (not= (count arguments) 1) (mh/exit 1 (usage summary))
       (:serverspec options) (if (core-app/existing-serverspec
                                   app/crate-app
                                   {:domain (first arguments)
                                    :targets (:targets options)})
-                              (exit 0 (styled/styled "ALL TESTS PASSED" :green))
-                              (exit 2 (styled/styled "SOME TESTS FAILED" :red)))
+                              (mh/exit-test-passed)
+                              (mh/exit-test-failed))
       (:configure options) (if (core-app/existing-configure
                                  app/crate-app
                                  {:domain (first arguments)
                                   :targets (:targets options)})
-                               (success)
-                               (error))
-      :default (let [session (core-app/existing-install
+                               (mh/exit-default-success)
+                               (mh/exit-default-error))
+      :default (let [result (core-app/existing-install
                               app/crate-app
                               {:domain (first arguments)
                                :targets (:targets options)})]
-                 (spit "out.edn" session)
-                 (if session
-                   (success)
-                   (error))))))
+                 (if result
+                   (mh/exit-default-success)
+                   (mh/exit-default-error))))))
