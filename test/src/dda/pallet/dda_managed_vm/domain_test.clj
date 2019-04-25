@@ -238,7 +238,7 @@
                       :install-zip-utils :install-git :remove-ubuntu-unused :install-bash-utils
                       :install-diagram :install-openconnect :install-open-jdk-11 :install-spellchecking-de
                       :remove-xubuntu-unused :install-vpnc :install-telegram :install-lightning
-                      :configure-no-swappiness :install-inkscape :install-remina :install-audio
+                      :configure-no-swappiness :install-inkscape :install-remina
                       :install-libreoffice :install-openvpn :remove-power-management :install-redshift
                       :install-virtualbox-guest :install-timesync :install-pdf-chain}
                     :fakturama {:app-download-url "https://bitbucket.org/fakturamadev/fakturama-2/downloads/Fakturama_linux_x64_2.0.3.deb",
