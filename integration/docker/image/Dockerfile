@@ -1,8 +1,8 @@
 FROM ubuntu
 
-RUN apt update -y > /dev/null
-RUN apt upgrade -y  > /dev/null
-RUN apt install curl gnupg2 apt-utils sudo openjdk-11-jdk -y  > /dev/null
+RUN apt-get -qqy update > /dev/null
+RUN apt-get -qqy upgrade > /dev/null
+RUN apt-get -qqy install curl gnupg2 apt-utils sudo openjdk-11-jdk > /dev/null
 
 COPY target/uberjar/dda-managed-vm-standalone.jar /app/dda-managed-vm-standalone.jar
 COPY integration/docker/image/vm.edn /app/vm.edn
