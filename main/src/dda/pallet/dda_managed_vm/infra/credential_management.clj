@@ -130,6 +130,18 @@ done
      :owner user-name
      :group user-name)))
 
+(defn create-gopass-autocompletion-file
+  [user-name
+   user-home]
+  (actions/remote-file
+    (str user-home "/.bashrc.d/gopass.sh")
+    :literal true
+    :content (selmer/render-file "gopass.sh.templ" {})
+    :mode "644"
+    :owner user-name
+    :group user-name))
+
+
 (s/defn configure-gopass
   [facility :- s/Keyword
    user-name
@@ -139,6 +151,7 @@ done
     (actions/as-action
      (logging/info (str facility "-configure user: configure-gopass")))
     (actions/exec-script script)
+    (create-gopass-autocompletion-file user-name user-home)
     (if (empty? credential-store)
       (demo-gopass-setup user-name user-home)
       (if (= (count credential-store) 1)
