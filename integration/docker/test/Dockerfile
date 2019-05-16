@@ -6,4 +6,4 @@ RUN curl -L -o /app/serverspec.jar https://github.com/DomainDrivenArchitecture/d
 
 COPY integration/docker/test/serverspec.edn /app/serverspec.edn
 
-RUN java -jar /app/serverspec.jar /app/serverspec.edn -vm
+RUN java -jar /app/serverspec.jar /app/serverspec.edn
