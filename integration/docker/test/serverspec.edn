@@ -1,2 +1,1 @@
-{:file [{:path "/home/test-user"}
-        {:path "/home/test-user/.bashrc.d/gopass.sh"} ]}
+{:file [{:path "/home/test-user"}]}
