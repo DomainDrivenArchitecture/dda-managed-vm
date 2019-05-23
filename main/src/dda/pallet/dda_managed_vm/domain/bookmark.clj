@@ -13,9 +13,7 @@
 ; WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 ; See the License for the specific language governing permissions and
 ; limitations under the License.
-(ns dda.pallet.dda-managed-vm.domain.bookmark
-  (:require
-    [schema.core :as s]))
+(ns dda.pallet.dda-managed-vm.domain.bookmark)
 
 (def default-bookmarks
   [{:name "Bookmarks Toolbar"
