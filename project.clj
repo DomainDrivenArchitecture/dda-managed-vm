@@ -5,7 +5,7 @@
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[dda/dda-pallet "3.0.0"]
                  [dda/dda-serverspec-crate "1.3.4"]
-                 [dda/dda-user-crate "2.0.3"]
+                 [dda/dda-user-crate "2.0.4"]
                  [dda/dda-git-crate "2.2.1"]
                  [dda/dda-backup-crate "1.0.7"]]
   :source-paths ["main/src"]
