@@ -39,6 +39,13 @@
   [facility]
   (actions/as-action
    (logging/info (str facility "-install system: virtualbox-guest")))
+  (actions/packages :aptitude ["virtualbox-guest-x11"]))
+
+(defn install-virtualbox-guest-additions-hwe
+  "make virtual machine run properly sized on virtualbox"
+  [facility]
+  (actions/as-action
+   (logging/info (str facility "-install system: virtualbox-guest")))
   (actions/packages :aptitude ["virtualbox-guest-x11-hwe"]))
 
 (defn configure-virtualbox-guest-additions
