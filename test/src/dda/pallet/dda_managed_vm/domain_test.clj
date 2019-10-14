@@ -17,9 +17,10 @@
 
 (ns dda.pallet.dda-managed-vm.domain-test
   (:require
-    [clojure.test :refer :all]
-    [schema.core :as s]
-    [dda.pallet.dda-managed-vm.domain :as sut]))
+   [clojure.test :refer :all] 
+   [data-test :refer :all]  
+   [schema.core :as s]
+   [dda.pallet.dda-managed-vm.domain :as sut]))
 
 (def config-aws-base
   {:target-type :remote-aws
@@ -44,30 +45,12 @@
    :user {:name  "test"
           :password "pwd"}})
 
-(def config-4
-  {:target-type :virtualbox
-   :usage-type :desktop-office
-   :user {:name  "test"
-          :password "pwd"
-          :git-credentials [{:host "github.com"
-                             :protocol :ssh
-                             :user-name "test"}]
-          :desktop-wiki [{:host "github.com"
-                          :orga-path "mypath"
-                          :repo-name "mywiki"
-                          :protocol :ssh
-                          :server-type :github}]}})
-
 (def config-set-ide
   {:domain-input {:target-type :virtualbox
                   :usage-type :desktop-ide
                   :user {:name  "test"
                          :password "pwd"
-                         :credential-store [{:host "github.com"
-                                             :orga-path "DomainDrivenArchitecture"
-                                             :repo-name "additional-password-store"
-                                             :protocol :https
-                                             :server-type :github}]
+                         :credential-store []
                          :desktop-wiki [{:host "github.com"
                                          :orga-path "mypath"
                                          :repo-name "mywiki"
@@ -110,11 +93,7 @@
                               :install-lightning
                               :install-redshift
                               :install-pdf-chain}
-                            :credential-store [{:host "github.com"
-                                                :orga-path "DomainDrivenArchitecture"
-                                                :repo-name "additional-password-store"
-                                                :protocol :https
-                                                :server-type :github}]
+                            :credential-store []
                             :bookmarks
                             [{:name "Bookmarks Toolbar",
                               :links
@@ -131,80 +110,17 @@
 
 (deftest test-backup-config
   (testing
-    "test the git config creation"
+   "test the git config creation"
     (is (thrown? Exception (sut/vm-backup-config {})))
     (is (sut/vm-backup-config config-aws-base))
-    (is (sut/vm-backup-config config-2))))
+    (is (sut/vm-backup-config config-2))
+    ))
 
-(def gitconfig-result1
-  {:test
-     {:user-email "test@mydomain"
-      :repo {:books
-             [{:host "github.com"
-               :orga-path "DomainDrivenArchitecture"
-               :repo-name "ddaArchitecture"
-               :protocol :https
-               :server-type :github}]}
-      :synced-repo  {:credential-store
-                     [{:host "github.com"
-                       :orga-path "DomainDrivenArchitecture"
-                       :repo-name "password-store-for-teams"
-                       :protocol :https
-                       :server-type :github}]}}})
+(deftest should-throw-exception-for-empty-input
+  (is (thrown? Exception (sut/vm-git-config {}))))
 
-(def gitconfig-result2
-  {:test
-    {:user-email "test@mydomain"
-     :credential [{:host "github.com"
-                   :protocol :ssh
-                   :user-name "test"}]
-     :repo {:books
-            [{:host "github.com"
-              :orga-path "DomainDrivenArchitecture"
-              :repo-name "ddaArchitecture"
-              :protocol :ssh
-              :server-type :github}]}
-     :synced-repo  {:credential-store
-                    [{:host "github.com"
-                      :orga-path "DomainDrivenArchitecture"
-                      :repo-name "password-store-for-teams"
-                      :protocol :ssh
-                      :server-type :github}]}}})
-
-(def gitconfig-result4
-  {:test
-    {:user-email "test@mydomain"
-     :credential [{:host "github.com"
-                   :protocol :ssh
-                   :user-name "test"}]
-     :repo {:books
-            [{:host "github.com"
-              :orga-path "DomainDrivenArchitecture"
-              :repo-name "ddaArchitecture"
-              :protocol :ssh
-              :server-type :github}]}
-     :synced-repo {:credential-store
-                    [{:host "github.com"
-                      :orga-path "DomainDrivenArchitecture"
-                      :repo-name "password-store-for-teams"
-                      :protocol :ssh
-                      :server-type :github}]
-                    :desktop-wiki
-                    [{:host "github.com"
-                      :orga-path "mypath"
-                      :repo-name "mywiki"
-                      :protocol :ssh
-                      :server-type :github}]}}})
-
-(deftest test-git-config
-  (testing
-    "test the git config creation"
-    (is (thrown? Exception (sut/vm-git-config {})))
-    (is (= gitconfig-result1 (sut/vm-git-config config-aws-base)))
-    (is (= gitconfig-result2 (sut/vm-git-config config-2)))
-    (is (= gitconfig-result4 (sut/vm-git-config config-4)))
-    (is (= (:git-domain config-set-ide)
-           (sut/vm-git-config (:domain-input config-set-ide))))))
+(defdatatest should-create-git-infra [input expected]
+  (is (= expected (sut/vm-git-config input))))
 
 (deftest test-serverspec-config
   (testing

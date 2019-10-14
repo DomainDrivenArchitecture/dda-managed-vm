@@ -23,6 +23,7 @@
                    :dependencies
                    [[org.clojure/test.check "0.10.0"]
                     [dda/pallet "0.9.1" :classifier "tests"]
+                    [dda/data-test "0.1.1"]
                     [dda/dda-pallet-commons "1.5.0" :classifier "tests"]
                     [ch.qos.logback/logback-classic "1.3.0-alpha4"]
                     [org.slf4j/jcl-over-slf4j "2.0.0-alpha1"]]

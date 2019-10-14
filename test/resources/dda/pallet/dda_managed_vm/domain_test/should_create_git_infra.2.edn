@@ -1,0 +1,19 @@
+{:input {:target-type :virtualbox
+         :usage-type :desktop-office
+         :user {:name  "test"
+                :password "pwd"
+                :git-credentials [{:host "github.com"
+                                   :protocol :ssh
+                                   :user-name "test"}]}}
+ :expected {:test
+            {:user-email "test@mydomain"
+             :credential [{:host "github.com"
+                           :protocol :ssh
+                           :user-name "test"}]
+             :repo {:books
+                    [{:host "github.com"
+                      :orga-path "DomainDrivenArchitecture"
+                      :repo-name "ddaArchitecture"
+                      :protocol :ssh
+                      :server-type :github}]}
+             :synced-repo  {:credential-store []}}}}

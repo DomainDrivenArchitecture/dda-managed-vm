@@ -1,0 +1,13 @@
+{:input {:target-type :remote-aws
+         :usage-type :desktop-base
+         :user {:name  "test"
+                :password "pwd"}}
+ :expected {:test
+            {:user-email "test@mydomain"
+             :repo {:books
+                    [{:host "github.com"
+                      :orga-path "DomainDrivenArchitecture"
+                      :repo-name "ddaArchitecture"
+                      :protocol :https
+                      :server-type :github}]}
+             :synced-repo  {:credential-store []}}}}

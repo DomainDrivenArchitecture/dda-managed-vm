@@ -1,0 +1,7 @@
+{:input [{:user-name "git-test-user"
+          :host "an.gitlab.instance"
+          :protocol :https}
+         {:user-name "git-test-user"
+          :host "github.com"
+          :protocol :ssh}]
+ :expected :ssh}

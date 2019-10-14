@@ -1,0 +1,12 @@
+{:input nil
+ :expected {:test-user
+            {:user-email "test-user@mydomain"
+             :repo
+             {:books
+              [{:host "github.com"
+                :orga-path "DomainDrivenArchitecture"
+                :repo-name "ddaArchitecture"
+                :protocol :https
+                :server-type :github}]}
+             :synced-repo
+             {:credential-store []}}}}

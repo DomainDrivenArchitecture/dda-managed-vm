@@ -1,0 +1,18 @@
+{:input [{:user-name "git-test-user"
+         :host "github.com"
+         :protocol :ssh}]
+ :expected {:test-user
+            {:user-email "test-user@mydomain"
+             :credential
+             [{:user-name "git-test-user"
+              :host "github.com"
+              :protocol :ssh}]
+             :repo
+             {:books
+              [{:host "github.com"
+                :orga-path "DomainDrivenArchitecture"
+                :repo-name "ddaArchitecture"
+                :protocol :ssh
+                :server-type :github}]}
+             :synced-repo
+             {:credential-store []}}}}

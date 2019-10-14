@@ -1,0 +1,29 @@
+{:input {:target-type :virtualbox
+         :usage-type :desktop-ide
+         :user {:name  "test"
+                :password "pwd"
+                :credential-store [{:host "github.com"
+                                    :orga-path "DomainDrivenArchitecture"
+                                    :repo-name "additional-password-store"
+                                    :protocol :https
+                                    :server-type :github}]
+                :desktop-wiki [{:host "github.com"
+                                :orga-path "mypath"
+                                :repo-name "mywiki"
+                                :protocol :ssh
+                                :server-type :github}]}}
+ :expected {:test
+            {:user-email "test@mydomain"
+             :repo {:books
+                    [{:host "github.com"
+                      :orga-path "DomainDrivenArchitecture"
+                      :repo-name "ddaArchitecture"
+                      :protocol :https
+                      :server-type :github}]}
+             :synced-repo  {:credential-store []
+                            :desktop-wiki
+                            [{:host "github.com"
+                              :orga-path "mypath"
+                              :repo-name "mywiki"
+                              :protocol :ssh
+                              :server-type :github}]}}}}

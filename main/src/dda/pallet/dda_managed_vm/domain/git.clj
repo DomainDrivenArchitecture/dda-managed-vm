@@ -16,8 +16,6 @@
 (ns dda.pallet.dda-managed-vm.domain.git
   (:require
     [schema.core :as s]
-    [dda.config.commons.map-utils :as mu]
-    [dda.pallet.commons.secret :as secret]
     [dda.pallet.dda-git-crate.domain :as git-domain]))
 
 (def ServerIdentity git-domain/ServerIdentity)
@@ -27,23 +25,13 @@
 (def GitCredentials git-domain/GitCredentials)
 (def GitCredentialsResolved git-domain/GitCredentialsResolved)
 
-(s/defn github-protocol-type
-  [git-credentials :- GitCredentials]
-  (let [github-ssh (for [x git-credentials] (and (= (:host x) "github.com") (= (:protocol x) :ssh)))]
+(s/defn protocol-type
+  [git-credentials :- GitCredentials
+   host :- s/Str]
+  (let [github-ssh (for [x git-credentials] (and (= (:host x) host) (= (:protocol x) :ssh)))]
      (if (and (not (nil? git-credentials))
               (some true? github-ssh))
         :ssh :https)))
-
-(defn credential-store-setup
-  [credential-store
-   protocol-type]
-  (if (empty? credential-store)
-    [{:host "github.com"
-      :orga-path "DomainDrivenArchitecture"
-      :repo-name "password-store-for-teams"
-      :protocol protocol-type
-      :server-type :github}]
-    credential-store))
 
 (s/defn vm-git-config
  "Git repos for VM"
@@ -53,8 +41,7 @@
   git-signing-key :- s/Str
   desktop-wiki :- Repositories
   credential-store :- Repositories]
- (let [email (if (some? email) email (str name "@mydomain"))
-       protocol-type (github-protocol-type git-credentials)]
+ (let [email (if (some? email) email (str name "@mydomain"))]
    {(keyword name)
     (merge
       {:user-email email}
@@ -66,11 +53,11 @@
               [{:host "github.com"
                 :orga-path "DomainDrivenArchitecture"
                 :repo-name "ddaArchitecture"
-                :protocol protocol-type
+                :protocol (protocol-type git-credentials, "github.com")
                 :server-type :github}]}}
       {:synced-repo
        (merge
-         {:credential-store (credential-store-setup credential-store protocol-type)}
+         {:credential-store []}
          (when (some? desktop-wiki)
           {:desktop-wiki desktop-wiki}))}
       {})}))
