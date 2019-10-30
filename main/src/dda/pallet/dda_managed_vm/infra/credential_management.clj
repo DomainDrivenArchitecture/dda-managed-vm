@@ -79,22 +79,6 @@ done
   ;au BufNewFile,BufRead /dev/shm/gopass.* setlocal noswapfile nobackup noundofile
   ;ln -s $GOPATH/bin/gopass $HOME/bin/pass
 
-(defn demo-gopass-setup
-  [user-name
-   user-home]
-  (actions/remote-file
-   (str user-home "/.password-store")
-   :owner user-name
-   :group user-name
-   :link (str user-home "/repo/credential-store/password-store-for-teams"))
-  (actions/remote-file
-   (str user-home "/.config/gopass/config.yml")
-   :literal true
-   :content (selmer/render-file "gopass.yml.templ" {:user-name user-name})
-   :mode "644"
-   :owner user-name
-   :group user-name))
-
 (defn single-gopass-setup
   [user-name
    user-home
@@ -119,16 +103,22 @@ done
    (let [std-passwordstore (selmer/render-file "gopass.yml.templ" {:user-name user-name})
          passwordstorestomount (apply str (for [repo credential-store] (selmer/render-file "gopass_mount.yml.templ" {:repo-name (:repo-name repo)
                                                                                                                      :user-name user-name})))]
-    (actions/directory (str user-home "/.password-store")
+     (actions/directory 
+      (str user-home "/.password-store")
       :owner user-name
       :group user-name)
-    (actions/remote-file
-     (str user-home "/.config/gopass/config.yml")
-     :literal true
-     :content (str std-passwordstore passwordstorestomount)
-     :mode "644"
-     :owner user-name
-     :group user-name)))
+      (actions/remote-file 
+       (str user-home "/.password-store/.gpg-id")
+       :action :touch
+       :owner user-name
+       :group user-name)
+     (actions/remote-file
+      (str user-home "/.config/gopass/config.yml")
+      :literal true
+      :content (str std-passwordstore passwordstorestomount)
+      :mode "644"
+      :owner user-name
+      :group user-name)))
 
 (defn create-gopass-autocompletion-file
   [user-name
@@ -152,8 +142,7 @@ done
      (logging/info (str facility "-configure user: configure-gopass")))
     (actions/exec-script script)
     (create-gopass-autocompletion-file user-name user-home)
-    (if (empty? credential-store)
-      (demo-gopass-setup user-name user-home)
+    (when (some? credential-store)
       (if (= (count credential-store) 1)
         (single-gopass-setup user-name user-home (:repo-name (first credential-store)))
         (multi-gopass-setup user-name user-home credential-store)))))
