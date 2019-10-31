@@ -5,7 +5,7 @@
             :url "https://www.apache.org/licenses/LICENSE-2.0.html"}
   :dependencies [[dda/dda-pallet "3.0.0"]
                  [dda/dda-serverspec-crate "1.3.4"]
-                 [dda/dda-user-crate "2.0.4"]
+                 [dda/dda-user-crate "2.0.5"]
                  [dda/dda-git-crate "2.2.2"]
                  [dda/dda-backup-crate "1.0.7"]]
   :source-paths ["main/src"]
@@ -25,7 +25,7 @@
                     [dda/pallet "0.9.1" :classifier "tests"]
                     [dda/data-test "0.1.1"]
                     [dda/dda-pallet-commons "1.5.0" :classifier "tests"]
-                    [ch.qos.logback/logback-classic "1.3.0-alpha4"]
+                    [ch.qos.logback/logback-classic "1.3.0-alpha5"]
                     [org.slf4j/jcl-over-slf4j "2.0.0-alpha1"]]
                    :plugins
                    [[lein-sub "0.3.0"]]
@@ -42,7 +42,7 @@
                        :main dda.pallet.dda-managed-vm.main
                        :uberjar-name "dda-managed-vm-standalone.jar"
                        :dependencies [[org.clojure/tools.cli "0.4.2"]
-                                      [ch.qos.logback/logback-classic "1.3.0-alpha4"
+                                      [ch.qos.logback/logback-classic "1.3.0-alpha5"
                                        :exclusions [com.sun.mail/javax.mail]]
                                       [org.slf4j/jcl-over-slf4j "2.0.0-alpha1"]]}}
   :release-tasks [["vcs" "assert-committed"]
