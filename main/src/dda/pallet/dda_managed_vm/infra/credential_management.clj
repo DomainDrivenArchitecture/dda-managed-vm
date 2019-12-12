@@ -107,11 +107,6 @@ done
       (str user-home "/.password-store")
       :owner user-name
       :group user-name)
-      (actions/remote-file 
-       (str user-home "/.password-store/.gpg-id")
-       :action :touch
-       :owner user-name
-       :group user-name)
      (actions/remote-file
       (str user-home "/.config/gopass/config.yml")
       :literal true
