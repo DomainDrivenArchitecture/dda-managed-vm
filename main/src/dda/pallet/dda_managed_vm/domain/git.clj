@@ -57,7 +57,7 @@
                 :server-type :github}]}}
       {:synced-repo
        (merge
-         {:credential-store []}
+         {:credential-store credential-store}
          (when (some? desktop-wiki)
           {:desktop-wiki desktop-wiki}))}
       {})}))

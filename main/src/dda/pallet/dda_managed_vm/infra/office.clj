@@ -30,7 +30,7 @@
   (hash-set :install-libreoffice
             :install-spellchecking-de
             :install-inkscape
-            :install-pdf-chain
+            ;:install-pdf-chain
             :install-audio
             :install-redshift))
 
