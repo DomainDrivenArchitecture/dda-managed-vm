@@ -100,7 +100,7 @@ done
                                                                    :path-to-repo "/.password-store"})
          passwordstorestomount (apply str (for [repo credential-store] (selmer/render-file "gopass_mount.yml.templ" {:repo-name (:repo-name repo)
                                                                                                                      :user-name user-name})))]
-     (actions/directory 
+     (actions/directory
       (str user-home "/.password-store")
       :owner user-name
       :group user-name)
@@ -134,7 +134,7 @@ done
      (logging/info (str facility "-configure user: configure-gopass")))
     (actions/exec-script script)
     (create-gopass-autocompletion-file user-name user-home)
-    (when (some? credential-store)
+    (if (not (empty? credential-store))
       (if (= (count credential-store) 1)
         (single-gopass-setup user-name user-home (:repo-name (first credential-store)))
         (multi-gopass-setup user-name user-home credential-store)))))
