@@ -9,7 +9,7 @@
 This crate works with:
  * pallet 0.9
  * clojure 1.9
- * xubuntu 18.04 or ubuntu18 DockerImage with curl gnupg2 apt-utils sudo installed.
+ * xubuntu 18.04.3 or ubuntu18 DockerImage with curl gnupg2 apt-utils sudo installed.
 
 ## Features
 
