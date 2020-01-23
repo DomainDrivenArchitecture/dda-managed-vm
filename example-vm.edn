@@ -62,11 +62,7 @@
       -----END PGP PRIVATE KEY BLOCK-----
       "}
                     :gpg-passphrase {:plain "passphrase"}}
-        :credential-store [{:host "github.com"
-                            :orga-path "DomainDrivenArchitecture"
-                            :repo-name "password-store-for-teams"
-                            :protocol :ssh
-                            :server-type :github}]
+        :credential-store []
         :git-credentials [{:host "mygitrepo.de"
                            :port 29418
                            :protocol :ssh

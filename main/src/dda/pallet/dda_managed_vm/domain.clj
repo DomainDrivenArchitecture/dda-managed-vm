@@ -128,7 +128,8 @@
       :install-remina
       :install-enigmail
       :install-redshift
-      :install-pdf-chain}))
+      ;:install-pdf-chain
+      }))
 
 (def desktop-ide-settings
   (set/union

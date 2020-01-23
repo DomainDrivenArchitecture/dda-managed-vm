@@ -20,7 +20,11 @@
                       :repo-name "ddaArchitecture"
                       :protocol :https
                       :server-type :github}]}
-             :synced-repo  {:credential-store []
+             :synced-repo  {:credential-store [{:host "github.com"
+                                                :orga-path "DomainDrivenArchitecture"
+                                                :repo-name "additional-password-store"
+                                                :protocol :https
+                                                :server-type :github}]
                             :desktop-wiki
                             [{:host "github.com"
                               :orga-path "mypath"

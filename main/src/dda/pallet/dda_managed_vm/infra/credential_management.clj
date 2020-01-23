@@ -84,14 +84,10 @@ done
    user-home
    repo-name]
   (actions/remote-file
-   (str user-home "/.password-store")
-   :owner user-name
-   :group user-name
-   :link (str user-home "/repo/credential-store/" repo-name))
-  (actions/remote-file
    (str user-home "/.config/gopass/config.yml")
    :literal true
-   :content (selmer/render-file "gopass.yml.templ" {:user-name user-name})
+   :content (selmer/render-file "gopass.yml.templ" {:user-name user-name
+                                                    :path-to-repo (str user-home "/repo/credential-store/" repo-name)})
    :mode "644"
    :owner user-name
    :group user-name))
@@ -100,18 +96,14 @@ done
   [user-name
    user-home
    credential-store]
-   (let [std-passwordstore (selmer/render-file "gopass.yml.templ" {:user-name user-name})
+   (let [std-passwordstore (selmer/render-file "gopass.yml.templ" {:user-name user-name
+                                                                   :path-to-repo "/.password-store"})
          passwordstorestomount (apply str (for [repo credential-store] (selmer/render-file "gopass_mount.yml.templ" {:repo-name (:repo-name repo)
                                                                                                                      :user-name user-name})))]
-     (actions/directory 
+     (actions/directory
       (str user-home "/.password-store")
       :owner user-name
       :group user-name)
-      (actions/remote-file 
-       (str user-home "/.password-store/.gpg-id")
-       :action :touch
-       :owner user-name
-       :group user-name)
      (actions/remote-file
       (str user-home "/.config/gopass/config.yml")
       :literal true
@@ -142,7 +134,7 @@ done
      (logging/info (str facility "-configure user: configure-gopass")))
     (actions/exec-script script)
     (create-gopass-autocompletion-file user-name user-home)
-    (when (some? credential-store)
+    (if (not (empty? credential-store))
       (if (= (count credential-store) 1)
         (single-gopass-setup user-name user-home (:repo-name (first credential-store)))
         (multi-gopass-setup user-name user-home credential-store)))))
