@@ -41,7 +41,7 @@
    (s/optional-key :tightvnc-server) tightvnc/Tightvnc
    (s/optional-key :bookmarks) browser/Bookmarks
    (s/optional-key :fakturama) office/FakturamaConfig
-   (s/optional-key :credential-store) cm/CredentialStore
+   (s/optional-key :credential-store) s/Any ; cm/CredentialStores
    (s/optional-key :settings)
    (hash-set (apply s/enum
                     (clojure.set/union

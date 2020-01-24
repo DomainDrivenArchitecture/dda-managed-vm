@@ -24,7 +24,10 @@
 (def Settings
   (hash-set :install-password-store :install-gopass))
 
-(def CredentialStore s/Any)
+(def UserHome s/Str)
+(def RepoPath s/Str)
+(def CredentialStore {:repo-path RepoPath})
+(def CredentialStores [CredentialStore])
 
 (defn install-gpg
   []
@@ -59,32 +62,18 @@
    "link gopass -> pass"
    ("ln" "-s" "/usr/local/bin/gopass" "/usr/local/bin/pass")))
 
-(defn single-gopass-setup
-  [user-name
-   user-home
-   repo-name]
-  (actions/remote-file
-   (str user-home "/.config/gopass/config.yml")
-   :literal true
-   :content (selmer/render-file 
-             "gopass.yml.templ" 
-             {:user-name user-name
-              :path-to-repo (str user-home "/repo/credential-store/" repo-name)})
-   :mode "644"
-   :owner user-name
-   :group user-name))
-
-(defn multi-gopass-setup
-  [user-name
-   user-home
-   credential-store]
-   (let [std-passwordstore (selmer/render-file "gopass.yml.templ" {:user-home user-home
-                                                                   :path-to-repo "/.password-store"})
-         passwordstorestomount (apply str (for [repo credential-store] 
+(s/defn configure-user-gopass-config
+  [user-name :- s/Str
+   user-home :- s/Str
+   credential-stores :- CredentialStores]
+   (let [std-passwordstore (selmer/render-file 
+                            "gopass.yml.templ" (merge {:user-home user-home}
+                                                      (first credential-stores)))
+         passwordstorestomount (apply str (for [repo (rest credential-stores)] 
                                             (selmer/render-file
                                              "gopass_mount.yml.templ"
-                                             {:repo-name (:repo-name repo)
-                                              :user-home user-home})))]
+                                             (merge {:user-home user-home}
+                                                    repo))))]
      (actions/directory
       (str user-home "/.password-store")
       :owner user-name
@@ -103,7 +92,7 @@
 (s/defn configure-user-gopass
   [facility :- s/Keyword
    user-name
-   credential-store]
+   credential-stores]
   (let [user-home (user-env/user-home-dir user-name)]
     (actions/as-action
      (logging/info (str facility "-configure user: configure-gopass")))
@@ -118,10 +107,13 @@
      :mode "644"
      :owner user-name
      :group user-name)
-    (if (not (empty? credential-store))
-      (if (= (count credential-store) 1)
-        (single-gopass-setup user-name user-home (:repo-name (first credential-store)))
-        (multi-gopass-setup user-name user-home credential-store)))))
+    (if (empty? credential-stores)
+      (configure-user-gopass-config 
+       user-name user-home [{:repo-path ".password-store"}])
+      (configure-user-gopass-config 
+       user-name user-home
+       (map (fn [e] {:repo-path (str "repo/credential-store/" (:repo-name e))})
+            credential-stores)))))
 
 (s/defn init-system
   [facility :- s/Keyword
@@ -140,7 +132,7 @@
 (s/defn configure-user
   [facility :- s/Keyword
    user-name :- s/Str
-   credential-store :- CredentialStore
+   credential-stores
    settings]
   (when (contains? settings :install-gopass)
-    (configure-user-gopass facility user-name credential-store)))
+    (configure-user-gopass facility user-name credential-stores)))
