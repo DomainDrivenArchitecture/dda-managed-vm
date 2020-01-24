@@ -24,6 +24,8 @@
 (def Settings
   (hash-set :install-password-store :install-gopass))
 
+(def CredentialStore s/Any)
+
 (defn install-gpg
   []
   (actions/packages :aptitude ["rng-tools" "gnupg2"]))
@@ -34,29 +36,6 @@
    (logging/info (str facility "-install system: password-store")))
   (install-gpg)
   (actions/packages :aptitude ["pass"]))
-
-(s/defn configure-password-store
-  [facility :- s/Keyword
-   user-name]
-  (let [user-home (user-env/user-home-dir user-name)]
-    (actions/as-action
-     (logging/info (str facility "-configure user: configure-password-store")))
-    (actions/remote-file
-     (str user-home "/.demo-pass")
-     :owner user-name
-     :group user-name
-     :link (str user-home "/repo/credential-store/password-store-for-teams"))
-    (actions/remote-file
-     (str user-home "/.bashrc.d/team-pass.sh")
-     :literal true
-     :content "# Load the custom .*-pass I have
-for i in ~/.*-pass; do
-  [ -e $i/.load.bash ] && . $i/.load.bash
-done
-"
-     :mode "644"
-     :owner user-name
-     :group user-name)))
 
 (s/defn init-gopass
   [facility :- s/Keyword]
@@ -75,9 +54,10 @@ done
    (logging/info (str facility "-install system: init-gopass")))
   (actions/package-manager :update)
   (install-gpg)
-  (actions/packages :aptitude ["gopass"]))
-  ;au BufNewFile,BufRead /dev/shm/gopass.* setlocal noswapfile nobackup noundofile
-  ;ln -s $GOPATH/bin/gopass $HOME/bin/pass
+  (actions/packages :aptitude ["gopass"])
+  (actions/exec-checked-script
+   "link gopass -> pass"
+   ("ln" "-s" "/usr/local/bin/gopass" "/usr/local/bin/pass")))
 
 (defn single-gopass-setup
   [user-name
@@ -86,8 +66,10 @@ done
   (actions/remote-file
    (str user-home "/.config/gopass/config.yml")
    :literal true
-   :content (selmer/render-file "gopass.yml.templ" {:user-name user-name
-                                                    :path-to-repo (str user-home "/repo/credential-store/" repo-name)})
+   :content (selmer/render-file 
+             "gopass.yml.templ" 
+             {:user-name user-name
+              :path-to-repo (str user-home "/repo/credential-store/" repo-name)})
    :mode "644"
    :owner user-name
    :group user-name))
@@ -96,14 +78,20 @@ done
   [user-name
    user-home
    credential-store]
-   (let [std-passwordstore (selmer/render-file "gopass.yml.templ" {:user-name user-name
+   (let [std-passwordstore (selmer/render-file "gopass.yml.templ" {:user-home user-home
                                                                    :path-to-repo "/.password-store"})
-         passwordstorestomount (apply str (for [repo credential-store] (selmer/render-file "gopass_mount.yml.templ" {:repo-name (:repo-name repo)
-                                                                                                                     :user-name user-name})))]
+         passwordstorestomount (apply str (for [repo credential-store] 
+                                            (selmer/render-file
+                                             "gopass_mount.yml.templ"
+                                             {:repo-name (:repo-name repo)
+                                              :user-home user-home})))]
      (actions/directory
       (str user-home "/.password-store")
       :owner user-name
       :group user-name)
+     (actions/exec-checked-script
+      "intialize .password-store"
+      ("su" ~user-name "-c" "\"touch" ~(str user-home "/.password-store/.gpg-id\"")))
      (actions/remote-file
       (str user-home "/.config/gopass/config.yml")
       :literal true
@@ -112,28 +100,24 @@ done
       :owner user-name
       :group user-name)))
 
-(defn create-gopass-autocompletion-file
-  [user-name
-   user-home]
-  (actions/remote-file
-    (str user-home "/.bashrc.d/gopass.sh")
-    :literal true
-    :content (selmer/render-file "gopass.sh.templ" {})
-    :mode "644"
-    :owner user-name
-    :group user-name))
-
-
-(s/defn configure-gopass
+(s/defn configure-user-gopass
   [facility :- s/Keyword
    user-name
    credential-store]
-  (let [user-home (str "/home/" user-name)
-        script (str "mkdir -p " user-home "/.config/gopass/ && touch " user-home "/.config/gopass/config.yml")]
+  (let [user-home (user-env/user-home-dir user-name)]
     (actions/as-action
      (logging/info (str facility "-configure user: configure-gopass")))
-    (actions/exec-script script)
-    (create-gopass-autocompletion-file user-name user-home)
+    (actions/exec-checked-script
+     "config for gopass"
+     ("su" ~user-name "-c" "\"mkdir" "-p" ~(str user-home "/.config/gopass/\""))
+     ("su" ~user-name "-c" "\"touch" ~(str user-home "/.config/gopass/config.yml\"")))
+    (actions/remote-file
+     (str user-home "/.bashrc.d/gopass.sh")
+     :literal true
+     :content (selmer/render-file "gopass.sh.templ" {})
+     :mode "644"
+     :owner user-name
+     :group user-name)
     (if (not (empty? credential-store))
       (if (= (count credential-store) 1)
         (single-gopass-setup user-name user-home (:repo-name (first credential-store)))
@@ -156,9 +140,7 @@ done
 (s/defn configure-user
   [facility :- s/Keyword
    user-name :- s/Str
-   credential-store
+   credential-store :- CredentialStore
    settings]
-  (when (contains? settings :install-password-store)
-    (configure-password-store facility user-name))
   (when (contains? settings :install-gopass)
-    (configure-gopass facility user-name credential-store)))
+    (configure-user-gopass facility user-name credential-store)))

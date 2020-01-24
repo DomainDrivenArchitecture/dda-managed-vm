@@ -1,2 +1,3 @@
 {:file [{:path "/home/test-user"}
-        {:path "/home/test-user/.bashrc.d/gopass.sh"}]}
+        {:path "/home/test-user/.bashrc.d/gopass.sh"}
+        {:path "/home/test-user/.password-store/.gpg-id"}]}
