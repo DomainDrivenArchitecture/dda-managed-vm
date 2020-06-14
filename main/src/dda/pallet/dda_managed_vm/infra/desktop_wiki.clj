@@ -50,7 +50,7 @@
   (actions/as-action
    (logging/info (str facility "-install system: install-desktop-wiki")))
   (actions/packages
-    :aptitude ["zim" "python-gtkspellcheck" "aspell" "aspell-de"]))
+    :aptitude ["zim" "aspell" "aspell-de"]))
 
 (s/defn init-system
   [facility settings]
