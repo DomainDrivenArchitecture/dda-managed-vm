@@ -147,7 +147,7 @@
   (when (contains? settings :install-xfce-desktop)
     (install-xfce-desktop facility))
   (when (contains? settings :install-virtualbox-guest)
-    (install-virtualbox-guest-additions-hwe facility))
+    (install-virtualbox-guest-additions facility))
   (when (contains? settings :remove-power-management)
     (remove-power-management facility))
   (when (contains? settings :remove-xubuntu-unused)
