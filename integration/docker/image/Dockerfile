@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu
 
 RUN apt-get -qqy update > /dev/null
 RUN apt-get -qqy upgrade > /dev/null
