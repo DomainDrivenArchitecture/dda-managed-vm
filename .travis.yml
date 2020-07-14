@@ -1,5 +1,12 @@
-dist: trusty
+dist: bionic
 language: clojure
+
+before_install:
+  - sudo apt-get -y install python3-pip python3-setuptools python3.6 > /dev/null
+  - pip3 install pybuilder ddadevops deprecation python_terraform boto3
+addons:
+  apt:
+    update: true
 
 services:
   - docker
@@ -21,10 +28,8 @@ jobs:
         - md5sum target/uberjar/dda-managed-vm-standalone.jar > target/uberjar/dda-managed-vm-standalone.jar.md5
         - sha256sum target/uberjar/dda-managed-vm-standalone.jar > target/uberjar/dda-managed-vm-standalone.jar.sha256
         - sha512sum target/uberjar/dda-managed-vm-standalone.jar > target/uberjar/dda-managed-vm-standalone.jar.sha512
-        - # create docker image
-        - docker build -t dda-managed-vm --file integration/docker/image/Dockerfile .
-        - # integration test on docker image level
-        - docker build -t dda-managed-vm-test --file integration/docker/test/Dockerfile .
+        - # integration test
+        - cd integration/docker && pyb image test
       deploy:
         - provider: releases
           skip_cleanup: true
