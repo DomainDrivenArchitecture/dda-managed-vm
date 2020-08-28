@@ -60,7 +60,7 @@
   (actions/packages :aptitude ["gopass"])
   (actions/exec-checked-script
    "link gopass -> pass"
-   ("ln" "-s" "/usr/local/bin/gopass" "/usr/local/bin/pass")))
+   ("ln" "-sf" "/usr/local/bin/gopass" "/usr/local/bin/pass")))
 
 (s/defn configure-user-gopass-config
   [user-name :- s/Str
